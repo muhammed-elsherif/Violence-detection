@@ -1,0 +1,24 @@
+// ul li .nav-link {
+//     color: gray;
+// }
+
+.nav-item {
+  cursor: pointer;
+}
+
+.navbar-nav {
+  --bs-nav-link-color: gray;
+  --bs-nav-link-hover-color: black;
+}
+
+
+.btn-success {
+    --bs-btn-color: #35353f;
+    --bs-btn-bg: #cbd6f5;
+    --bs-btn-border-color: #e1ebea;
+    --bs-btn-hover-color: #000000;
+    --bs-btn-hover-bg: #b9c7f0;
+    --bs-btn-hover-border-color: #b9c7f0;
+    border-radius:23px;
+    transition: all 0.3s ease-in-out;
+}

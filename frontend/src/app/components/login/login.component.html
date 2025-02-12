@@ -1,0 +1,62 @@
+<section class="vh-100" style="background-color: rgba(80, 140, 252, 0.2);">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                <div class="card shadow-2-strong" style="border-radius: 1rem;">
+                    <form class="card-body p-5 text-center" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+                        <h3 class="mb-5">Welcome back!</h3>
+
+                        <div class="form-floating mb-4">
+                            <select class="form-select no-border" id="floatingSelect" formControlName="group">
+                                <option value="0">Admin</option>
+                                <option value="1">User</option>
+                            </select>
+                            <label for="floatingSelect">Group</label>
+                        </div>
+
+                        <div class="form-floating mb-4">
+                            <input type="text" class="form-control no-border" id="floatingInput"
+                                placeholder="Username" formControlName="username" />
+                            <label for="floatingInput">Username</label>
+                            @if(loginForm.get('username')?.errors && loginForm.get('username')?.touched) {
+                                <div class="w-75 text-start text-danger ms-1 mt-1">
+                                    @if(loginForm.get('username')?.getError('required') ) {
+                                        <p class="m-0">username is required</p>
+                                    }
+                                    @else if(loginForm.get('username')?.getError('minlength') ) {
+                                        <p class="m-0">username should be more than 3 characters</p>
+                                    }
+                                    @else if(loginForm.get('username')?.getError('maxlength') ) {
+                                        <p class="m-0">username should be less than 20 characters</p>
+                                    }
+                                    
+                                </div>
+                            }
+                        </div>
+
+                        <div class="form-floating mb-4">
+                            <input type="password" class="form-control no-border" id="floatingPassword" placeholder="Password" formControlName="password"/>
+                            <label for="floatingPassword">Password</label>
+                            @if(loginForm.get('password')?.errors && loginForm.get('password')?.touched) {
+                                <div class="w-75 text-start text-danger ms-1 mt-1">
+                                    @if(loginForm.get('password')?.getError('required') ) {
+                                        <p class="m-0">password is required</p>
+                                    }
+                                    @else if(loginForm.get('password')?.getError('pattern') ) {
+                                        <p class="m-0">password should be more than 6 characters</p>
+                                    }
+                                    
+                                </div>
+                            }
+                        </div>
+
+                        <button [disabled]="loginForm.invalid" class="btn btn-primary btn-lg mt-1 w-100"
+                            type="submit">Login</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

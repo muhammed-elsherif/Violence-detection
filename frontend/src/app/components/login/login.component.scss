@@ -1,0 +1,14 @@
+.no-border:focus {
+  box-shadow: none;
+}
+
+
+.btn-primary {
+//   --bs-btn-color: #35353f;
+  --bs-btn-bg: #4a6dce;
+  --bs-btn-border-color: #e1ebea;
+  --bs-btn-hover-color: white;
+  --bs-btn-hover-bg: #3251a5;
+  --bs-btn-hover-border-color: #b9c7f0;
+  transition: all 0.2s ease-in-out;
+}

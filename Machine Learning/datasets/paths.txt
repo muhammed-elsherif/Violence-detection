@@ -1,0 +1,8 @@
+- Real Life Violence Situations Dataset:
+    URL: https://www.kaggle.com/datasets/mohamedmustafa/real-life-violence-situations-dataset
+    DESC: 2000 total videos (1000 violence & 1000 non-violence) of different situations.
+        ex. bare hands, weapons, 1v1, or multiple people.
+
+- UFC Dataset:
+    URL: https://universe.roboflow.com/graduation-projects/violence-detection-svquf/dataset/4
+    DESC: 958 total images with bounded boxes.

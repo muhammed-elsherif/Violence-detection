@@ -1,0 +1,114 @@
+.home-screen {
+  margin-top: 140px;
+  margin-bottom: 30px;
+}
+
+
+
+// middle section start
+.card-1 {
+  border: 1px solid #000000;
+  border-radius: 40px;
+  transition: all 0.3s ease;
+}
+
+.card-1:hover {
+  transform: scale(1.02);
+}
+
+.sqr-img {
+  width: 50%;
+  border-radius: 40px;
+}
+
+.custom-button {
+  background-color: #ffffff;
+  color: #212529;
+  border: none;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 50px;
+  padding: 5px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease-in-out;
+}
+
+.custom-button:hover {
+  background-color: #e4e4e4;
+}
+
+.icon {
+  color: #fd7e14;
+}
+// middle section end
+
+// right section start
+.travel-card {
+  position: relative;
+  border-radius: 40px;
+  overflow: hidden;
+  color: white;
+  text-align: center;
+  width: 100%;
+  height: 430px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.travel-card:hover {
+  transform: scale(1.03);
+}
+
+.travel-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.8);
+}
+
+.location-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #212529;
+  border-radius: 30px;
+  padding: 5px 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.card-footer {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  right: 5px;
+  background: rgba(255, 255, 255, 0.8);
+  color: #212529;
+  padding: 15px 10px;
+  border-radius: 50px;
+}
+
+.book-now {
+  font-weight: 500;
+}
+
+.book-now fa-icon {
+  color: #ff6b35;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .travel-card {
+    margin-bottom: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}
+
+// right section end
