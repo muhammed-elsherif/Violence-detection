@@ -6,3 +6,15 @@
 - UFC Dataset:
     URL: https://universe.roboflow.com/graduation-projects/violence-detection-svquf/dataset/4
     DESC: 958 total images with bounded boxes.
+
+- Movies Fight Dataset:
+    URL: https://academictorrents.com/details/70e0794e2292fc051a13f05ea6f5b6c16f3d3635
+    DESC: 1000 sequences divided in two groups: fights and non-fights.
+
+- Hockey Fight Dataset:
+    URL: https://academictorrents.com/details/38d9ed996a5a75a039b84cf8a137be794e7cee89
+    DESC: 1000 sequences divided in two groups: fights and non-fights.
+
+- Weapon Dataset:
+    URL: https://universe.roboflow.com/psm-ou5fu/violence-weapon-detection/dataset/1
+    DESC: Violence & Weapon
