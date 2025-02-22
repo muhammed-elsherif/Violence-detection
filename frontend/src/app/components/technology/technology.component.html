@@ -1,21 +1,48 @@
 <div class="container mt-2">
-    
-    <div class="d-flex flex-column justify-content-center align-items-center">
-        <input class="my-3" type="file" (change)="onFileSelected($event)" multiple>
 
-        @for (file of selectedFiles; track $index) {
-        <div class="my-2">
-            <p>{{ file.name }}</p>
-            @if (file.type.startsWith('image/')) {
-            <img [src]="getFileUrl(file)" width="500">
-            }
-            @if (file.type.startsWith('video/')) {
-            <video [src]="getFileUrl(file)" width="500" controls></video>
-            }
+  <div class="d-flex flex-column justify-content-center align-items-center">
+    <input type="file" (change)="onFileSelected($event)" />
+    @if(errorMessage) {
+    <p style="color: red;">{{ errorMessage }}</p>
+    }
+    <button (click)="upload()" [disabled]="!selectedFile">Upload</button>
 
+
+      @for (file of selectedFiles; track $index) {
+      <div class="my-2">
+          <p>{{ file.name }}</p>
+          @if (file.type.startsWith('image/')) {
+          <img [src]="getFileUrl(file)" width="500">
+          }
+          @if (file.type.startsWith('video/')) {
+          <video [src]="getFileUrl(file)" width="500" controls></video>
+          }
+
+      </div>
+      }
+  </div>
+
+    @if(uploadProgress) {
+    <p>Progress: {{ uploadProgress }}%</p>
+    }
+
+    @if (errorMessage) {
+        <div>
+          <p style="color: red;">{{ errorMessage }}</p>
         </div>
-        }
-    </div>
-
+      }
+      
+      @if (resultUrl) {
+        <div>
+          @switch (resultType) {
+            @case ('image') {
+              <img [src]="resultUrl" alt="Annotated image" />
+            }
+            @case ('video') {
+              <video [src]="resultUrl" controls></video>
+            }
+          }
+        </div>
+      }
 
 </div>

@@ -1,0 +1,24 @@
+.no-border:focus {
+  box-shadow: none;
+}
+
+.cool-bg {
+  background-color: #e5e5f7;
+  // opacity: 0.3;
+  background-image: repeating-radial-gradient(
+      circle at 0 0,
+      transparent 0,
+      #e5e5f7 8px
+    ),
+    repeating-linear-gradient(#6b72ff55, #6b72ff);
+}
+
+.btn-primary {
+  //   --bs-btn-color: #35353f;
+  --bs-btn-bg: #4a6dce;
+  --bs-btn-border-color: #e1ebea;
+  --bs-btn-hover-color: white;
+  --bs-btn-hover-bg: #3251a5;
+  --bs-btn-hover-border-color: #b9c7f0;
+  transition: all 0.2s ease-in-out;
+}

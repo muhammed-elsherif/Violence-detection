@@ -1,0 +1,23 @@
+❯ Building...
+✔ Building...
+Initial chunk files | Names         |  Raw size
+styles.css          | styles        | 277.73 kB | 
+polyfills.js        | polyfills     |  90.20 kB | 
+scripts.js          | scripts       |  78.54 kB | 
+main.js             | main          |  58.78 kB | 
+
+                    | Initial total | 505.24 kB
+
+Application bundle generation complete. [3.726 seconds]
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mTS-998113: NavbarComponent is not used within the template of AppComponent[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/app.component.ts:9:26:
+[37m      9 │   imports: [RouterOutlet, [32mNavbarComponent[37m, FontAwesomeModule, Foote...
+        ╵                           [32m~~~~~~~~~~~~~~~[0m
+
+
+Watch mode enabled. Watching for file changes...
+NOTE: Raw file sizes do not reflect development server per-request transformations.
+Re-optimizing dependencies because vite config has changed
+  ➜  Local:   http://localhost:4200/
