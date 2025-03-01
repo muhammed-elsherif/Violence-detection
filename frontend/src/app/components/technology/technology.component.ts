@@ -13,22 +13,24 @@ export class TechnologyComponent {
   resultUrl: string | null = null;
   resultType: 'video' | 'image' | null = null;
 
+  selectedFiles: File[] = [];
+
   constructor(private uploadService: UploadService) {}
 
   getFileUrl(file: File): string {
     return URL.createObjectURL(file);
   }
 
-  selectedFiles: File[] = [];
+  trackByIndex(index: number): number {
+    return index;
+  }
 
   onFileSelected(event: any) {
     const input = event.target as HTMLInputElement;
-    if (input.files) {
-      this.selectedFiles = Array.from(input.files);
-    }
-    const file: File = event.target.files[0];
+    if (!input.files || input.files.length === 0) return;
 
-    if (!file) return;
+    this.selectedFiles = Array.from(input.files);
+    const file: File = event.target.files[0];
 
     if (!this.validateFile(file)) {
       this.errorMessage = 'Invalid file type! Only images and videos are allowed.';
@@ -39,27 +41,15 @@ export class TechnologyComponent {
     this.selectedFile = file;
     this.errorMessage = null;
     this.resultUrl = null;
-
-    if (file.type.startsWith('image/')) {
-      this.resultType = 'image';
-    } else if (file.type.startsWith('video/')) {
-      this.resultType = 'video';
-    }
+    this.resultType = file.type.startsWith('image/') ? 'image' : 'video';
   }
 
   validateFile(file: File): boolean {
-    const allowedImageTypes = [
-      'image/jpeg',
-      'image/png',
-      'image/gif',
-      'image/webp',
+    const allowedTypes = [
+      'image/jpeg', 'image/png', 'image/gif', 'image/webp',
+      'video/mp4', 'video/webm', 'video/ogg'
     ];
-    const allowedVideoTypes = ['video/mp4', 'video/webm', 'video/ogg'];
-
-    return (
-      allowedImageTypes.includes(file.type) ||
-      allowedVideoTypes.includes(file.type)
-    );
+    return allowedTypes.includes(file.type);
   }
 
   upload() {
@@ -72,11 +62,9 @@ export class TechnologyComponent {
       next: (result) => {
         // 'result' is an object: { content: Blob, metadata: any }
         this.resultUrl = URL.createObjectURL(result.content);
-        console.log('Upload success:', result.metadata);
         this.uploadProgress = 100;
       },
       error: (err) => {
-        console.error('Upload failed:', err);
         this.errorMessage = 'Upload failed. Please try again.';
         this.uploadProgress = null;
       }

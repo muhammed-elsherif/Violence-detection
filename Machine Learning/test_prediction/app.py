@@ -1,4 +1,4 @@
-# fastapi_app.py
+import json
 import os
 import uuid
 import shutil
@@ -32,6 +32,9 @@ def predict_and_annotate_video(video_path: str, model) -> str:
 
     out = cv2.VideoWriter(output_filename, fourcc, fps, (width, height))
     frames = []
+    confidence_scores = []
+    violent_frames = 0
+    total_frames = 0
 
     while cap.isOpened():
         ret, frame = cap.read()
@@ -39,6 +42,7 @@ def predict_and_annotate_video(video_path: str, model) -> str:
             break
 
         # Preprocess frame
+        total_frames += 1
         resized_frame = cv2.resize(frame, FRAME_SIZE) / 255.0
         frames.append(resized_frame)
 
@@ -49,7 +53,9 @@ def predict_and_annotate_video(video_path: str, model) -> str:
             predicted_label = np.argmax(prediction)
             confidence = prediction[0][predicted_label]
 
+            confidence_scores.append(confidence)
             if predicted_label == 1:  # Assuming label 1 = Violence
+                violent_frames += NUM_FRAMES  # Assume entire batch is violent
                 cv2.rectangle(frame, (50, 50), (width - 50, height - 50), (0, 0, 255), 4)
                 cv2.putText(
                     frame,
@@ -76,7 +82,20 @@ def predict_and_annotate_video(video_path: str, model) -> str:
 
     cap.release()
     out.release()
-    return output_filename
+
+    avg_confidence = np.mean(confidence_scores) if confidence_scores else 0.0
+    detection_results = {
+        "overallStatus": "VIOLENCE_DETECTED" if violent_frames > 0 else "NON_VIOLENCE",
+        "overallConfidence": float(avg_confidence),
+        "violentFrames": violent_frames,
+        "totalFrames": total_frames,
+        "results": [{
+            "confidence": float(avg_confidence),
+            "label": "violence" if violent_frames > 0 else "non-violence",
+            "severity": float(avg_confidence ** 2)  # Using confidence as severity proxy
+        }]
+    }
+    return output_filename, detection_results
 
 def predict_and_annotate_image(image_path: str, model) -> str:
     img = cv2.imread(image_path)
@@ -85,6 +104,16 @@ def predict_and_annotate_image(image_path: str, model) -> str:
     prediction = model.predict(input_img)
     predicted_label = np.argmax(prediction)
     confidence = prediction[0][predicted_label]
+
+    detection_results = {
+        "overallStatus": "VIOLENCE_DETECTED" if predicted_label == 1 else "NON_VIOLENCE",
+        "overallConfidence": float(confidence),
+        "results": [{
+            "confidence": float(confidence),
+            "label": "violence" if predicted_label == 1 else "non-violence",
+            "severity": float(confidence)
+        }]
+    }
 
     if predicted_label == 1:
         cv2.rectangle(img, (10, 10), (img.shape[1]-10, img.shape[0]-10), (0, 0, 255), 2)
@@ -112,7 +141,7 @@ def predict_and_annotate_image(image_path: str, model) -> str:
     os.makedirs(output_dir, exist_ok=True)
     output_filename = os.path.join(output_dir, f"{model_name}_{uuid.uuid4().hex}.jpg")
     cv2.imwrite(output_filename, img)
-    return output_filename
+    return output_filename, detection_results
 
 @app.post("/predict_video")
 async def predict_video(file: UploadFile = File(...)):
@@ -125,13 +154,20 @@ async def predict_video(file: UploadFile = File(...)):
         shutil.copyfileobj(file.file, buffer)
 
     try:
-        output_video = predict_and_annotate_video(temp_video_path, model)
+        output_video, detection_results = predict_and_annotate_video(temp_video_path, model)
+        response = FileResponse(
+            output_video,
+            media_type="video/mp4",
+            filename=os.path.basename(output_video),
+            headers={
+                "X-Detection-Results": json.dumps(detection_results)
+            }
+        )
+        os.remove(temp_video_path)
+        return response
     except Exception as e:
         os.remove(temp_video_path)
         raise HTTPException(status_code=500, detail=str(e))
-
-    os.remove(temp_video_path)
-    return FileResponse(output_video, media_type="video/mp4", filename=os.path.basename(output_video))
 
 @app.post("/predict_image")
 async def predict_image(file: UploadFile = File(...)):

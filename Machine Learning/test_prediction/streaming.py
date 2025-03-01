@@ -11,12 +11,12 @@ st.title("Real-Time Violence Detection")
 
 # Load the trained model
 # model_path = "../loaded_models/modelnew.h5"
-# model_path = "../loaded_models/mobileNet_violence_detection_model.h5"
+model_path = "../loaded_models/mobileNet_violence_detection_model.h5"
 # model_path = "../loaded_models/mobileNetV2_violence_detection_model.h5"
 # model_path = "../loaded_models/mobileNetV2_violence_detection_model_new.h5"
 # model_path = "../loaded_models/model_3d_violence_detection_model.h5"
 # model_path = "../loaded_models/inceptionV3_violence_detection_model.h5"
-# model = load_model(model_path)
+model = load_model(model_path)
 # in case of using YOLO
 # model_path = "../loaded_models/yolo_best.pt"
 # model_path = "../loaded_models/best.pt"
@@ -72,6 +72,7 @@ while cap.isOpened():
     else:
         resized_frame = cv2.resize(frame, FRAME_SIZE) / 255.0
         # resized_frame = preprocess_input(frame)
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Convert BGR to RGB
         frames.append(resized_frame)
         
         # Predict when we have enough frames

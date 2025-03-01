@@ -5,11 +5,11 @@ import os
 
 # Load the trained model
 model_name = 'mobileNet'
-model_path = '../loaded_models/' + model_name + '_violence_detection_model.h5'
+model_path = '../loaded_models/' + model_name + '_violence_detection_model.h5' # adjust with ur model path
 model = load_model(model_path)
 
 FRAME_SIZE = (112, 112)
-NUM_FRAMES = 10
+NUM_FRAMES = 1
 
 def predict_and_display(video_path, model):
     cap = cv2.VideoCapture(video_path)

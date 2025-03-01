@@ -16,8 +16,8 @@ npm run start > backend.log 2>&1 &
 
 # Start Machine Learning API (not working)
 echo "Starting Machine Learning Service..."
-cd ../MachineLearning/test_prediction
-source env/bin/activate
+cd ../Machine\ Learning/test_prediction
+source venv/bin/activate
 uvicorn app:app --host 0.0.0.0 --port 8000 > ml_service.log 2>&1 &
 
 echo "All services started successfully."

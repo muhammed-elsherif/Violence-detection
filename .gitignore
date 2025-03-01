@@ -1,4 +1,4 @@
 node_modules
 .angular
-tf_env
+venv
 violence detection.yolov8
