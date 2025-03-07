@@ -3,7 +3,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faChevronRight, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 import { faCalendar } from '@fortawesome/free-regular-svg-icons';
 
-
 @Component({
   selector: 'app-body',
   imports: [FontAwesomeModule],
