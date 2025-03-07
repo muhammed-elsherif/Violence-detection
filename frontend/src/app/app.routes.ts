@@ -11,6 +11,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { UsersComponent } from './components/users/users.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { ReportsComponent } from './components/reports/reports.component';
+import { PlacesComponent } from './components/places/places.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -38,6 +39,7 @@ export const routes: Routes = [
       { path: 'services', component: ServicesComponent },
       { path: 'industries', component: IndustriesComponent },
       { path: 'technology', component: TechnologyComponent },
+      { path: 'places', component: PlacesComponent },
     ],
   },
 ];
