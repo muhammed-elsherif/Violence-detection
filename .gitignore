@@ -1,4 +1,7 @@
 node_modules
 .angular
 venv
+sent_images
 violence detection.yolov8
+loaded_models
+output
