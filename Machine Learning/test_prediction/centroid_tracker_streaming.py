@@ -3,12 +3,13 @@ from collections import OrderedDict
 from scipy.spatial import distance as dist
 
 class CentroidTracker:
-    def __init__(self, maxDisappeared=10):
-        self.nextObjectID = 0  # Unique ID counter
-        self.objects = OrderedDict()  # Stores object ID → (centroid, bbox)
-        self.bboxes = OrderedDict()   # objectID -> bounding box [x, y, w, h]
-        self.disappeared = OrderedDict()  # Count frames an object disappeared
+    def __init__(self, maxDisappeared=10, maxDistance=50):
+        self.nextObjectID = 0              # Unique ID for each object
+        self.objects = OrderedDict()       # objectID -> centroid (x, y)
+        self.bboxes = OrderedDict()        # objectID -> bounding box [x, y, w, h]
+        self.disappeared = OrderedDict()   # objectID -> number of consecutive frames missing
         self.maxDisappeared = maxDisappeared
+        self.maxDistance = maxDistance     # maximum allowed distance for matching
 
     def register(self, centroid, bbox):
         self.objects[self.nextObjectID] = (centroid, bbox)
@@ -26,6 +27,7 @@ class CentroidTracker:
 
 
     def update(self, rects):
+        # If no detections, mark existing objects as disappeared.
         if len(rects) == 0:
             for objectID in list(self.disappeared.keys()):
                 self.disappeared[objectID] += 1

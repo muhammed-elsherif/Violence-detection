@@ -3,5 +3,3 @@ node_modules
 venv
 sent_images
 violence detection.yolov8
-loaded_models
-output

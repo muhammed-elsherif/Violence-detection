@@ -1,7 +1,7 @@
 import os
 import cv2
 import numpy as np
-from person_intersection import yolo_detect, is_intersecting
+from person_intersection import yolo_detect, is_intersecting, tracker
 from model_parameters import selected_model
 
 yolo = False
@@ -21,6 +21,8 @@ def predict_and_display(video_path, model):
 
     frames = []
     frame_count = 0
+    frame_number = 0
+    detection_interval = 3  # run YOLO detection every 3 frames (adjust as needed)
 
     while cap.isOpened():
         ret, frame = cap.read()
@@ -31,6 +33,8 @@ def predict_and_display(video_path, model):
         if frame is None:
             print("Error: Captured frame is None")
             continue  # Skip this iteration
+
+        frame_number +=1
 
         if yolo:
             # Run YOLO model on the frame
@@ -53,51 +57,50 @@ def predict_and_display(video_path, model):
 
         else:
             # Run YOLO to detect persons and track them
-            processed_frame, tracked_objects = yolo_detect(frame.copy(), 0.5)
+            # processed_frame, tracked_objects = yolo_detect(frame.copy(), 0.5)
 
-            # Check for intersections between every pair of tracked persons
-            intersected_pairs = set()
-            obj_list = list(tracked_objects.items())
-            for i in range(len(obj_list)):
-                for j in range(i + 1, len(obj_list)):
-                    # bbox is the second element in the tuple (centroid, bbox)
-                    _, bboxA = obj_list[i][1]
-                    _, bboxB = obj_list[j][1]
-                    if is_intersecting(bboxA, bboxB):
-                        intersected_pairs.add((obj_list[i][0], obj_list[j][0]))
+            # # Check for intersections between every pair of tracked persons
+            # intersected_pairs = set()
+            # obj_list = list(tracked_objects.items())
+            # for i in range(len(obj_list)):
+            #     for j in range(i + 1, len(obj_list)):
+            #         # bbox is the second element in the tuple (centroid, bbox)
+            #         _, bboxA = obj_list[i][1]
+            #         _, bboxB = obj_list[j][1]
+            #         if is_intersecting(bboxA, bboxB):
+            #             intersected_pairs.add((obj_list[i][0], obj_list[j][0]))
 
-            if intersected_pairs:
-                # Optional: Annotate frame with info about intersections
-                cv2.putText(processed_frame, "Intersection Detected", (50, 50),
-                            cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-                for idx, (idA, idB) in enumerate(intersected_pairs):
-                    cv2.putText(processed_frame, f"ID {idA} & ID {idB} intersect", (50, 80 + 20 * idx),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+            # if intersected_pairs:
+            #     # Optional: Annotate frame with info about intersections
+            #     cv2.putText(processed_frame, "Intersection Detected", (50, 50),
+            #                 cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+            #     for idx, (idA, idB) in enumerate(intersected_pairs):
+            #         cv2.putText(processed_frame, f"ID {idA} & ID {idB} intersect", (50, 80 + 20 * idx),
+            #                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
                 # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Convert BGR to RGB
-                resized_frame = cv2.resize(frame, frame_size) / 255.0
-                frames.append(resized_frame)
-                frame_count += 1
+            resized_frame = cv2.resize(frame, frame_size) / 255.0
+            frames.append(resized_frame)
+            frame_count += 1
 
-                if len(frames) == frames_count:
-                    input_frames = np.expand_dims(np.array(frames), axis=0)
-                    prediction = model.predict(input_frames)
-                    predicted_label = np.argmax(prediction)
-                    confidence = prediction[0][predicted_label]
+            if len(frames) == frames_count:
+                input_frames = np.expand_dims(np.array(frames), axis=0)
+                prediction = model.predict(input_frames)
+                predicted_label = np.argmax(prediction)
+                confidence = prediction[0][predicted_label]
 
-                    if predicted_label == 1:  # Assuming 1 = Violence
-                        cv2.rectangle(frame, (50, 50), (width - 50, height - 50), (0, 0, 255), 4)
-                        cv2.putText(frame, f"Violence Detected ({confidence:.2f})", (60, 70), 
-                                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-                    else:
-                        cv2.putText(frame, f"Non-Violence ({confidence:.2f})", (60, 70), 
-                                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                if predicted_label == 1:  # Assuming 1 = Violence
+                    cv2.rectangle(frame, (50, 50), (width - 50, height - 50), (0, 0, 255), 4)
+                    cv2.putText(frame, f"Violence Detected ({confidence:.2f})", (60, 70), 
+                                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                else:
+                    cv2.putText(frame, f"Non-Violence ({confidence:.2f})", (60, 70), 
+                                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                frames = [] # Reset buffer after prediction.
+            # else:
+            #     frames = []
 
-                    out.write(frame)
-                    frames = []
-            else:
-                # Even if there is no intersection, show the processed frame with bounding boxes
-                out.write(processed_frame)
+            out.write(frame)
 
     cap.release()
     out.release()
