@@ -18,3 +18,7 @@
 - Weapon Dataset:
     URL: https://universe.roboflow.com/psm-ou5fu/violence-weapon-detection/dataset/1
     DESC: Violence & Weapon
+
+- Inception models:
+    URL: https://drive.google.com/file/d/1fjyxk19QEqOTuxNY8To95nlm-QQ9yQE-/view?usp=drive_link
+    DESC: Contains all inception models
