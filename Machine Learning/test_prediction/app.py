@@ -6,17 +6,14 @@ import cv2
 import numpy as np
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.responses import FileResponse
-from tensorflow.keras.models import load_model
+from model_parameters import selected_model, process_video
+from config import NUM_FRAMES, FRAME_SIZE, VIDEO_OUTPUT_DIR
 
 app = FastAPI()
 
 # Load the trained model at startup (no changes needed)
-model_name = 'mobileNet'
-model_path = os.path.join('..', 'loaded_models', f'{model_name}_violence_detection_model.h5')
-model = load_model(model_path)
-
-FRAME_SIZE = (112, 112)
-NUM_FRAMES = 10
+model = selected_model()
+model_name = os.path.splitext(model)[0]  # removes .h5
 
 def predict_and_annotate_video(video_path: str, model) -> str:
     cap = cv2.VideoCapture(video_path)
@@ -26,16 +23,26 @@ def predict_and_annotate_video(video_path: str, model) -> str:
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 
     # Ensure the output folder exists
-    output_dir = "output"
-    os.makedirs(output_dir, exist_ok=True)
-    output_filename = os.path.join(output_dir, f"{model_name}_{uuid.uuid4().hex}.mp4")
+    os.makedirs(VIDEO_OUTPUT_DIR, exist_ok=True)
+    output_filename = os.path.join(VIDEO_OUTPUT_DIR, f"{model_name}_{uuid.uuid4().hex}.mp4")
 
     out = cv2.VideoWriter(output_filename, fourcc, fps, (width, height))
+
     frames = []
     confidence_scores = []
     violent_frames = 0
+    # for i, (frame, timestamp) in enumerate(violent_frames):
+    #     filename = f"output/violent_{i}_{timestamp.replace(':', '-')}.jpg"
+    #     cv2.imwrite(filename, cv2.cvtColor(frame, cv2.COLOR_RGB2BGR))
     total_frames = 0
 
+    ### predict by video
+    frames = process_video(video_path) # shape: (FRAMES, H, W, 3)
+    input_frames = np.expand_dims(frames, axis=0) # shape: (1, FRAMES, H, W, 3)
+    prediction = model.predict(input_frames) # shape: (NUM_CLASSES,)
+    predicted_label = np.argmax(prediction)
+    confidence = prediction[0][predicted_label]
+    cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:

@@ -40,18 +40,32 @@ def yolo_detect(image, confidence_threshold):
     indices = np.array(indices).flatten() if len(indices) > 0 else np.array([])
 
     # Extract persons and track them
-    person_boxes = [boxes[i] for i in indices if LABELS[class_ids[i]] == "person"]
-    tracked_objects = tracker.update(person_boxes)
+    # person_boxes = [boxes[i] for i in indices if LABELS[class_ids[i]] == "person"]
+    # tracked_objects = tracker.update(person_boxes)
 
-    for objectID, (centroid, bbox) in tracked_objects.items():
-        x, y, w, h = bbox
-        label = f"ID {objectID}"
-        color = (0, 255, 0)
+    # for objectID, (centroid, bbox) in tracked_objects.items():
+    #     x, y, w, h = bbox
+    #     label = f"ID {objectID}"
+    #     color = (0, 255, 0)
 
-        cv2.rectangle(image, (x, y), (x + w, y + h), color, 2)
-        cv2.putText(image, label, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+    #     cv2.rectangle(image, (x, y), (x + w, y + h), color, 2)
+    #     cv2.putText(image, label, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
-    return image, tracked_objects
+    # return image, tracked_objects
+    for i in indices:
+            x, y, w, h = boxes[i]
+            label = str(LABELS[class_ids[i]])
+            confidence = confidences[i]
+            color = COLORS[class_ids[i]]
+
+            # Draw outer rectangle using OpenCV
+            cv2.rectangle(image, (x, y), (x+w, y+h), color, 2)
+
+            # Draw label and confidence using OpenCV
+            text = f"{label}: {confidence:.2f}"
+            cv2.putText(image, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+
+    return image, class_ids, indices
 
 def is_intersecting(boxA, boxB):
     """
