@@ -45,14 +45,14 @@ cd Machine\ Learning/test_prediction/ # todo change folder name
 python -m venv venv
 source venv/bin/activate  # For Windows: venv\Scripts\activate
 ```
-In case of running backend:
-```bash
-uvicorn app:app --host 0.0.0.0 --port 8000
-```
 
 3. Install dependencies:
 ```bash
 pip install -r requirements.txt
+```
+In case of running backend:
+```bash
+uvicorn app:app --host 0.0.0.0 --port 8000
 ```
 
 ## 🚀 Usage
