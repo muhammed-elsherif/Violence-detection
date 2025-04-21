@@ -7,7 +7,7 @@ from model_parameters import selected_model, process_video
 from tensorflow.keras.applications.mobilenet import preprocess_input
 from config import YOLO_ENABLED, CONFIDENCE_THRESHOLD, VIDEO_OUTPUT_DIR, FRAME_SIZE, NUM_FRAMES
 
-YOLO_ENABLED = True
+YOLO_ENABLED = False
 model = selected_model(YOLO_ENABLED)
 logging.basicConfig(level=logging.INFO)
 
@@ -111,7 +111,7 @@ video_path = 'test_samples/normal/people.mp4'
 # video_path = 'test_samples/violent/V_19.mp4'
 # video_path = 'test_samples/violent/0.mp4'
 # video_path = 'test_samples/violent/test_home.MOV'
-# video_path = 'test_samples/violent/office_fight.mp4'
+video_path = 'test_samples/violent/office_fight.mp4'
 result_path = predict_and_display(video_path, model)
 
 play_video(result_path)

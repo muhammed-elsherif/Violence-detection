@@ -13,7 +13,7 @@ app = FastAPI()
 
 # Load the trained model at startup (no changes needed)
 model = selected_model()
-model_name = os.path.splitext(model)[0]  # removes .h5
+# model_name = os.path.splitext(model)[0]  # removes .h5
 
 def predict_and_annotate_video(video_path: str, model) -> str:
     cap = cv2.VideoCapture(video_path)

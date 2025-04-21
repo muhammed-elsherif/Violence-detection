@@ -8,10 +8,10 @@ from datetime import datetime
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from person_intersection import yolo_detect, is_intersecting
 from model_parameters import selected_model, process_video
-from config import YOLO_ENABLED, CONFIDENCE_THRESHOLD
+from config import YOLO_ENABLED, FRAME_SIZE, NUM_FRAMES
 
-YOLO_ENABLED = True
-model, frame_size, frames_count = selected_model(YOLO_ENABLED)
+YOLO_ENABLED = False
+model = selected_model(YOLO_ENABLED)
 frames = []
 violent_frames = []
 predicted_label = 0
@@ -39,8 +39,8 @@ if not cap.isOpened():
 while cap.isOpened():
     ret, frame = cap.read()
     if not ret:
-        print("Failed to grab frame")
         st.error("Error: Failed to capture frame")
+        # logger.warning("Failed to read frame from video source")
         break
 
     if frame is None:
@@ -88,12 +88,12 @@ while cap.isOpened():
             #     cv2.putText(processed_frame, f"ID {idA} & ID {idB} intersect", (50, 80 + 20 * idx),
             #                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
             # Preprocess current frame for violence detection and add to buffer
-        resized_frame = cv2.resize(frame, frame_size) / 255.0
+        resized_frame = cv2.resize(frame, FRAME_SIZE) / 255.0
         # resized_frame = preprocess_input(frame)
         frames.append(resized_frame)
         
         # Predict when we have enough frames
-        if len(frames) == frames_count:
+        if len(frames) == NUM_FRAMES:
             input_frames = np.expand_dims(np.array(frames), axis=0)
             prediction = model.predict(input_frames)
             predicted_label = np.argmax(prediction)
