@@ -3,14 +3,7 @@
 }
 
 .cool-bg {
-  background-color: #e5e5f7;
-  // opacity: 0.3;
-  background-image: repeating-radial-gradient(
-      circle at 0 0,
-      transparent 0,
-      #e5e5f7 8px
-    ),
-    repeating-linear-gradient(#6b72ff55, #6b72ff);
+  background: linear-gradient(135deg, #6b72ff, #ab8ffa, #72c6ff);
 }
 
 .btn-primary {
