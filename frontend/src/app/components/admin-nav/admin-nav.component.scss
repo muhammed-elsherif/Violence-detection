@@ -1,19 +1,119 @@
-.nav-item {
-  cursor: pointer;
+/* Sidebar */
+.sidenav {
+  background: #012a5b;
+  transition: all 0.5s ease;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  width: 16.5625rem;
+  height: 100vh;
+  box-shadow: 0.063rem 0 1.25rem 0 #8690a3;
+  overflow-y: auto; /* Allow scrolling for overflowing content */
 }
 
-.navbar-nav {
-  --bs-nav-link-color: gray;
-  --bs-nav-link-hover-color: black;
+.sidenav-collapsed {
+  width: 5rem;
 }
 
-.btn-success {
-  --bs-btn-color: #35353f;
-  --bs-btn-bg: #cbd6f5;
-  --bs-btn-border-color: #e1ebea;
-  --bs-btn-hover-color: #000000;
-  --bs-btn-hover-bg: #b9c7f0;
-  --bs-btn-hover-border-color: #b9c7f0;
-  border-radius: 23px;
-  transition: all 0.3s ease-in-out;
+/* Logo Container */
+.sidenav .logo-container {
+  width: 100%;
 }
+
+.sidenav .logo-container .logo {
+  background: #012a5b;
+  color: #fff;
+  width: 3rem;
+  min-width: 3rem;
+  border-radius: 0.313rem;
+  border: none;
+}
+
+.sidenav .logo-container .logo-text {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.sidenav .logo-container .btn-close {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: transparent;
+  border: none;
+}
+
+.sidenav .logo-container .btn-close .fa-times {
+  font-size: 24px;
+}
+
+/* Navigation */
+.sidenav-nav {
+  list-style: none;
+  margin: 0;
+}
+
+.sidenav-nav .sidenav-nav-item .sidenav-nav-link {
+  height: 3rem;
+  color: #f3f3f3;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.sidenav-nav .sidenav-nav-item .sidenav-nav-link .sidenav-link-icon {
+  font-size: 22px;
+  width: 2rem;
+  min-width: 2rem;
+  text-align: center;
+  padding: 12px;
+}
+
+.sidenav-nav .sidenav-nav-item:hover .sidenav-nav-link:not(.active) {
+  background-color: #395a8351;
+}
+
+.active {
+ background-color: #fff;
+}
+
+.active .sidenav-link-icon,
+.active .sidenav-link-text {
+  color: #000;
+}
+
+/* Hide text when collapsed */
+.sidenav-collapsed .sidenav-link-text,
+.sidenav-collapsed .logo-text,
+.sidenav-collapsed .btn span,
+.sidenav-collapsed .text-danger {
+  display: none;
+}
+
+/* Main Content */
+.main-content {
+  margin-left: 16.5625rem; /* Matches expanded sidebar width */
+  transition: margin-left 0.5s ease;
+  flex: 1;
+  overflow-y: auto;
+  height: 100vh;
+}
+
+.sidenav-collapsed + .main-content {
+  margin-left: 5rem; /* Matches collapsed sidebar width */
+}
+
+/* Responsive adjustments */
+// @media (max-width: 768px) {
+//   .sidenav {
+//     width: 16.5625rem;
+//   }
+//   .sidenav-collapsed {
+//     width: 0;
+//     overflow: hidden;
+//   }
+//   .main-content {
+//     margin-left: 0;
+//   }
+//   .sidenav-collapsed + .main-content {
+//     margin-left: 0;
+//   }
+// }
