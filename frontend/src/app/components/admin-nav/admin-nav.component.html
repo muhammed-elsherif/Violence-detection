@@ -1,29 +1,57 @@
-<nav class="admin-nav navbar navbar-expand-md bg-white py-4">
-  <div class="container">
-    <a class="navbar-brand" href="#"><img src="./assets/images/logo-thing.png" alt="logo" width="100"></a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mx-auto mb-2 mb-md-0 fw-medium">
-        <li class="nav-item mx-3">
-          <a class="nav-link" aria-current="page" routerLink="dashboard" routerLinkActive="active">Dashboard</a>
-        </li>
-        <li class="nav-item mx-3">
-          <a class="nav-link" routerLink="users" routerLinkActive="active">Users</a>
-        </li>
-        <li class="nav-item mx-3">
-          <a class="nav-link" routerLink="settings" routerLinkActive="active">Settings</a>
-        </li>
-        <li class="nav-item mx-3">
-          <a class="nav-link" routerLink="reports" routerLinkActive="active">Reports</a>
-        </li>
-      </ul>
-      <a class="btn btn-success fw-medium px-4">Logout</a>
+<div class="d-flex h-100">
+  <!-- Sidebar -->
+  <aside
+    class="sidenav d-flex flex-column h-100"
+    [ngClass]="isLeftSidebarCollapsed() ? 'sidenav-collapsed' : ''"
+  >
+    <!-- Logo Section -->
+    <div class="logo-container d-flex align-items-center p-3">
+      <button class="logo btn p-0" (click)="toggleCollapse()">
+        <i class="fa-solid fa-bars-staggered fa-2x text-white"></i>
+      </button>
+      @if (!isLeftSidebarCollapsed()) {
+      <span class="logo-text ms-0 text-white">AdminDash</span>
+      <button class="btn-close ms-auto" (click)="closeSidenav()">
+        <i class="fal fa-times fa-2x"></i>
+      </button>
+      }
     </div>
-  </div>
-</nav>
 
+    <!-- Navigation Items -->
+    <ul class="sidenav-nav flex-grow-1 p-3">
+      @for (item of items; track $index) {
+      <li class="sidenav-nav-item mb-2" (click)="closeSidenav()">
+        <a
+          class="sidenav-nav-link d-flex align-items-center rounded"
+          [routerLink]="item.routeLink"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <i class="sidenav-link-icon" [class]="item.icon"></i>
+          @if (!isLeftSidebarCollapsed()) {
+          <span class="sidenav-link-text ms-3">{{ item.label }}</span>
+          }
+        </a>
+      </li>
+      }
+    </ul>
 
-<!-- This section is reserved for future insights -->
+    <!-- Logout Button -->
+    <div class="mt-auto p-3">
+      <a
+        class="btn btn-danger fw-medium d-flex align-items-center justify-content-center"
+        (click)="logout()"
+      >
+        <i class="fas fa-sign-out-alt me-2"></i>
+        @if (!isLeftSidebarCollapsed()) {
+        <span>Logout</span>
+        }
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <router-outlet />
+  </main>
+</div>
