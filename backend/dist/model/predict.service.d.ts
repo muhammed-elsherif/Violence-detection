@@ -1,9 +1,18 @@
 import { FileType, PrismaClient } from '@prisma/client';
 import { MulterFile } from './predict.controller';
+import { HttpService } from '@nestjs/axios';
+interface VideoPredictionResponse {
+    videoUrl: string;
+    overallStatus: string;
+    overallConfidence: number;
+    violentFrames: number;
+    totalFrames: number;
+}
 export declare class PredictService {
+    private readonly httpService;
     private prisma;
-    constructor(prisma: PrismaClient);
-    createUploadRecord(userId: string, file: MulterFile, fileType: FileType): Promise<{
+    constructor(httpService: HttpService, prisma: PrismaClient);
+    createUploadRecord(userId: string, file: MulterFile, fileType: FileType): import(".prisma/client").Prisma.Prisma__UploadsHistoryClient<{
         detectionResults: {
             id: string;
             createdAt: Date;
@@ -15,21 +24,16 @@ export declare class PredictService {
         }[];
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         userId: string;
-        filePath: string;
         fileType: import(".prisma/client").$Enums.FileType;
         processingStatus: import(".prisma/client").$Enums.ProcessingStatus;
         detectionStatus: import(".prisma/client").$Enums.DetectionStatus | null;
         overallConfidence: number | null;
         duration: number | null;
-        dimensions: string | null;
         fileSize: number;
-        originalFilePath: string | null;
+        uploadedAt: Date;
         annotatedFilePath: string | null;
-        mimeType: string | null;
-    }>;
+    }, never, import("@prisma/client/runtime/library").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
     handleDetectionResults(uploadId: string, detectionData: any): Promise<{
         detectionResults: {
             id: string;
@@ -42,19 +46,16 @@ export declare class PredictService {
         }[];
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         userId: string;
-        filePath: string;
         fileType: import(".prisma/client").$Enums.FileType;
         processingStatus: import(".prisma/client").$Enums.ProcessingStatus;
         detectionStatus: import(".prisma/client").$Enums.DetectionStatus | null;
         overallConfidence: number | null;
         duration: number | null;
-        dimensions: string | null;
         fileSize: number;
-        originalFilePath: string | null;
+        uploadedAt: Date;
         annotatedFilePath: string | null;
-        mimeType: string | null;
     }>;
+    predictVideo(file: MulterFile, userId: string): Promise<VideoPredictionResponse>;
 }
+export {};

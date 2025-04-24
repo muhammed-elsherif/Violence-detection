@@ -2,31 +2,40 @@ import { Controller, Post, Body, BadRequestException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/signup.dto';
 import { SignInDto } from './dto/signin.dto';
+import { ApiTags, ApiResponse } from '@nestjs/swagger';
+import { SignInResponseDto } from './dto/signin-res.dto';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('register')
-  async register(@Body() signUpDto: SignUpDto) {
-    const { username, email, password } = signUpDto;
+  @Post('signup')
+  @ApiResponse({ status: 201 })
+  async signUp(@Body() signUpDto: SignUpDto) {
     try {
-      await this.authService.signUp(username, email, password);
-      return { message: 'User registered successfully' };
+      await this.authService.signUp(
+        signUpDto.username,
+        signUpDto.email,
+        signUpDto.password,
+      );
     } catch (error) {
       throw new BadRequestException(error);
     }
   }
 
   @Post('signin')
-  async signIn(@Body() signInDto: SignInDto) {
-    const { email, password } = signInDto;
-    const existingUser = await this.authService.validateUser(email, password);
+  @ApiResponse({ status: 200, type: SignInResponseDto })
+  async signIn(@Body() signInDto: SignInDto): Promise<SignInResponseDto> {
+    const user = await this.authService.validateUser(
+      signInDto.email,
+      signInDto.password,
+    );
 
-    if (!existingUser) {
+    if (!user) {
       throw new BadRequestException('Invalid credentials');
     }
 
-    return this.authService.login(existingUser);
+    return this.authService.login(user);
   }
 }

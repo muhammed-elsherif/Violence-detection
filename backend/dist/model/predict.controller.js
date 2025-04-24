@@ -18,58 +18,49 @@ const platform_express_1 = require("@nestjs/platform-express");
 const axios_1 = require("@nestjs/axios");
 const FormData = require("form-data");
 const rxjs_1 = require("rxjs");
+const swagger_1 = require("@nestjs/swagger");
 const client_1 = require("@prisma/client");
 const predict_service_1 = require("./predict.service");
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 let PredictController = class PredictController {
     constructor(httpService, predictService, prisma) {
         this.httpService = httpService;
         this.predictService = predictService;
         this.prisma = prisma;
     }
-    async predictVideo(file, res, userId) {
-        const uploadRecord = await this.predictService.createUploadRecord(userId, file, 'VIDEO');
+    async predictVideo(file, req) {
+        const userId = req.user.sub;
         try {
-            const formData = new FormData();
-            formData.append('file', file.buffer, file.originalname);
-            const response = await (0, rxjs_1.firstValueFrom)(this.httpService.post('http://localhost:8000/predict_video', formData, {
-                headers: formData.getHeaders(),
-                responseType: 'arraybuffer',
-            }));
-            const detectionData = JSON.parse(response.headers['x-detection-results']);
-            const updatedUpload = await this.predictService.handleDetectionResults(uploadRecord.id, detectionData);
-            res.set({
-                'Content-Type': response.headers['content-type'],
-                'X-Upload-Id': updatedUpload.id,
-                'X-Detection-Status': updatedUpload.detectionStatus,
-                'Content-Disposition': response.headers['content-disposition'] ||
-                    `attachment; filename=annotated_${file.originalname}.mp4`,
-            });
-            res.send(response.data);
+            return await this.predictService.predictVideo(file, userId);
         }
-        catch (error) {
-            await this.prisma.upload.update({
-                where: { id: uploadRecord.id },
-                data: { processingStatus: 'FAILED' }
-            });
+        catch {
             throw new common_1.HttpException('Error during prediction', 500);
         }
     }
-    async predictImage(file, res) {
+    async getAnnotatedVideo(id) {
+        const upload = await this.prisma.uploadsHistory.findUnique({ where: { id } });
+        if (!upload || !upload.annotatedFilePath) {
+            throw new common_1.HttpException('Video not found', 404);
+        }
+        return { filePath: upload.annotatedFilePath };
+    }
+    async predictImage(file) {
         const formData = new FormData();
+        const apiUrl = process.env.PREDICT_IMAGE_API;
         formData.append('file', file.buffer, file.originalname);
         try {
-            const response = await (0, rxjs_1.firstValueFrom)(this.httpService.post('http://localhost:8000/predict_image', formData, {
+            const response = await (0, rxjs_1.firstValueFrom)(this.httpService.post(apiUrl, formData, {
                 headers: formData.getHeaders(),
                 responseType: 'arraybuffer',
             }));
-            res.set({
-                'Content-Type': response.headers['content-type'],
-                'Content-Disposition': response.headers['content-disposition'] ||
+            return {
+                contentType: response.headers['content-type'],
+                contentDisposition: response.headers['content-disposition'] ||
                     `attachment; filename=annotated_${file.originalname}`,
-            });
-            res.send(response.data);
+                data: response.data,
+            };
         }
-        catch (error) {
+        catch {
             throw new common_1.HttpException('Error during prediction', 500);
         }
     }
@@ -78,23 +69,37 @@ exports.PredictController = PredictController;
 __decorate([
     (0, common_1.Post)('video'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file')),
+    (0, swagger_1.ApiConsumes)('multipart/form-data'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.UploadedFile)()),
-    __param(1, (0, common_1.Res)()),
-    __param(2, (0, common_1.Body)('userId')),
+    __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object, String]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], PredictController.prototype, "predictVideo", null);
+__decorate([
+    (0, common_1.Get)('video/:id'),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Fetch the annotated video',
+        content: { 'video/mp4': { schema: { type: 'string', format: 'binary' } } },
+    }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Video not found' }),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], PredictController.prototype, "getAnnotatedVideo", null);
 __decorate([
     (0, common_1.Post)('image'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file')),
     __param(0, (0, common_1.UploadedFile)()),
-    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], PredictController.prototype, "predictImage", null);
 exports.PredictController = PredictController = __decorate([
+    (0, swagger_1.ApiTags)('Prediction'),
     (0, common_1.Controller)('predict'),
     __metadata("design:paramtypes", [axios_1.HttpService,
         predict_service_1.PredictService,

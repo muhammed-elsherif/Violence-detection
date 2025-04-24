@@ -12,15 +12,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PredictService = void 0;
 const common_1 = require("@nestjs/common");
 const client_1 = require("@prisma/client");
+const axios_1 = require("@nestjs/axios");
+const rxjs_1 = require("rxjs");
+const common_2 = require("@nestjs/common");
 let PredictService = class PredictService {
-    constructor(prisma) {
+    constructor(httpService, prisma) {
+        this.httpService = httpService;
         this.prisma = prisma;
     }
-    async createUploadRecord(userId, file, fileType) {
-        return this.prisma.upload.create({
+    createUploadRecord(userId, file, fileType) {
+        return this.prisma.uploadsHistory.create({
             data: {
                 userId,
-                filePath: '',
                 fileType,
                 fileSize: file.size,
                 processingStatus: 'PENDING',
@@ -34,7 +37,7 @@ let PredictService = class PredictService {
         });
     }
     async handleDetectionResults(uploadId, detectionData) {
-        return this.prisma.upload.update({
+        return this.prisma.uploadsHistory.update({
             where: { id: uploadId },
             data: {
                 processingStatus: 'COMPLETED',
@@ -56,10 +59,41 @@ let PredictService = class PredictService {
             }
         });
     }
+    async predictVideo(file, userId) {
+        const uploadRecord = await this.createUploadRecord(userId, file, 'VIDEO');
+        try {
+            const formData = new FormData();
+            const apiUrl = process.env.PREDICT_VIDEO_API;
+            formData.append('file', new Blob([file.buffer]), file.originalname);
+            const response = await (0, rxjs_1.firstValueFrom)(this.httpService.post(apiUrl, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                responseType: 'arraybuffer',
+            }));
+            const detectionData = JSON.parse(response.headers['x-detection-results']);
+            const updatedUpload = await this.handleDetectionResults(uploadRecord.id, detectionData);
+            return {
+                videoUrl: `/predict/video/${updatedUpload.id}`,
+                overallStatus: detectionData.overallStatus,
+                overallConfidence: detectionData.overallConfidence ?? 0,
+                violentFrames: detectionData.violentFrames ?? 0,
+                totalFrames: detectionData.totalFrames ?? 0,
+            };
+        }
+        catch (e) {
+            await this.prisma.uploadsHistory.update({
+                where: { id: uploadRecord.id },
+                data: { processingStatus: 'FAILED' },
+            });
+            throw new common_2.HttpException('Error during prediction', 500);
+        }
+    }
 };
 exports.PredictService = PredictService;
 exports.PredictService = PredictService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [client_1.PrismaClient])
+    __metadata("design:paramtypes", [axios_1.HttpService,
+        client_1.PrismaClient])
 ], PredictService);
 //# sourceMappingURL=predict.service.js.map

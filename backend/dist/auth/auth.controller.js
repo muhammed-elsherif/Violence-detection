@@ -17,45 +17,47 @@ const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
 const signup_dto_1 = require("./dto/signup.dto");
 const signin_dto_1 = require("./dto/signin.dto");
+const swagger_1 = require("@nestjs/swagger");
+const signin_res_dto_1 = require("./dto/signin-res.dto");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    async register(signUpDto) {
-        const { username, email, password } = signUpDto;
+    async signUp(signUpDto) {
         try {
-            await this.authService.signUp(username, email, password);
-            return { message: 'User registered successfully' };
+            await this.authService.signUp(signUpDto.username, signUpDto.email, signUpDto.password);
         }
         catch (error) {
             throw new common_1.BadRequestException(error);
         }
     }
     async signIn(signInDto) {
-        const { email, password } = signInDto;
-        const existingUser = await this.authService.validateUser(email, password);
-        if (!existingUser) {
+        const user = await this.authService.validateUser(signInDto.email, signInDto.password);
+        if (!user) {
             throw new common_1.BadRequestException('Invalid credentials');
         }
-        return this.authService.login(existingUser);
+        return this.authService.login(user);
     }
 };
 exports.AuthController = AuthController;
 __decorate([
-    (0, common_1.Post)('register'),
+    (0, common_1.Post)('signup'),
+    (0, swagger_1.ApiResponse)({ status: 201 }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [signup_dto_1.SignUpDto]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "register", null);
+], AuthController.prototype, "signUp", null);
 __decorate([
     (0, common_1.Post)('signin'),
+    (0, swagger_1.ApiResponse)({ status: 200, type: signin_res_dto_1.SignInResponseDto }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [signin_dto_1.SignInDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "signIn", null);
 exports.AuthController = AuthController = __decorate([
+    (0, swagger_1.ApiTags)('auth'),
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
 ], AuthController);

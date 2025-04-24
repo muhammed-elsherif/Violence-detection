@@ -1,5 +1,4 @@
 import { HttpService } from '@nestjs/axios';
-import { Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { PredictService } from './predict.service';
 export interface MulterFile {
@@ -10,11 +9,37 @@ export interface MulterFile {
     size: number;
     buffer: Buffer;
 }
+export interface VideoDetectionResult {
+    overallStatus: 'VIOLENCE_DETECTED' | 'NON_VIOLENCE';
+    overallConfidence: number;
+    violentFrames?: number;
+    totalFrames?: number;
+}
+interface VideoPredictionResponse {
+    videoUrl: string;
+    overallStatus: string;
+    overallConfidence: number;
+    violentFrames: number;
+    totalFrames: number;
+}
+interface ImagePredictionResponse {
+    contentType: string;
+    contentDisposition: string;
+    data: Buffer;
+}
 export declare class PredictController {
     private readonly httpService;
     private readonly predictService;
     private prisma;
     constructor(httpService: HttpService, predictService: PredictService, prisma: PrismaClient);
-    predictVideo(file: MulterFile, res: Response, userId: string): Promise<void>;
-    predictImage(file: MulterFile, res: Response): Promise<void>;
+    predictVideo(file: MulterFile, req: {
+        user: {
+            sub: string;
+        };
+    }): Promise<VideoPredictionResponse>;
+    getAnnotatedVideo(id: string): Promise<{
+        filePath: string;
+    }>;
+    predictImage(file: MulterFile): Promise<ImagePredictionResponse>;
 }
+export {};
