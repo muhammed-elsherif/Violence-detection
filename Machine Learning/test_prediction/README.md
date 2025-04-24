@@ -25,6 +25,7 @@ Sequence-based video classification using CNN+LSTM
 ├── test_samples/                # Folder for sample input videos
 │   ├── normal/
 │   └── violent/
+│   └── crash/
 ├── output/                      # Stores output annotated videos
 ├── README.md
 ```

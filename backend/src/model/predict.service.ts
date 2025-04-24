@@ -31,46 +31,76 @@ export class PredictService {
 //     return response.data;
 //   }
     createUploadRecord(userId: string, file: MulterFile, fileType: FileType) {
-        return this.prisma.uploadsHistory.create({
-            data: {
-                userId,
-                fileType,
-                fileSize: file.size,
-                processingStatus: 'PENDING',
-                detectionResults: {
-                    create: []
+        return this.prisma.$transaction(async (prisma) => {
+            // Create upload record
+            const upload = await prisma.uploadsHistory.create({
+                data: {
+                    userId,
+                    fileType,
+                    fileSize: file.size,
+                    processingStatus: 'PENDING',
+                    uploadedAt: new Date(),
                 }
-            },
-            include: {
-                detectionResults: true
-            }
             });
+
+            // Update or create UserUploadStats
+            await prisma.userUploadStats.upsert({
+                where: { userId },
+                update: {
+                    totalUploads: { increment: 1 },
+                    lastUploadDate: new Date(),
+                },
+                create: {
+                    userId,
+                    totalUploads: 1,
+                    lastUploadDate: new Date(),
+                }
+            });
+
+            return upload;
+        });
     }
 
     async handleDetectionResults(
         uploadId: string, 
         detectionData: any
     ) {
-        return this.prisma.uploadsHistory.update({
-        where: { id: uploadId },
-        data: {
-            processingStatus: 'COMPLETED',
-            detectionStatus: detectionData.overallStatus,
-            overallConfidence: detectionData.overallConfidence,
-            detectionResults: {
-                createMany: {
-                    data: detectionData.results.map(result => ({
-                    confidence: result.confidence,
-                    label: result.label,
-                    severity: result.severity,
-                    timestamp: result.timestamp
-                    }))
-                }
+        return this.prisma.$transaction(async (prisma) => {
+            // Get the upload record to access userId
+            const upload = await prisma.uploadsHistory.findUnique({
+                where: { id: uploadId },
+                select: { userId: true, duration: true }
+            });
+
+            if (!upload) {
+                throw new Error('Upload record not found');
             }
-        },
-        include: {
-            detectionResults: true
-        }
+
+            // Update upload record
+            const updatedUpload = await prisma.uploadsHistory.update({
+                where: { id: uploadId },
+                data: {
+                    processingStatus: 'COMPLETED',
+                    detectionStatus: detectionData.overallStatus,
+                    overallConfidence: detectionData.overallConfidence,
+                },
+                include: {
+                    detectionResults: true
+                }
+            });
+
+            // Update UserUploadStats
+            await prisma.userUploadStats.update({
+                where: { userId: upload.userId },
+                data: {
+                    lastDetectionStatus: detectionData.overallStatus,
+                    averageDuration: {
+                        set: upload.duration || 0
+                    }
+                }
+            });
+
+            return updatedUpload;
         });
     }
 
@@ -112,12 +142,16 @@ export class PredictService {
             totalFrames: detectionData.totalFrames ?? 0,
           };
         } catch (e) {
-          await this.prisma.uploadsHistory.update({
-            where: { id: uploadRecord.id },
-            data: { processingStatus: 'FAILED' },
-          });
-    
-          throw new HttpException('Error during prediction', 500);
+            await this.prisma.uploadsHistory.update({
+                where: { id: uploadRecord.id },
+                data: { processingStatus: 'FAILED' },
+            });
+
+            console.error('Prediction error:', e);
+            throw new HttpException(
+                e.message || 'Error during prediction',
+                e.status || 500
+            );
         }
       }    
 }

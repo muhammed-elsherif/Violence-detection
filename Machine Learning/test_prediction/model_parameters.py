@@ -3,16 +3,18 @@ import numpy as np
 from ultralytics import YOLO
 from tensorflow.keras.models import load_model
 from tensorflow.keras.applications.mobilenet import preprocess_input
-from config import NUM_FRAMES, FRAME_SIZE
+from config import NUM_FRAMES, FRAME_SIZE, GUN_DETECTION_ENABLED, YOLO_ENABLED
 
-def selected_model(YOLO_ENABLED=False):
+def selected_model():
     # Load all trained models
     if YOLO_ENABLED:
         # model_path = "../loaded_models/yolo_best.pt"
-        # model_path = "../loaded_models/gun_best.pt" # working
         model_path = "../loaded_models/best.pt"
         model_path = "../loaded_models/vil_best.pt"
-        # model_path = "../loaded_models/violence_weights.pt" # best
+        model_path = "../loaded_models/violence_weights.pt" # best
+        model = YOLO(model_path)
+    elif GUN_DETECTION_ENABLED:
+        model_path = "../loaded_models/gun_best.pt" # working
         model = YOLO(model_path)
     else:
         # model_name = '../loaded_models/inceptionV3_violence_detection_model.h5'

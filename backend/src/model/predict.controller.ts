@@ -13,7 +13,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { HttpService } from '@nestjs/axios';
 import * as FormData from 'form-data';
 import { firstValueFrom } from 'rxjs';
-import { ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiResponse, ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { PrismaClient } from '@prisma/client';
 import { PredictService } from './predict.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -62,6 +62,95 @@ export class PredictController {
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: 'Upload and analyze video for violence detection',
+    description: 'Upload a video file to detect violence. The video will be processed and analyzed for violent content.',
+  })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+          description: 'Video file to analyze (supported formats: mp4, avi, mov)',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Video successfully analyzed',
+    schema: {
+      type: 'object',
+      properties: {
+        videoUrl: {
+          type: 'string',
+          description: 'URL to access the processed video',
+          example: '/predict/video/123e4567-e89b-12d3-a456-426614174000',
+        },
+        overallStatus: {
+          type: 'string',
+          enum: ['VIOLENCE_DETECTED', 'NON_VIOLENCE'],
+          description: 'Overall detection status of the video',
+          example: 'NON_VIOLENCE',
+        },
+        overallConfidence: {
+          type: 'number',
+          description: 'Confidence score of the detection (0-1)',
+          example: 0.95,
+        },
+        violentFrames: {
+          type: 'number',
+          description: 'Number of frames detected as violent',
+          example: 0,
+        },
+        totalFrames: {
+          type: 'number',
+          description: 'Total number of frames in the video',
+          example: 300,
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid file format',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: {
+          type: 'number',
+          example: 400,
+        },
+        message: {
+          type: 'string',
+          example: 'Unsupported video format',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - JWT token required',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error during prediction',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: {
+          type: 'number',
+          example: 500,
+        },
+        message: {
+          type: 'string',
+          example: 'Error during prediction',
+        },
+      },
+    },
+  })
   async predictVideo(
     @UploadedFile() file: MulterFile,
     @Request() req: { user: { sub: string } },
@@ -70,8 +159,11 @@ export class PredictController {
 
     try {
       return await this.predictService.predictVideo(file, userId);
-    } catch {
-      throw new HttpException('Error during prediction', 500);
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Error during prediction',
+        error.status || 500
+      );
     }
   }
 

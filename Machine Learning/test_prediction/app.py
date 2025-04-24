@@ -13,24 +13,23 @@ app = FastAPI()
 
 # Load the trained model at startup (no changes needed)
 model = selected_model()
-# model_name = os.path.splitext(model)[0]  # removes .h5
 
 def predict_and_annotate_video(video_path: str, model) -> str:
     cap = cv2.VideoCapture(video_path)
     fps = int(cap.get(cv2.CAP_PROP_FPS))
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 
     # Ensure the output folder exists
     os.makedirs(VIDEO_OUTPUT_DIR, exist_ok=True)
-    output_filename = os.path.join(VIDEO_OUTPUT_DIR, f"{model_name}_{uuid.uuid4().hex}.mp4")
+    output_filename = os.path.join(VIDEO_OUTPUT_DIR, f"{model}_{uuid.uuid4().hex}.mp4")
 
     out = cv2.VideoWriter(output_filename, fourcc, fps, (width, height))
 
     frames = []
     violent_frames = 0
-    total_frames = 0
 
     ### predict by video
     frames = process_video(video_path) # shape: (FRAMES, H, W, 3)
@@ -43,18 +42,6 @@ def predict_and_annotate_video(video_path: str, model) -> str:
         ret, frame = cap.read()
         if not ret:
             break
-
-        # Preprocess frame
-        # total_frames += 1
-        # resized_frame = cv2.resize(frame, FRAME_SIZE) / 255.0
-        # frames.append(resized_frame)
-
-        # Once we have enough frames, run prediction
-        # if len(frames) == NUM_FRAMES:
-        #     input_frames = np.expand_dims(np.array(frames), axis=0)
-        #     prediction = model.predict(input_frames)
-        #     predicted_label = np.argmax(prediction)
-        #     confidence = prediction[0][predicted_label]
 
         # confidence_scores.append(confidence)
         if predicted_label == 1:  # Assuming label 1 = Violence
@@ -131,9 +118,8 @@ def predict_and_annotate_image(image_path: str, model) -> str:
             2,
         )
 
-    output_dir = "output"
-    os.makedirs(output_dir, exist_ok=True)
-    output_filename = os.path.join(output_dir, f"{model_name}_{uuid.uuid4().hex}.jpg")
+    os.makedirs(VIDEO_OUTPUT_DIR, exist_ok=True)
+    output_filename = os.path.join(VIDEO_OUTPUT_DIR, f"{model}_{uuid.uuid4().hex}.jpg")
     cv2.imwrite(output_filename, img)
     return output_filename, detection_results
 
