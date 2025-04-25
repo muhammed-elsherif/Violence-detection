@@ -5,7 +5,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 
 @Component({
@@ -16,6 +16,7 @@ import { AuthService } from '../../core/services/auth.service';
 })
 export class SignupComponent {
   private readonly _AuthService = inject(AuthService);
+  private readonly Router = inject(Router);
 
   signupForm: FormGroup = new FormGroup({
     role: new FormControl('Admin'),
@@ -34,15 +35,17 @@ export class SignupComponent {
     if (this.signupForm.valid) {
       this._AuthService.setSignupForm(this.signupForm.value).subscribe({
         next: (res) => {
-          // action
-          console.log(res);
+          const { role } = this.signupForm.value;
+          if (role === 'User') {
+            this.Router.navigate(['/user']);
+          } else if (role === 'Admin') {
+            this.Router.navigate(['/admin']);
+          }
         },
         error: (err) => {
-          // display error message
-          console.log(err);
+          console.error('Signup failed:', err);
         },
       });
-      // console.log(this.loginForm.value);
     }
   }
 }

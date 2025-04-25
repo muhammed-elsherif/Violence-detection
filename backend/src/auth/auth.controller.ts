@@ -11,10 +11,10 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('signup')
-  @ApiResponse({ status: 201 })
+  @ApiResponse({ status: 201, type: SignInResponseDto })
   async signUp(@Body() signUpDto: SignUpDto) {
     try {
-      await this.authService.signUp(
+      return await this.authService.signUp(
         signUpDto.username,
         signUpDto.email,
         signUpDto.password,
