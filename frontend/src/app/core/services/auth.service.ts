@@ -27,14 +27,16 @@ export class AuthService {
     );
   }
 
-  setSignupForm(data: object) {
+  setSignupForm(data: object): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
     return this._HttpClient.post('http://localhost:4000/auth/signup', data, {
       headers,
     }).pipe(
       tap((response: any) => {
-        this.setTokens(response.access_token, response.refresh_token);
+        if (response.access_token && response.refresh_token) {
+          this.setTokens(response.access_token, response.refresh_token);
+        }
       })
     );
   }

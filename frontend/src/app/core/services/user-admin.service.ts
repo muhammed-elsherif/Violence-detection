@@ -7,10 +7,10 @@ import { Observable } from "rxjs";
 })
 export class UserAdminService {
   constructor(private _HttpClient: HttpClient) {}
+
   getUserStats(): Observable<any> {
     return this._HttpClient.get(
       "http://localhost:4000/user-stats/upload-stats"
     );
-    /*aaaa */
   }
 }

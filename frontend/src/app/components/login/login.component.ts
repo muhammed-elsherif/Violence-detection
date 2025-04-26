@@ -8,17 +8,14 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 
-
 @Component({
   selector: 'app-login',
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
-
 export class LoginComponent {
   private readonly _AuthService = inject(AuthService);
-
   private readonly Router = inject(Router);
 
   loginForm: FormGroup = new FormGroup({
@@ -34,18 +31,23 @@ export class LoginComponent {
   });
 
   onSubmit(): void {
-
     if (this.loginForm.valid) {
-      const { role } = this.loginForm.value;
-      if (role === 'User') {
-      // Navigate to user layout
-      this.Router.navigate(['/user']);
-      console.log('Navigating to user layout');
-      } else if (role === 'Admin') {
-      // Navigate to admin layout
-      this.Router.navigate(['/admin']);
-      console.log('Navigating to admin layout');
-      }
+      this._AuthService.setLoginForm(this.loginForm.value).subscribe({
+        next: (response) => {
+          console.log('Signup successful:', response);
+          const { role } = this.loginForm.value;
+          
+          if (role === 'User') {
+            this.Router.navigate(['/user']);
+          } else if (role === 'Admin') {
+            this.Router.navigate(['/admin']);
+          }
+        },
+        error: (error) => {
+          console.error('Signup failed:', error);
+          // Handle error (show error message to user)
+        }
+      });
     }
   }
 }
