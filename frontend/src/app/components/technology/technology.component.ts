@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { UploadService } from '../../core/services/upload.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-technology',
+  imports: [RouterLink],
   templateUrl: './technology.component.html',
-  styleUrls: ['./technology.component.scss'], // Fixed property name here
+  styleUrls: ['./technology.component.scss'],
 })
 export class TechnologyComponent {
   selectedFile: File | null = null;

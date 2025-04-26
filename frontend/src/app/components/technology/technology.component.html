@@ -1,48 +1,96 @@
 <div class="container mt-2">
 
-  <div class="d-flex flex-column justify-content-center align-items-center">
-    <input type="file" (change)="onFileSelected($event)" />
-    @if(errorMessage) {
-    <p style="color: red;">{{ errorMessage }}</p>
-    }
-    <button (click)="upload()" [disabled]="!selectedFile">Upload</button>
+  <div class="d-flex flex-column justify-content-center align-items-center pt-4 mb-4 mt-3">
+    <ul class="nav nav-pills mb-3 custom-tabs" id="pills-tab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home"
+          type="button" role="tab" aria-controls="pills-home" aria-selected="true">Violence detection</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile"
+          type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Gun detection</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact"
+          type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Object detection</button>
+      </li>
+    </ul>
 
-
-      @for (file of selectedFiles; track $index) {
-      <div class="my-2">
-          <p>{{ file.name }}</p>
-          @if (file.type.startsWith('image/')) {
-          <img [src]="getFileUrl(file)" width="500">
+    <div class="tab-content" id="pills-tabContent">
+      <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab"
+        tabindex="0">
+        <div class="d-flex flex-column justify-content-center align-items-center">
+          <img src="../../../assets/images/upload-here.jpeg" alt="upload image" class="w-50 mb-3">
+          <input type="file" (change)="onFileSelected($event)" />
+          @if(errorMessage) {
+          <p style="color: red;">{{ errorMessage }}</p>
           }
-          @if (file.type.startsWith('video/')) {
-          <video [src]="getFileUrl(file)" width="500" controls></video>
+          <button (click)="upload()" [disabled]="!selectedFile">Upload</button>
+
+
+          @for (file of selectedFiles; track $index) {
+          <div class="my-2">
+            <p>{{ file.name }}</p>
+            @if (file.type.startsWith('image/')) {
+            <img [src]="getFileUrl(file)" width="500">
+            }
+            @if (file.type.startsWith('video/')) {
+            <video [src]="getFileUrl(file)" width="500" controls></video>
+            }
+
+          </div>
           }
+        </div>
 
-      </div>
-      }
-  </div>
+        @if(uploadProgress) {
+        <p>Progress: {{ uploadProgress }}%</p>
+        }
 
-    @if(uploadProgress) {
-    <p>Progress: {{ uploadProgress }}%</p>
-    }
-
-    @if (errorMessage) {
+        @if (errorMessage) {
         <div>
           <p style="color: red;">{{ errorMessage }}</p>
         </div>
-      }
-      
-      @if (resultUrl) {
+        }
+
+        @if (resultUrl) {
         <div>
           @switch (resultType) {
-            @case ('image') {
-              <img [src]="resultUrl" alt="Annotated image" />
-            }
-            @case ('video') {
-              <video [src]="resultUrl" controls></video>
-            }
+          @case ('image') {
+          <img [src]="resultUrl" alt="Annotated image" />
+          }
+          @case ('video') {
+          <video [src]="resultUrl" controls></video>
+          }
           }
         </div>
-      }
+        }
+
+        <div class="d-flex justify-content-center align-items-center m-3 gap-4">
+          <button type="button" class="btn btn-info">Print summary</button>
+          <button type="button" class="btn btn-info">Print report</button>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">
+        <div class="d-flex justify-content-center align-items-center" style="height: 300px;">
+          <div class="d-flex flex-column justify-content-center align-items-center">
+            <i class="fa-solid fa-lock fa-2x mb-2"></i>
+            <h4 class="mb-3">Login to use this model</h4>
+            <button type="button" class="btn btn-primary" routerLink="/login">Login</button>
+          </div>
+        </div>
+
+      </div>
+      <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab" tabindex="0">
+        <div class="d-flex justify-content-center align-items-center" style="height: 300px;">
+          <div class="d-flex flex-column justify-content-center align-items-center">
+            <i class="fa-solid fa-lock fa-2x mb-2"></i>
+            <h4 class="mb-3">Login to use this model</h4>
+            <button type="button" class="btn btn-primary" routerLink="/login">Login</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
 </div>
