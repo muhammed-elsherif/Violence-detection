@@ -1,1 +1,15 @@
-<p>users works!</p>
+@if (userStats.length > 0) {
+  @for (stat of userStats; track stat.user.email) {
+    <div>
+      <p><strong>Username:</strong> {{ stat.user.username }}</p>
+      <p><strong>Email:</strong> {{ stat.user.email }}</p>
+      <p><strong>Total Uploads:</strong> {{ stat.totalUploads }}</p>
+      <p><strong>Average Duration:</strong> {{ stat.averageDuration }}</p>
+      <p><strong>Last Detection Status:</strong> {{ stat.lastDetectionStatus }}</p>
+      <p><strong>Last Upload Date:</strong> {{ stat.lastUploadDate | date: 'short' }}</p>
+      <hr />
+    </div>
+  }
+} @else {  
+  <p>No stats found.</p>
+}

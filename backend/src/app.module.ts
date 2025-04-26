@@ -10,9 +10,14 @@ import { PrismaClient } from '@prisma/client';
 import { PredictModule } from './model/predict.module';
 import { UserStatsModule } from './user-stats/user-stats.module';
 
+import { PrismaModule } from '../prisma/prisma.module';
+
+import { DashboardController } from './dashboard/dashboard.controller';
+import { DashboardService } from './dashboard/dashboard.service';
+
 @Module({
-  imports: [AuthModule, UserModule, PredictModule, UserStatsModule],
-  controllers: [AppController],
-  providers: [AppService, AuthService, UserService, PrismaClient],
+  imports: [AuthModule, UserModule, PredictModule, UserStatsModule,PrismaModule],
+  controllers: [AppController,DashboardController],
+  providers: [AppService, AuthService, UserService, PrismaClient,DashboardService],
 })
 export class AppModule {}
