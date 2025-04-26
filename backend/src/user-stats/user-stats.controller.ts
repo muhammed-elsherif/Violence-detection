@@ -40,24 +40,4 @@ export class UserStatsController {
   async getUserUploadStats() {
     return this.userStatsService.getUserUploadStats();
   }
-
-  @Get('users/count')
-  @ApiOperation({
-    summary: 'Get total number of users',
-    description: 'Retrieves the total number of users in the system.',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'User count retrieved successfully',
-    schema: {
-      type: 'object',
-      properties: {
-        count: { type: 'number' }
-      }
-    }
-  })
-  async getLoggedInUsersCount() {
-    const count = await this.userStatsService.getLoggedInUsersCount();
-    return { count };
-  }
 }

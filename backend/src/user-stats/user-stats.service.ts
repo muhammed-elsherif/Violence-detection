@@ -17,8 +17,4 @@ export class UserStatsService {
       }
     });
   }
-
-  async getLoggedInUsersCount() {
-    return this.prisma.user.count();
-  }
 }
