@@ -1,15 +1,43 @@
-@if (userStats.length > 0) {
-  @for (stat of userStats; track stat.user.email) {
-    <div>
-      <p><strong>Username:</strong> {{ stat.user.username }}</p>
-      <p><strong>Email:</strong> {{ stat.user.email }}</p>
-      <p><strong>Total Uploads:</strong> {{ stat.totalUploads }}</p>
-      <p><strong>Average Duration:</strong> {{ stat.averageDuration }}</p>
-      <p><strong>Last Detection Status:</strong> {{ stat.lastDetectionStatus }}</p>
-      <p><strong>Last Upload Date:</strong> {{ stat.lastUploadDate | date: 'short' }}</p>
-      <hr />
-    </div>
+<div class="h-100 p-4">
+  <h1>User Statistics</h1>
+  <p>Here you can find the list of users and their statistics.</p>
+
+  <!-- Check if userStats is not empty -->
+  @if (userStats.length > 0) {
+  <h1>Users</h1>
+  <p>Here you can find the list of users and their statistics.</p>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Total Uploads</th>
+          <th>Average Duration</th>
+          <th>Last Detection Status</th>
+          <th>Last Upload Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (stat of userStats; track stat.user.email) {
+        <tr>
+          <td>{{ stat.user.username }}</td>
+          <td>{{ stat.user.email }}</td>
+          <td>{{ stat.totalUploads }}</td>
+          <td>{{ stat.averageDuration }}</td>
+          <td>{{ stat.lastDetectionStatus }}</td>
+          <td>{{ stat.lastUploadDate | date : "short" }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  } @else {
+  <div class="d-flex justify-content-center align-items-center">
+    <p class="w-100 alert alert-danger">
+      No stats found.<i class="fas fa-exclamation-circle text-danger"></i>
+    </p>
+  </div>
   }
-} @else {  
-  <p>No stats found.</p>
-}
+</div>
