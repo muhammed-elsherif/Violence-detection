@@ -8,6 +8,10 @@ import * as bcrypt from 'bcrypt';
 export class DashboardService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async getLoggedInUsersCount() {
+    return this.prisma.user.count();
+  }
+
   async getAllUsers(): Promise<UserDto[]> {
     const users = await this.prisma.user.findMany({
       select: {

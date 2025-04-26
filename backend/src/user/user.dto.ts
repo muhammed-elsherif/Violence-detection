@@ -17,9 +17,16 @@ export class UserDto {
 }
 
 export class CreateUserDto {
-  @IsString()      username: string;
-  @IsEmail()       email: string;
-  @IsString()      password: string;
-  @IsEnum(UserRole) @IsOptional()
-                   role?: UserRole;
+  @IsString()      
+  username: string;
+  
+  @IsEmail()       
+  email: string;
+
+  @IsString()      
+  password: string;
+
+  @IsEnum(UserRole) 
+  @IsOptional()
+  role?: UserRole;
 }

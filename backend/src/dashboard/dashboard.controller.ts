@@ -1,14 +1,38 @@
-import { Controller, Get, Post, Body, Delete, Param, Patch, UsePipes, ValidationPipe, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Delete, Param, Patch, UsePipes, ValidationPipe, HttpCode, UseGuards } from '@nestjs/common';
 import { UserDto, CreateUserDto } from '../user/user.dto';
 import { DashboardService } from './dashboard.service';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('User Statistics')
 @Controller('dashboard')
+@UseGuards(JwtAuthGuard)
 export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) {}
 
   @Get('users')
   getAllUsers(): Promise<UserDto[]> {
     return this.dashboardService.getAllUsers();
+  }
+
+  @Get('users/count')
+  @ApiOperation({
+    summary: 'Get total number of users',
+    description: 'Retrieves the total number of users in the system.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'User count retrieved successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        count: { type: 'number' }
+      }
+    }
+  })
+  async getLoggedInUsersCount() {
+    const count = await this.dashboardService.getLoggedInUsersCount();
+    return { count };
   }
 
   @Post('users')
