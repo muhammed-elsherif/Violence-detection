@@ -1,8 +1,10 @@
 import cv2
+import random
 import numpy as np
 from ultralytics import YOLO
 from tensorflow.keras.models import load_model
 from tensorflow.keras.applications.mobilenet import preprocess_input
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from config import NUM_FRAMES, FRAME_SIZE, GUN_DETECTION_ENABLED, YOLO_ENABLED
 
 def selected_model():
@@ -37,7 +39,7 @@ def selected_model():
         # model_name = '../loaded_models/violence_detection_model (1).h5' # bad
         # model_name = '../loaded_models/violence_detection_model_latest2.h5' # bad
         # model_name = '../loaded_models/violence_detection_model_layers_and_augmentation.h5' # ygy mno 50%
-        model_name = '../loaded_models/violence_detection_model_layers2_and_augmentation.h5' # better in non violence ::
+        # model_name = '../loaded_models/violence_detection_model_layers2_and_augmentation.h5' # better in non violence ::
         # model_name = '../loaded_models/mobileNetV2_violence_detection_model_preprocess112.h5'
         # model_name = '../loaded_models/violence_detection_model-aug-dense.h5'
         # model_name = '../loaded_models/violence_detection_model_layers3_and_augmentation.h5' # not bad not good
@@ -50,6 +52,8 @@ def selected_model():
         # model_name = '../loaded_models/violence_detection_model-latest-final-5.h5' # 50% bad
         # model_name = '../loaded_models/violence_detection_model-latest-final-isa.h5' # bad
         # model_name = '../loaded_models/violence_detection_model-latest-final-adam.h5'
+        model_name = '../loaded_models/violence_detection_model-aug.h5'
+        model_name = '../loaded_models/violence_detection_model-aug22.h5'
         # model_name = '../loaded_models/mobileNet-latest-final.h5' # bad
         # model_name = '../loaded_models/mobileNet-latest-LRCN-2.h5' # not bad
         # model_name = '../loaded_models/mobileNet-latest-LRCN-3.h5' # not good
@@ -59,6 +63,15 @@ def selected_model():
         model = load_model(model_name, compile=False)
 
     return model
+
+# Data augmentation
+augmentor = ImageDataGenerator(
+    rotation_range=10,
+    width_shift_range=0.1,
+    height_shift_range=0.1,
+    brightness_range=[0.8, 1.2],
+    horizontal_flip=True
+)
 
 def process_video(video_path, frame_count=NUM_FRAMES, frame_size=FRAME_SIZE):
     """
@@ -72,15 +85,21 @@ def process_video(video_path, frame_count=NUM_FRAMES, frame_size=FRAME_SIZE):
     frames = []
     extracted_frames = 0
 
-    while cap.isOpened() and extracted_frames < frame_count:
-        cap.set(cv2.CAP_PROP_POS_FRAMES, extracted_frames * frame_skip)
+    while cap.isOpened() and len(frames) < frame_count:
         success, frame = cap.read()
         if not success:
             break
-        frame = cv2.resize(frame, frame_size) / 255.0
+        # cap.set(cv2.CAP_PROP_POS_FRAMES, extracted_frames * frame_skip)
+        # frame = cv2.resize(frame, frame_size) / 255.0
+        if extracted_frames % frame_skip == 0:
+            frame = cv2.resize(frame, frame_size) / 255.0
+        # Optional augmentation
+            # if random.random() < 0.5:
+            #     frame = np.expand_dims(frame, axis=0)
+            #     frame = next(augmentor.flow(frame, batch_size=1))[0]
         # frame = cv2.resize(frame, frame_size)
         # frame = preprocess_input(frame)  # Normalize for MobileNet
-        frames.append(frame)
+            frames.append(frame)
         extracted_frames += 1
 
     cap.release()
