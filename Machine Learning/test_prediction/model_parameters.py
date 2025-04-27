@@ -24,7 +24,6 @@ def selected_model():
         # model_name = '../loaded_models/inceptionV3_violence_detection_model_with99.h5'
         # model_name = '../loaded_models/inceptionV3_violence_detection_model_with99-second.h5'
         # model_name = '../loaded_models/inceptionV3_violence_detection_model_with99_with_augmentation_and_30layers.h5'
-        # model_name = '../loaded_models/inceptionV3_violence_detection_model_with99_with_augmentation_and_30layers.h5'
         # model_name = '../loaded_models/model_3d_violence_detection_model.h5'
         # model_name = '../loaded_models/modelnew.h5' # body
         # model_name = '../loaded_models/violence_detection_model.h5'
@@ -39,7 +38,7 @@ def selected_model():
         # model_name = '../loaded_models/violence_detection_model (1).h5' # bad
         # model_name = '../loaded_models/violence_detection_model_latest2.h5' # bad
         # model_name = '../loaded_models/violence_detection_model_layers_and_augmentation.h5' # ygy mno 50%
-        # model_name = '../loaded_models/violence_detection_model_layers2_and_augmentation.h5' # better in non violence ::
+        model_name = '../loaded_models/violence_detection_model_layers2_and_augmentation.h5' # better in non violence ::
         # model_name = '../loaded_models/mobileNetV2_violence_detection_model_preprocess112.h5'
         # model_name = '../loaded_models/violence_detection_model-aug-dense.h5'
         # model_name = '../loaded_models/violence_detection_model_layers3_and_augmentation.h5' # not bad not good
@@ -52,8 +51,11 @@ def selected_model():
         # model_name = '../loaded_models/violence_detection_model-latest-final-5.h5' # 50% bad
         # model_name = '../loaded_models/violence_detection_model-latest-final-isa.h5' # bad
         # model_name = '../loaded_models/violence_detection_model-latest-final-adam.h5'
-        model_name = '../loaded_models/violence_detection_model-aug.h5'
-        model_name = '../loaded_models/violence_detection_model-aug22.h5'
+        # model_name = '../loaded_models/violence_detection_model-aug.h5'
+        # model_name = '../loaded_models/violence_detection_model-aug22.h5'
+        model_name = '../loaded_models/violence_detection_model-95%.h5'
+        model_name = '../loaded_models/violence_detection_model-95-gl%.h5'
+        # model_name = '../loaded_models/violence_detection_model-96%.h5'
         # model_name = '../loaded_models/mobileNet-latest-final.h5' # bad
         # model_name = '../loaded_models/mobileNet-latest-LRCN-2.h5' # not bad
         # model_name = '../loaded_models/mobileNet-latest-LRCN-3.h5' # not good
@@ -91,15 +93,16 @@ def process_video(video_path, frame_count=NUM_FRAMES, frame_size=FRAME_SIZE):
             break
         # cap.set(cv2.CAP_PROP_POS_FRAMES, extracted_frames * frame_skip)
         # frame = cv2.resize(frame, frame_size) / 255.0
+        # frames.append(frame)
         if extracted_frames % frame_skip == 0:
             frame = cv2.resize(frame, frame_size) / 255.0
-        # Optional augmentation
-            # if random.random() < 0.5:
-            #     frame = np.expand_dims(frame, axis=0)
-            #     frame = next(augmentor.flow(frame, batch_size=1))[0]
+            frames.append(frame)
+        #     # Optional augmentation
+        #     if random.random() < 0.5:
+        #         frame = np.expand_dims(frame, axis=0)
+        #         frame = next(augmentor.flow(frame, batch_size=1))[0]
         # frame = cv2.resize(frame, frame_size)
         # frame = preprocess_input(frame)  # Normalize for MobileNet
-            frames.append(frame)
         extracted_frames += 1
 
     cap.release()
@@ -107,5 +110,5 @@ def process_video(video_path, frame_count=NUM_FRAMES, frame_size=FRAME_SIZE):
     # If fewer frames than expected, repeat the last frame
     while len(frames) < frame_count:
         frames.append(frames[-1])
-        
-    return np.asarray(frames)
+
+    return np.array(frames)
