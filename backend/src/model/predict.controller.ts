@@ -1,22 +1,22 @@
+import { HttpService } from '@nestjs/axios';
 import {
   Controller,
-  Post,
-  UploadedFile,
-  UseInterceptors,
-  HttpException,
   Get,
+  HttpException,
   Param,
-  UseGuards,
+  Post,
   Request,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { HttpService } from '@nestjs/axios';
+import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { PrismaClient } from '@prisma/client';
 import * as FormData from 'form-data';
 import { firstValueFrom } from 'rxjs';
-import { ApiConsumes, ApiResponse, ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
-import { PrismaClient } from '@prisma/client';
-import { PredictService } from './predict.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { PredictService } from './predict.service';
 
 // Define a custom interface for the uploaded file.
 export interface MulterFile {
