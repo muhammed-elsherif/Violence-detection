@@ -4,10 +4,12 @@ import uuid
 import shutil
 import cv2
 import numpy as np
+import streamlit as st
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.responses import FileResponse
+from object_detection.yolo import yolo_detect, LABELS as LABELS_YOLO
 from model_parameters import selected_model, process_video
-from config import NUM_FRAMES, FRAME_SIZE, VIDEO_OUTPUT_DIR
+from config import CONFIDENCE_THRESHOLD, VIDEO_OUTPUT_DIR, FRAME_SIZE, NUM_FRAMES
 
 app = FastAPI()
 
@@ -82,6 +84,91 @@ def predict_and_annotate_video(video_path: str, model) -> str:
         "totalFrames": total_frames,
     }
     return output_filename, detection_results
+
+
+def predict_and_annotate_video_object(video_path: str) -> str:
+    cap = cv2.VideoCapture(video_path)
+    fps = int(cap.get(cv2.CAP_PROP_FPS))
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+
+    # Ensure the output folder exists
+    os.makedirs(VIDEO_OUTPUT_DIR, exist_ok=True)
+    output_filename = os.path.join(VIDEO_OUTPUT_DIR, "yolo_", f"{uuid.uuid4().hex}.mp4")
+
+    out = cv2.VideoWriter(output_filename, fourcc, fps, (width, height))
+
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            break
+
+        annotated_frame, class_ids, indices = yolo_detect(frame, CONFIDENCE_THRESHOLD)
+        # results = model.predict(processed_frame, conf=0.6)
+        # annotated_frame = results[0].plot()
+        out.write(annotated_frame) # Gun / Object
+
+    cap.release()
+    out.release()
+
+    detection_results = {
+        "unique objects": set(LABELS_YOLO[class_ids[i]] for i in indices.flatten()),
+        "totalFrames": total_frames,
+    }
+    return output_filename, detection_results
+
+def predict_and_annotate_video_gun(video_path: str, model) -> str:
+    cap = cv2.VideoCapture(video_path)
+    fps = int(cap.get(cv2.CAP_PROP_FPS))
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+
+    # Ensure the output folder exists
+    os.makedirs(VIDEO_OUTPUT_DIR, exist_ok=True)
+    output_filename = os.path.join(VIDEO_OUTPUT_DIR, f"{model}_{uuid.uuid4().hex}.mp4")
+
+    out = cv2.VideoWriter(output_filename, fourcc, fps, (width, height))
+
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            break
+
+        results = model.predict(frame, conf=CONFIDENCE_THRESHOLD)
+        annotated_frame = results[0].plot()
+        out.write(annotated_frame) # Gun
+
+    cap.release()
+    out.release()
+
+    detection_results = {
+        "gunCount": 0,
+        "totalFrames": total_frames,
+    }
+    return output_filename, detection_results
+
+def predict_and_annotate_stream():
+    cap = cv2.VideoCapture(0)
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 112)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 112)
+
+    st.title("Real-Time Violence Detection")
+    stframe = st.empty()
+    while cap.isOpened():
+        success, frame = cap.read()
+        if not success:
+            st.error("Error: Failed to capture frame")
+            break
+
+        processed_frame, _, _ = yolo_detect(frame, CONFIDENCE_THRESHOLD)
+        # Show the frame with predictions
+        stframe.image(processed_frame, channels="BGR")
+
+    cap.release()
 
 def predict_and_annotate_image(image_path: str, model) -> str:
     img = cv2.imread(image_path)
@@ -167,3 +254,85 @@ async def predict_image(file: UploadFile = File(...)):
 
     os.remove(temp_image_path)
     return FileResponse(output_image, media_type="image/jpeg", filename=os.path.basename(output_image))
+
+@app.post("/object_detection")
+async def predict_object(file: UploadFile = File(...)):
+    if not file.filename.lower().endswith(('.mp4', '.avi', '.mov')):
+        raise HTTPException(status_code=400, detail="Unsupported video format")
+
+    # Save the uploaded video temporarily
+    temp_video_path = f"temp_{uuid.uuid4().hex}_{file.filename}"
+    with open(temp_video_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    try:
+        output_video, detection_results = predict_and_annotate_video_object(temp_video_path)
+        response = FileResponse(
+            output_video,
+            media_type="video/mp4",
+            filename=os.path.basename(output_video),
+            headers={
+                "X-Detection-Results": json.dumps(detection_results)
+            }
+        )
+        os.remove(temp_video_path)
+        return response
+    except Exception as e:
+        os.remove(temp_video_path)
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@app.post("/gun_detection")
+async def predict_object(file: UploadFile = File(...)):
+    if not file.filename.lower().endswith(('.mp4', '.avi', '.mov')):
+        raise HTTPException(status_code=400, detail="Unsupported video format")
+
+    # Save the uploaded video temporarily
+    temp_video_path = f"temp_{uuid.uuid4().hex}_{file.filename}"
+    with open(temp_video_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    try:
+        output_video, detection_results = predict_and_annotate_video_gun(temp_video_path, object_detection=True)
+        response = FileResponse(
+            output_video,
+            media_type="video/mp4",
+            filename=os.path.basename(output_video),
+            headers={
+                "X-Detection-Results": json.dumps(detection_results)
+            }
+        )
+        os.remove(temp_video_path)
+        return response
+    except Exception as e:
+        os.remove(temp_video_path)
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/predict_stream")
+async def predict_video(file: UploadFile = File(...)):
+    if not file.filename.lower().endswith(('.mp4', '.avi', '.mov')):
+        raise HTTPException(status_code=400, detail="Unsupported video format")
+
+    # Save the uploaded video temporarily
+    temp_video_path = f"temp_{uuid.uuid4().hex}_{file.filename}"
+    with open(temp_video_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    try:
+        output_video, detection_results = predict_and_annotate_video(temp_video_path, model)
+        response = FileResponse(
+            output_video,
+            media_type="video/mp4",
+            filename=os.path.basename(output_video),
+            headers={
+                "X-Detection-Results": json.dumps(detection_results)
+            }
+        )
+        os.remove(temp_video_path)
+        return response
+    except Exception as e:
+        os.remove(temp_video_path)
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@app.post("/predict_object_stream")
+async def predict_video():
+    predict_and_annotate_stream()
