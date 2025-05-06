@@ -28,63 +28,63 @@ export class UsersComponent {
   private readonly userAdminService = inject(UserAdminService);
 
   ngOnInit(): void {
-    // this.uploadUserStats();
-    this.userStats = [
-      {
-        id: "b2c9c230-bb45-4e1a-8049-90ea2e6bdc84",
-        username: "youssef",
-        email: "youssef@example.com",
-        role: "USER",
-        isActive: true,
-        createdAt: new Date("2025-04-25T23:20:50.52Z"),
-        updatedAt: new Date("2025-04-25T23:20:50.52Z"),
-      },
-      {
-        id: "b2c9c230-bb45-4e1a-8049-90ea2e6bdc84",
-        username: "youssef",
-        email: "youssef@example.com",
-        role: "USER",
-        isActive: false,
-        createdAt: new Date("2025-04-25T23:20:50.52Z"),
-        updatedAt: new Date("2025-04-25T23:20:50.52Z"),
-      },
-      {
-        id: "b2c9c230-bb45-4e1a-8049-90ea2e6bdc84",
-        username: "youssef",
-        email: "youssef@example.com",
-        role: "USER",
-        isActive: false,
-        createdAt: new Date("2025-04-25T23:20:50.52Z"),
-        updatedAt: new Date("2025-04-25T23:20:50.52Z"),
-      },
-      {
-        id: "b2c9c230-bb45-4e1a-8049-90ea2e6bdc84",
-        username: "youssef",
-        email: "youssef@example.com",
-        role: "USER",
-        isActive: false,
-        createdAt: new Date("2025-04-25T23:20:50.52Z"),
-        updatedAt: new Date("2025-04-25T23:20:50.52Z"),
-      },
-      {
-        id: "b2c9c230-bb45-4e1a-8049-90ea2e6bdc84",
-        username: "NASSER",
-        email: "youssef@example.com",
-        role: "USER",
-        isActive: false,
-        createdAt: new Date("2025-04-25T23:20:50.52Z"),
-        updatedAt: new Date("2025-04-25T23:20:50.52Z"),
-      },
-      {
-        id: "b2c9c230-bb45-4e1a-8049-90ea2e6bdc84",
-        username: "youssef",
-        email: "youssef@example.com",
-        role: "USER",
-        isActive: false,
-        createdAt: new Date("2025-04-25T23:20:50.52Z"),
-        updatedAt: new Date("2025-04-25T23:20:50.52Z"),
-      },
-    ];
+    this.uploadUserStats();
+    // this.userStats = [
+    //   {
+    //     id: "b2c9c230-bb45-4e1a-8049-90ea2e6bdc84",
+    //     username: "youssef",
+    //     email: "youssef@example.com",
+    //     role: "USER",
+    //     isActive: true,
+    //     createdAt: new Date("2025-04-25T23:20:50.52Z"),
+    //     updatedAt: new Date("2025-04-25T23:20:50.52Z"),
+    //   },
+    //   {
+    //     id: "b2c9c230-bb45-4e1a-8049-90ea2e6bdc84",
+    //     username: "youssef",
+    //     email: "youssef@example.com",
+    //     role: "USER",
+    //     isActive: false,
+    //     createdAt: new Date("2025-04-25T23:20:50.52Z"),
+    //     updatedAt: new Date("2025-04-25T23:20:50.52Z"),
+    //   },
+    //   {
+    //     id: "b2c9c230-bb45-4e1a-8049-90ea2e6bdc84",
+    //     username: "youssef",
+    //     email: "youssef@example.com",
+    //     role: "USER",
+    //     isActive: false,
+    //     createdAt: new Date("2025-04-25T23:20:50.52Z"),
+    //     updatedAt: new Date("2025-04-25T23:20:50.52Z"),
+    //   },
+    //   {
+    //     id: "b2c9c230-bb45-4e1a-8049-90ea2e6bdc84",
+    //     username: "youssef",
+    //     email: "youssef@example.com",
+    //     role: "USER",
+    //     isActive: false,
+    //     createdAt: new Date("2025-04-25T23:20:50.52Z"),
+    //     updatedAt: new Date("2025-04-25T23:20:50.52Z"),
+    //   },
+    //   {
+    //     id: "b2c9c230-bb45-4e1a-8049-90ea2e6bdc84",
+    //     username: "NASSER",
+    //     email: "youssef@example.com",
+    //     role: "USER",
+    //     isActive: false,
+    //     createdAt: new Date("2025-04-25T23:20:50.52Z"),
+    //     updatedAt: new Date("2025-04-25T23:20:50.52Z"),
+    //   },
+    //   {
+    //     id: "b2c9c230-bb45-4e1a-8049-90ea2e6bdc84",
+    //     username: "youssef",
+    //     email: "youssef@example.com",
+    //     role: "USER",
+    //     isActive: false,
+    //     createdAt: new Date("2025-04-25T23:20:50.52Z"),
+    //     updatedAt: new Date("2025-04-25T23:20:50.52Z"),
+    //   },
+    // ];
   }
 
   deactivateUser() {
