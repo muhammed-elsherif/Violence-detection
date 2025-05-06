@@ -13,4 +13,11 @@ export class UserAdminService {
       "http://localhost:4000/user-stats/upload-stats"
     );
   }
+
+  createUser(createUserData: any): Observable<any> {
+    return this._HttpClient.post(
+      "http://localhost:4000/user-stats/create-user",
+      createUserData
+    );
+  }
 }

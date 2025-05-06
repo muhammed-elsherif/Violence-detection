@@ -14,7 +14,7 @@ export class AdminNavComponent {
   items = [
 
     { label: "Analytics", icon: "fas fa-chart-pie", routeLink: "/admin/analytics" },
-    { label: "Users", icon: "fas fa-users", routeLink: "/admin/users" },
+    { label: "Users", icon: "fas fa-users", routeLink: "/admin/user-magement-nav" },
     { label: "Settings", icon: "fas fa-cogs", routeLink: "/admin/settings" },
     { label: "Reports", icon: "fas fa-chart-bar", routeLink: "/admin/reports" },
   ];

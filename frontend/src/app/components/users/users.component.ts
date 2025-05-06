@@ -2,125 +2,111 @@ import { Component, inject, OnDestroy, OnInit } from "@angular/core";
 import { UserAdminService } from "../../core/services/user-admin.service";
 import { DatePipe } from "@angular/common";
 import { Subscription } from "rxjs";
+import { IUser } from "../../core/interfaces/iall-users";
+import { FormsModule } from "@angular/forms";
 
 @Component({
   selector: "app-users",
   standalone: true,
-  imports: [DatePipe],
+  imports: [DatePipe, FormsModule],
   templateUrl: "./users.component.html",
   styleUrl: "./users.component.scss",
 })
-export class UsersComponent implements OnInit, OnDestroy {
-  userStats: any[] = [];
+export class UsersComponent {
+  userStats: IUser[] = [];
+  searchTerm: string = "";
+
+  get filteredUsers(): IUser[] {
+    if (!this.searchTerm.trim()) return this.userStats;
+    return this.userStats.filter((user) =>
+      user.username.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
+  }
+
   private subscription = new Subscription();
 
   private readonly userAdminService = inject(UserAdminService);
 
   ngOnInit(): void {
-    this.uploadUserStats();
-    // this.userStats  = [
-    //   {
-    //     user: {
-    //       username: "JohnDoe",
-    //       email: "john.doe@example.com",
-    //     },
-    //     totalUploads: 25,
-    //     averageDuration: "00:03:45",
-    //     lastDetectionStatus: "Completed",
-    //     lastUploadDate: new Date(),
-    //   },
-    //   {
-    //     user: {
-    //       username: "JohnDoe",
-    //       email: "john.doe@example.com",
-    //     },
-    //     totalUploads: 25,
-    //     averageDuration: "00:03:45",
-    //     lastDetectionStatus: "Completed",
-    //     lastUploadDate: new Date(),
-    //   },
-    //   {
-    //     user: {
-    //       username: "JohnDoe",
-    //       email: "john.doe@example.com",
-    //     },
-    //     totalUploads: 25,
-    //     averageDuration: "00:03:45",
-    //     lastDetectionStatus: "Completed",
-    //     lastUploadDate: new Date(),
-    //   },
-    //   {
-    //     user: {
-    //       username: "JohnDoe",
-    //       email: "john.doe@example.com",
-    //     },
-    //     totalUploads: 25,
-    //     averageDuration: "00:03:45",
-    //     lastDetectionStatus: "Completed",
-    //     lastUploadDate: new Date(),
-    //   },
-    //   {
-    //     user: {
-    //       username: "JohnDoe",
-    //       email: "john.doe@example.com",
-    //     },
-    //     totalUploads: 25,
-    //     averageDuration: "00:03:45",
-    //     lastDetectionStatus: "Completed",
-    //     lastUploadDate: new Date(),
-    //   },
-    //   {
-    //     user: {
-    //       username: "JohnDoe",
-    //       email: "john.doe@example.com",
-    //     },
-    //     totalUploads: 25,
-    //     averageDuration: "00:03:45",
-    //     lastDetectionStatus: "Completed",
-    //     lastUploadDate: new Date(),
-    //   },
-    //   {
-    //     user: {
-    //       username: "JaneSmith",
-    //       email: "jane.smith@example.com",
-    //     },
-    //     totalUploads: 15,
-    //     averageDuration: "00:02:30",
-    //     lastDetectionStatus: "Failed",
-    //     lastUploadDate: new Date(),
-    //   },
-    //   {
-    //     user: {
-    //       username: "JaneSmith",
-    //       email: "jane.smith@example.com",
-    //     },
-    //     totalUploads: 15,
-    //     averageDuration: "00:02:30",
-    //     lastDetectionStatus: "Failed",
-    //     lastUploadDate: new Date(),
-    //   },
-    //   {
-    //     user: {
-    //       username: "JaneSmith",
-    //       email: "jane.smith@example.com",
-    //     },
-    //     totalUploads: 15,
-    //     averageDuration: "00:02:30",
-    //     lastDetectionStatus: "Failed",
-    //     lastUploadDate: new Date(),
-    //   },
-    // ];
+    // this.uploadUserStats();
+    this.userStats = [
+      {
+        id: "b2c9c230-bb45-4e1a-8049-90ea2e6bdc84",
+        username: "youssef",
+        email: "youssef@example.com",
+        role: "USER",
+        isActive: true,
+        createdAt: new Date("2025-04-25T23:20:50.52Z"),
+        updatedAt: new Date("2025-04-25T23:20:50.52Z"),
+      },
+      {
+        id: "b2c9c230-bb45-4e1a-8049-90ea2e6bdc84",
+        username: "youssef",
+        email: "youssef@example.com",
+        role: "USER",
+        isActive: false,
+        createdAt: new Date("2025-04-25T23:20:50.52Z"),
+        updatedAt: new Date("2025-04-25T23:20:50.52Z"),
+      },
+      {
+        id: "b2c9c230-bb45-4e1a-8049-90ea2e6bdc84",
+        username: "youssef",
+        email: "youssef@example.com",
+        role: "USER",
+        isActive: false,
+        createdAt: new Date("2025-04-25T23:20:50.52Z"),
+        updatedAt: new Date("2025-04-25T23:20:50.52Z"),
+      },
+      {
+        id: "b2c9c230-bb45-4e1a-8049-90ea2e6bdc84",
+        username: "youssef",
+        email: "youssef@example.com",
+        role: "USER",
+        isActive: false,
+        createdAt: new Date("2025-04-25T23:20:50.52Z"),
+        updatedAt: new Date("2025-04-25T23:20:50.52Z"),
+      },
+      {
+        id: "b2c9c230-bb45-4e1a-8049-90ea2e6bdc84",
+        username: "NASSER",
+        email: "youssef@example.com",
+        role: "USER",
+        isActive: false,
+        createdAt: new Date("2025-04-25T23:20:50.52Z"),
+        updatedAt: new Date("2025-04-25T23:20:50.52Z"),
+      },
+      {
+        id: "b2c9c230-bb45-4e1a-8049-90ea2e6bdc84",
+        username: "youssef",
+        email: "youssef@example.com",
+        role: "USER",
+        isActive: false,
+        createdAt: new Date("2025-04-25T23:20:50.52Z"),
+        updatedAt: new Date("2025-04-25T23:20:50.52Z"),
+      },
+    ];
+  }
+
+  deactivateUser() {
+    console.log("User deactivated successfully.");
+  }
+
+  deleteUser() {
+    console.log("User deleted successfully.");
+  }
+  activateUser() {
+    console.log("User activated successfully.");
   }
 
   uploadUserStats(): void {
     const sub = this.userAdminService.getUserStats().subscribe({
-      next: (response) => {
+      next: (res) => {
         console.log(
           "%c[User Stats] Successfully fetched user stats:",
           "color: green; font-weight: bold;",
-          response
+          res
         );
-        this.userStats = response;
+        this.userStats = res;
       },
       error: (err) =>
         console.error(
