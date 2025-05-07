@@ -36,6 +36,7 @@ export class CreateUserComponent {
       email: [null, [Validators.required, Validators.email]],
       password: [null, [Validators.required, Validators.pattern(/^\w{6,}$/)]],
       confirmPassword: [null, [Validators.required]],
+      role: [null, [Validators.required]],
     });
   }
 
