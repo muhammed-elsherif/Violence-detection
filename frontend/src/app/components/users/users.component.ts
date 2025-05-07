@@ -125,6 +125,8 @@ export class UsersComponent {
         );
       },
     });
+
+    this.subscription.add(sub);
   }
 
   activateUser(userId: string) {
