@@ -27,12 +27,12 @@
       <tbody>
         @for (user of filteredUsers; track user.id) {
         <tr>
-          <td>{{ user.username }}</td>
-          <td>{{ user.email }}</td>
-          <td>—</td>
-          <td>—</td>
-          <td>—</td>
-          <td>{{ user.updatedAt | date : "short" }}</td>
+          <td>{{ user.user.username }}</td>
+          <td>{{ user.user.email }}</td>
+          <td>{{ user.totalUploads }}</td>
+          <td>{{ user.averageDuration  }} mins</td>
+          <td>{{ user.lastDetectionStatus }}</td>
+          <td>{{ user.lastUploadDate | date : "short" }}</td>
 
           <!-- Conditional: isActive -->
           @if (user.isActive) {
