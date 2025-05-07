@@ -29,6 +29,7 @@ export class UsersComponent {
 
   ngOnInit(): void {
     this.uploadUserStats();
+
     // this.userStats = [
     //   {
     //     id: "b2c9c230-bb45-4e1a-8049-90ea2e6bdc84",
@@ -87,15 +88,66 @@ export class UsersComponent {
     // ];
   }
 
-  deactivateUser() {
+  deactivateUser(userId: string) {
     console.log("User deactivated successfully.");
+    const sub = this.userAdminService.deactivateUser(userId).subscribe({
+      next: (res) => {
+        console.log(
+          "%c[User Stats] Successfully deactivated user:",
+          "color: green; font-weight: bold;",
+          res
+        );
+        this.uploadUserStats();
+      },
+      error: (err) => {
+        console.error(
+          "%c[User Stats] Failed to deactivate user:",
+          "color: red; font-weight: bold;",
+          err
+        );
+      },
+    });
+    this.subscription.add(sub);
   }
 
-  deleteUser() {
+  deleteUser(userId: string) {
     console.log("User deleted successfully.");
+
+    const sub = this.userAdminService.deleteUser(userId).subscribe({
+      next: (res) => {
+        this.uploadUserStats();
+      },
+      error: (err) => {
+        console.error(
+          "%c[User Stats] Failed to delete user:",
+          "color: red; font-weight: bold;",
+          err
+        );
+      },
+    });
   }
-  activateUser() {
-    console.log("User activated successfully.");
+
+  activateUser(userId: string) {
+    console.log(userId);
+
+    const sub = this.userAdminService.activateUser(userId).subscribe({
+      next: (res) => {
+        console.log(
+          "%c[User Stats] Successfully activated user:",
+          "color: green; font-weight: bold;",
+          res
+        );
+        this.uploadUserStats();
+      },
+      error: (err) =>
+        console.error(
+          "%c[User Stats] Failed to activate user:",
+          "color: red; font-weight: bold;",
+          err
+        ),
+    });
+
+    this.subscription.add(sub);
   }
 
   uploadUserStats(): void {

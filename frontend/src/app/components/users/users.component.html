@@ -6,7 +6,7 @@
   <input
     type="text"
     placeholder="Search by username or email"
-    class="form-control w-50 mb-3"
+    class="form-control w-50 mb-3" 
     [(ngModel)]="searchTerm"
   />
 
@@ -39,14 +39,14 @@
           <td>
             <button
               class="action-btn deactivate-btn"
-              (click)="deactivateUser()"
+              (click)="deactivateUser(user.id)"
             >
               Deactivate
             </button>
           </td>
           } @else {
           <td>
-            <button class="action-btn activate-btn" (click)="activateUser()">
+            <button class="action-btn activate-btn" (click)="activateUser(user.id)">
               Activate
             </button>
           </td>
@@ -54,7 +54,7 @@
 
           <!-- Always show Delete -->
           <td>
-            <button class="action-btn delete-btn" (click)="deleteUser()">
+            <button class="action-btn delete-btn" (click)="deleteUser(user.id)">
               Delete <i class="fas fa-trash-alt delete-icon"></i>
             </button>
           </td>
