@@ -9,7 +9,6 @@ CREATE TABLE `User` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `User_username_key`(`username`),
     UNIQUE INDEX `User_email_key`(`email`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -20,7 +19,7 @@ CREATE TABLE `UploadsHistory` (
     `userId` VARCHAR(191) NOT NULL,
     `fileType` ENUM('IMAGE', 'VIDEO') NOT NULL,
     `processingStatus` ENUM('PENDING', 'PROCESSING', 'COMPLETED', 'FAILED') NOT NULL DEFAULT 'PENDING',
-    `detectionStatus` ENUM('VIOLENCE_DETECTED', 'NON_VIOLENCE', 'INCONCLUSIVE') NULL,
+    `detectionStatus` ENUM('VIOLENCE_DETECTED', 'NON_VIOLENCE', 'INCONCLUSIVE', 'GUN_DETECTED', 'NO_GUN') NULL,
     `overallConfidence` DOUBLE NULL,
     `duration` DOUBLE NULL,
     `fileSize` INTEGER NOT NULL,
@@ -48,26 +47,26 @@ CREATE TABLE `DetectionResult` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `UserUploadStats` (
+CREATE TABLE `UserStats` (
     `id` VARCHAR(191) NOT NULL,
     `userId` VARCHAR(191) NOT NULL,
     `totalUploads` INTEGER NOT NULL DEFAULT 0,
     `averageDuration` DOUBLE NULL,
-    `lastDetectionStatus` ENUM('VIOLENCE_DETECTED', 'NON_VIOLENCE', 'INCONCLUSIVE') NULL,
+    `lastDetectionStatus` ENUM('VIOLENCE_DETECTED', 'NON_VIOLENCE', 'INCONCLUSIVE', 'GUN_DETECTED', 'NO_GUN') NULL,
     `lastUploadDate` DATETIME(3) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `UserUploadStats_userId_key`(`userId`),
-    INDEX `UserUploadStats_userId_idx`(`userId`),
+    UNIQUE INDEX `UserStats_userId_key`(`userId`),
+    INDEX `UserStats_userId_idx`(`userId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `UploadsHistory` ADD CONSTRAINT `UploadsHistory_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `UploadsHistory` ADD CONSTRAINT `UploadsHistory_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `DetectionResult` ADD CONSTRAINT `DetectionResult_uploadId_fkey` FOREIGN KEY (`uploadId`) REFERENCES `UploadsHistory`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `DetectionResult` ADD CONSTRAINT `DetectionResult_uploadId_fkey` FOREIGN KEY (`uploadId`) REFERENCES `UploadsHistory`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `UserUploadStats` ADD CONSTRAINT `UserUploadStats_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `UserStats` ADD CONSTRAINT `UserStats_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

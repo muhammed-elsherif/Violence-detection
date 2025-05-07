@@ -1,11 +1,3 @@
-/* eslint-disable @typescript-eslint/require-await */
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-
 import { HttpService } from '@nestjs/axios';
 import { HttpException, Injectable } from '@nestjs/common';
 import { FileType, PrismaClient } from '@prisma/client';
@@ -46,7 +38,7 @@ export class GunDetectionService  {
                 },
             });
 
-            await prisma.userUploadStats.upsert({
+            await prisma.userStats.upsert({
                 where: { userId },
                 update: {
                     totalUploads: { increment: 1 },
@@ -87,7 +79,7 @@ export class GunDetectionService  {
                 },
             });
 
-            await prisma.userUploadStats.update({
+            await prisma.userStats.update({
                 where: { userId: upload.userId },
                 data: {
                     lastDetectionStatus: detectionData.overallStatus,

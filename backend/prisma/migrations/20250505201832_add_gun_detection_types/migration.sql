@@ -1,5 +1,0 @@
--- AlterTable
-ALTER TABLE `uploadshistory` MODIFY `detectionStatus` ENUM('VIOLENCE_DETECTED', 'NON_VIOLENCE', 'INCONCLUSIVE', 'GUN_DETECTED', 'NO_GUN') NULL;
-
--- AlterTable
-ALTER TABLE `useruploadstats` MODIFY `lastDetectionStatus` ENUM('VIOLENCE_DETECTED', 'NON_VIOLENCE', 'INCONCLUSIVE', 'GUN_DETECTED', 'NO_GUN') NULL;

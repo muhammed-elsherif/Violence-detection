@@ -119,7 +119,9 @@ def predict_and_annotate_video_object(video_path: str) -> str:
     }
     return output_filename, detection_results
 
-def predict_and_annotate_video_gun(video_path: str, model) -> str:
+def predict_and_annotate_video_gun(video_path: str) -> str:
+    model = selected_model(True)
+
     cap = cv2.VideoCapture(video_path)
     fps = int(cap.get(cv2.CAP_PROP_FPS))
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -129,9 +131,13 @@ def predict_and_annotate_video_gun(video_path: str, model) -> str:
 
     # Ensure the output folder exists
     os.makedirs(VIDEO_OUTPUT_DIR, exist_ok=True)
-    output_filename = os.path.join(VIDEO_OUTPUT_DIR, f"{model}_{uuid.uuid4().hex}.mp4")
+    output_filename = os.path.join(VIDEO_OUTPUT_DIR, f"{uuid.uuid4().hex}.mp4")
 
     out = cv2.VideoWriter(output_filename, fourcc, fps, (width, height))
+
+    predicted_label = 0
+    total_confidence = 0.0
+    gun_detections = 0
 
     while cap.isOpened():
         ret, frame = cap.read()
@@ -142,11 +148,24 @@ def predict_and_annotate_video_gun(video_path: str, model) -> str:
         annotated_frame = results[0].plot()
         out.write(annotated_frame) # Gun
 
+        for box in results[0].boxes:
+            class_id = int(box.cls[0])
+            conf = float(box.conf[0])
+            # Assuming 'gun' has class ID 0; update this if needed
+            if class_id == 0 and conf > 0.7:
+                predicted_label = 1
+                gun_detections += 1
+                total_confidence += conf
+
     cap.release()
     out.release()
 
+    avg_confidence = (total_confidence / gun_detections) if gun_detections > 0 else 0.0
+
     detection_results = {
-        "gunCount": 0,
+        "overallStatus": "GUN_DETECTED" if predicted_label == 1 else "NO_GUN",
+        "overallConfidence": round(avg_confidence, 3),
+        "numberOfGuns": gun_detections,
         "totalFrames": total_frames,
     }
     return output_filename, detection_results
@@ -292,7 +311,7 @@ async def predict_object(file: UploadFile = File(...)):
         shutil.copyfileobj(file.file, buffer)
 
     try:
-        output_video, detection_results = predict_and_annotate_video_gun(temp_video_path, object_detection=True)
+        output_video, detection_results = predict_and_annotate_video_gun(temp_video_path)
         response = FileResponse(
             output_video,
             media_type="video/mp4",
