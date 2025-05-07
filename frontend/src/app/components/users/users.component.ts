@@ -19,7 +19,7 @@ export class UsersComponent {
   get filteredUsers(): IUser[] {
     if (!this.searchTerm.trim()) return this.userStats;
     return this.userStats.filter((user) =>
-      user.username.toLowerCase().includes(this.searchTerm.toLowerCase())
+      user.user.username.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
   }
 

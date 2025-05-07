@@ -1,9 +1,18 @@
+
 export interface IUser {
   id: string;
-  username: string;
-  email: string;
-  role: string;
-  isActive: boolean;
+  userId: string;
+  totalUploads: number;
+  averageDuration: number;
+  lastDetectionStatus: string;
+  lastUploadDate: Date;
   createdAt: Date;
   updatedAt: Date;
+  user: User;
+  isActive: true;
+}
+
+export interface User {
+  username: string;
+  email:    string;
 }
