@@ -9,10 +9,10 @@ export interface IUser {
   createdAt: Date;
   updatedAt: Date;
   user: User;
-  isActive: true;
 }
 
 export interface User {
   username: string;
   email:    string;
+  isActive: true;
 }

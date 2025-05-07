@@ -6,12 +6,13 @@ export class UserStatsService {
   constructor(private prisma: PrismaClient) {}
 
   async getUserUploadStats() {
-    return this.prisma.userUploadStats.findMany({
+    return this.prisma.userStats.findMany({
       include: {
         user: {
           select: {
             username: true,
-            email: true
+            email: true,
+            isActive: true
           }
         }
       }

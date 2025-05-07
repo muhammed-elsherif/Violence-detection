@@ -25,7 +25,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (user of filteredUsers; track user.id) {
+        @for (user of filteredUsers; track user.userId) {
         <tr>
           <td>{{ user.user.username }}</td>
           <td>{{ user.user.email }}</td>
@@ -35,18 +35,18 @@
           <td>{{ user.lastUploadDate | date : "short" }}</td>
 
           <!-- Conditional: isActive -->
-          @if (user.isActive) {
+          @if (user.user.isActive) {
           <td>
             <button
               class="action-btn deactivate-btn"
-              (click)="deactivateUser(user.id)"
+              (click)="deactivateUser(user.userId)"
             >
               Deactivate
             </button>
           </td>
           } @else {
           <td>
-            <button class="action-btn activate-btn" (click)="activateUser(user.id)">
+            <button class="action-btn activate-btn" (click)="activateUser(user.userId)">
               Activate
             </button>
           </td>
@@ -54,7 +54,7 @@
 
           <!-- Always show Delete -->
           <td>
-            <button class="action-btn delete-btn" (click)="deleteUser(user.id)">
+            <button class="action-btn delete-btn" (click)="deleteUser(user.userId)">
               Delete <i class="fas fa-trash-alt delete-icon"></i>
             </button>
           </td>

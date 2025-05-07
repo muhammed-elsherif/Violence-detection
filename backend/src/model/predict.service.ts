@@ -44,7 +44,7 @@ export class PredictService {
       });
 
       // Update or create UserUploadStats
-      await prisma.userUploadStats.upsert({
+      await prisma.userStats.upsert({
         where: { userId },
         update: {
           totalUploads: { increment: 1 },
@@ -85,7 +85,7 @@ export class PredictService {
         },
       });
 
-      await prisma.userUploadStats.update({
+      await prisma.userStats.update({
         where: { userId: upload.userId },
         data: {
           lastDetectionStatus: detectionData.overallStatus,

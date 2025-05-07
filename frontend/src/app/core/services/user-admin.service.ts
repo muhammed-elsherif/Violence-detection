@@ -16,20 +16,20 @@ export class UserAdminService {
 
   createUser(createUserData: any): Observable<any> {
     return this._HttpClient.post(
-      "http://localhost:4000/user-stats/create-user",
+      "http://localhost:4000/dashboard/users/create-user",
       createUserData
     );
   }
 
   activateUser(userId: string): Observable<any> {
-    return this._HttpClient.post(
+    return this._HttpClient.patch(
       `http://localhost:4000/dashboard/users/${userId}/activate`,
       {}
     );
   }
 
   deactivateUser(userId: string): Observable<any> {
-    return this._HttpClient.post(
+    return this._HttpClient.patch(
       `http://localhost:4000/dashboard/users/${userId}/deactivate`,
       {}
     );

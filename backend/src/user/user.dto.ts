@@ -1,6 +1,7 @@
 // src/user/user.dto.ts
+import { ApiProperty } from '@nestjs/swagger';
 import { UserRole } from '@prisma/client';
-import { IsString, IsEmail, IsOptional, IsEnum } from 'class-validator';
+import { IsString, IsEmail, IsOptional, IsEnum, IsNotEmpty, MinLength } from 'class-validator';
 
 export class UserDto {
   id: string;
@@ -15,18 +16,21 @@ export class UserDto {
     Object.assign(this, partial);
   }
 }
-
 export class CreateUserDto {
-  @IsString()      
+  @ApiProperty({ example: 'john_doe' })
+  @IsNotEmpty()
   username: string;
-  
-  @IsEmail()       
+
+  @ApiProperty({ example: 'john@example.com' })
+  @IsEmail()
   email: string;
 
-  @IsString()      
+  @ApiProperty({ example: 'password123', minLength: 6 })
+  @IsNotEmpty()
+  @MinLength(6)
+  // @Matches(regex), { message: "Password too weak" })
   password: string;
 
-  @IsEnum(UserRole) 
   @IsOptional()
   role?: UserRole;
 }

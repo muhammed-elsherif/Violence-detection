@@ -41,13 +41,13 @@ model User {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   uploadsHistory     UploadsHistory[]
-  uploadStats        UserUploadStats?
+  uploadStats        UserStats?
 }
 
 model UploadsHistory {
   id                String              @id @default(uuid())
   userId            String
-  user              User                @relation(fields: [userId], references: [id])
+  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   fileType          FileType
   processingStatus  ProcessingStatus    @default(PENDING)
   detectionStatus   DetectionStatus?
@@ -66,7 +66,7 @@ model UploadsHistory {
 model DetectionResult {
   id          String   @id @default(uuid())
   uploadId    String
-  upload      UploadsHistory   @relation(fields: [uploadId], references: [id])
+  upload      UploadsHistory   @relation(fields: [uploadId], references: [id], onDelete: Cascade)
   timestamp   Float?   // For videos (seconds into media)
   confidence  Float
   label       String?  // Specific detection label (e.g., "blood", "weapon")
@@ -76,10 +76,10 @@ model DetectionResult {
   @@index([uploadId])
 }
 
-model UserUploadStats {
+model UserStats {
   id                String    @id @default(uuid())
   userId            String    @unique
-  user              User      @relation(fields: [userId], references: [id])
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   totalUploads      Int       @default(0)
   averageDuration   Float?    // Average duration of all videos
   lastDetectionStatus DetectionStatus?
