@@ -7,15 +7,15 @@ from tensorflow.keras.applications.mobilenet import preprocess_input
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from config import NUM_FRAMES, FRAME_SIZE, GUN_DETECTION_ENABLED, YOLO_ENABLED
 
-def selected_model():
+def selected_model(gun_detection=False):
     # Load all trained models
     if YOLO_ENABLED:
-        # model_path = "../loaded_models/yolo_best.pt"
+        model_path = "../loaded_models/yolo_best.pt"
         model_path = "../loaded_models/best.pt"
         model_path = "../loaded_models/vil_best.pt"
         model_path = "../loaded_models/violence_weights.pt" # best
         model = YOLO(model_path)
-    elif GUN_DETECTION_ENABLED:
+    elif GUN_DETECTION_ENABLED or gun_detection:
         model_path = "../loaded_models/gun_best.pt" # working
         model = YOLO(model_path)
     else:
@@ -53,8 +53,8 @@ def selected_model():
         # model_name = '../loaded_models/violence_detection_model-latest-final-adam.h5'
         # model_name = '../loaded_models/violence_detection_model-aug.h5'
         # model_name = '../loaded_models/violence_detection_model-aug22.h5'
-        model_name = '../loaded_models/violence_detection_model-95%.h5'
-        model_name = '../loaded_models/violence_detection_model-95-gl%.h5'
+        # model_name = '../loaded_models/violence_detection_model-95%.h5'
+        # model_name = '../loaded_models/violence_detection_model-95-gl%.h5'
         # model_name = '../loaded_models/violence_detection_model-96%.h5'
         # model_name = '../loaded_models/mobileNet-latest-final.h5' # bad
         # model_name = '../loaded_models/mobileNet-latest-LRCN-2.h5' # not bad
@@ -62,6 +62,8 @@ def selected_model():
         # model_name = '../loaded_models/mobileNet-latest-final-2.h5' # not sure
         # model_name = '../loaded_models/mobileNet-latest-final-3 copy.h5' # body
         # model_name = '../loaded_models/mobileNet-latest-final-3.h5' # body
+        # model_name = '../loaded_models/cancer_detection_model.h5' # body
+        # model_name = '../loaded_models/lung_colon_cancer_detection_model.h5' # body
         model = load_model(model_name, compile=False)
 
     return model

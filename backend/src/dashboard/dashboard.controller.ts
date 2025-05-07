@@ -2,13 +2,17 @@ import { Controller, Get, Post, Body, Delete, Param, Patch, UsePipes, Validation
 import { UserDto, CreateUserDto } from '../user/user.dto';
 import { DashboardService } from './dashboard.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { UserService } from '../user/user.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('User Statistics')
 @Controller('dashboard')
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 export class DashboardController {
-  constructor(private readonly dashboardService: DashboardService) {}
+  constructor(
+    private readonly dashboardService: DashboardService, 
+    private userService: UserService
+  ) {}
 
   @Get('users')
   getAllUsers(): Promise<UserDto[]> {
@@ -35,10 +39,12 @@ export class DashboardController {
     return { count };
   }
 
-  @Post('users')
+  @Post('users/create-user')
+  @ApiResponse({ status: 201 })
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  createUser(@Body() dto: CreateUserDto): Promise<UserDto> {
-    return this.dashboardService.createUser(dto);
+  async createUser(@Body() dto: CreateUserDto): Promise<UserDto> {
+      const user = await this.userService.createUser(dto.username, dto.email, dto.password, "USER"); //fixme role enum
+      return user;
   }
 
   @Delete('users/:id')

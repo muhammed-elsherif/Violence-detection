@@ -1,48 +1,30 @@
+import { HttpService } from '@nestjs/axios';
 import {
   Controller,
-  Post,
-  UploadedFile,
-  UseInterceptors,
-  HttpException,
   Get,
+  HttpException,
   Param,
-  UseGuards,
+  Post,
   Request,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { HttpService } from '@nestjs/axios';
+import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { PrismaClient } from '@prisma/client';
 import * as FormData from 'form-data';
 import { firstValueFrom } from 'rxjs';
-import { ApiConsumes, ApiResponse, ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
-import { PrismaClient } from '@prisma/client';
-import { PredictService } from './predict.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-
-// Define a custom interface for the uploaded file.
-export interface MulterFile {
-  fieldname: string;
-  originalname: string;
-  encoding: string;
-  mimetype: string;
-  size: number;
-  buffer: Buffer;
-}
+import { PredictService } from './predict.service';
+import { MulterFile, ViolenceVideoPredictionResponse } from '../prisma-sql/prisma-sql.service'
 
 export interface VideoDetectionResult {
   overallStatus: 'VIOLENCE_DETECTED' | 'NON_VIOLENCE';
   overallConfidence: number;
-  violentFrames?: number;
-  totalFrames?: number;
-}
-
-interface VideoPredictionResponse {
-  videoUrl: string;
-  overallStatus: string;
-  overallConfidence: number;
-  violentFrames: number;
   totalFrames: number;
+  violentFrames?: number;
 }
-
 interface ImagePredictionResponse {
   contentType: string;
   contentDisposition: string;
@@ -153,9 +135,9 @@ export class PredictController {
   })
   async predictVideo(
     @UploadedFile() file: MulterFile,
-    @Request() req: { user: { sub: string } },
-  ): Promise<VideoPredictionResponse> {
-    const userId = req.user.sub;
+    @Request() req: { user: { id: string } },
+  ): Promise<ViolenceVideoPredictionResponse> {
+    const userId = req.user.id;
 
     try {
       return await this.predictService.predictVideo(file, userId);

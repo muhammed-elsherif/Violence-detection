@@ -14,7 +14,7 @@ interface UploadResponse {
   providedIn: 'root',
 })
 export class UploadService {
-  private apiUrl = 'http://localhost:4000/predict/video';
+  private apiUrl = 'http://localhost:4000/gun-detection/video';
 
   constructor(private http: HttpClient) {}
 

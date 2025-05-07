@@ -60,7 +60,7 @@ add `--reload` in dev mode.
 ## 🚀 Usage
 ### ▶️ Predict from video file
 ```bash
-python predication.py
+python predict_and_display.py
 ```
 You can edit the `video_path` variable in `predication.py` to switch between normal and violent test samples.
 

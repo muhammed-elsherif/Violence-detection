@@ -1,40 +1,31 @@
-import { Injectable } from "@nestjs/common";
-import { PrismaClient } from "@prisma/client";
-import { VideoDetectionResult } from "./predict.controller";
 import { HttpService } from "@nestjs/axios";
-import { firstValueFrom } from "rxjs";
-import { HttpException } from "@nestjs/common";
+import { HttpException, Injectable } from "@nestjs/common";
+import { FileType, PrismaClient } from "@prisma/client";
 import * as FormData from "form-data";
+import { firstValueFrom } from "rxjs";
 import {
   MulterFile,
   PrismaSqlService,
-  ViolenceVideoPredictionResponse,
+  ObjectVideoPredictionResponse,
 } from "../prisma-sql/prisma-sql.service";
 
+export interface VideoDetectionResult {
+  overallStatus: "VIOLENCE_DETECTED" | "NON_VIOLENCE";
+  uniqueObjects: string[];
+  totalFrames: number;
+}
 @Injectable()
-export class PredictService {
+export class ObjectDetectionService {
   constructor(
     private readonly httpService: HttpService,
     private readonly prismaSqlService: PrismaSqlService,
     private prisma: PrismaClient
   ) {}
 
-  //   async analyzeImage(fileBuffer: Buffer): Promise<any> {
-  //     const formData = new FormData();
-  //     formData.append('file', new Blob([fileBuffer]), 'frame.jpg');
-
-  //     const response = await firstValueFrom(
-  //       this.httpService.post('http://localhost:5000/predict', formData, {
-  //         headers: formData.getHeaders ? formData.getHeaders() : {}, // adjust if needed
-  //       })
-  //     );
-  //     return response.data;
-  //   }
-
-  async predictVideo(
+  async detectObjectsInVideo(
     file: MulterFile,
     userId: string
-  ): Promise<ViolenceVideoPredictionResponse> {
+  ): Promise<ObjectVideoPredictionResponse> {
     const uploadRecord = await this.prismaSqlService.createUploadRecord(
       userId,
       file,
@@ -42,8 +33,9 @@ export class PredictService {
     );
 
     try {
+      // Prepare the form data to send to the machine learning API
       const formData = new FormData();
-      const apiUrl = process.env.PREDICT_VIDEO_API as string;
+      const apiUrl = process.env.PREDICT_OBJECT_API as string;
 
       formData.append("file", file.buffer, {
         filename: file.originalname,
@@ -63,6 +55,11 @@ export class PredictService {
         response.headers["x-detection-results"] as string
       ) as VideoDetectionResult;
 
+      // const detectedLabels = detectionData.detectedLabels.map((label) => ({
+      //   label: label.name,
+      //   confidence: label.confidence ?? 0,
+      // }));
+
       const updatedUpload = await this.prismaSqlService.handleDetectionResults(
         uploadRecord.id,
         detectionData
@@ -70,10 +67,8 @@ export class PredictService {
 
       return {
         videoUrl: `/predict/video/${updatedUpload.id}`,
-        overallStatus: detectionData.overallStatus,
-        overallConfidence: detectionData.overallConfidence ?? 0,
-        violentFrames: detectionData.violentFrames ?? 0,
         totalFrames: detectionData.totalFrames ?? 0,
+        uniqueObjects: detectionData.uniqueObjects,
       };
     } catch (e) {
       await this.prisma.uploadsHistory.update({

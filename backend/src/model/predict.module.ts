@@ -4,9 +4,10 @@ import { HttpModule } from '@nestjs/axios';
 import { PredictController } from './predict.controller';
 import { PredictService } from './predict.service';
 import { PrismaClient } from '@prisma/client';
+import { PrismaSqlModule } from 'src/prisma-sql/prisma-sql.module';
 
 @Module({
-  imports: [HttpModule], // We import HttpModule for making HTTP requests.
+  imports: [HttpModule, PrismaSqlModule],
   controllers: [PredictController],
   providers: [PredictService, PrismaClient]
 })

@@ -72,8 +72,8 @@ def predict_and_display(video_path, model, output_path):
 
 def play_video(filepath):
     if os.path.exists(filepath):
-        # os.system(f"start {filepath}")  # Windows
-        os.system(f"open {filepath}")   # macOS
+        os.system(f"start {filepath}")  # Windows
+        # os.system(f"open {filepath}")   # macOS
         # os.system(f"xdg-open {filepath}")  # Linux
     else:
         print("Error: File not found!", filepath)
@@ -91,8 +91,8 @@ video_path = 'test_samples/normal/people.mp4'
 # video_path = 'test_samples/violent/V_19.mp4'
 # video_path = 'test_samples/violent/0.mp4'
 # video_path = 'test_samples/violent/test_home.MOV'
-# video_path = 'test_samples/violent/gun_test.jpg'
-video_path = 'test_samples/violent/office_fight.mp4'
+video_path = 'test_samples/violent/gun_test.jpg'
+# video_path = 'test_samples/violent/office_fight.mp4'
 
 os.makedirs(VIDEO_OUTPUT_DIR, exist_ok=True)  # Ensure the output directory exists
 
