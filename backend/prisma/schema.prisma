@@ -29,6 +29,8 @@ enum DetectionStatus {
   VIOLENCE_DETECTED
   NON_VIOLENCE
   INCONCLUSIVE
+  GUN_DETECTED
+  NO_GUN
 }
 
 model User {

@@ -1,10 +1,13 @@
 /* eslint-disable prettier/prettier */
+import { HttpModule } from "@nestjs/axios";
 import { Module } from "@nestjs/common";
-import { GunDetectionService } from "./gun-detection.service";
 import { GunDetectionController } from "./gun-detection.controller";
+import { GunDetectionService } from "./gun-detection.service";
+import { PrismaClient } from "@prisma/client";
 
 @Module({
+  imports: [HttpModule], // We import HttpModule for making HTTP requests.
   controllers: [GunDetectionController],
-  providers: [GunDetectionService],
+  providers: [GunDetectionService, PrismaClient],
 })
-export class GunDetectionModule {}
+export class GunDetectionModule { }
