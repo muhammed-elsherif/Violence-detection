@@ -114,7 +114,7 @@ def predict_and_annotate_video_object(video_path: str) -> str:
     out.release()
 
     detection_results = {
-        "unique objects": set(LABELS_YOLO[class_ids[i]] for i in indices.flatten()),
+        "uniqueObjects": set(LABELS_YOLO[class_ids[i]] for i in indices.flatten()),
         "totalFrames": total_frames,
     }
     return output_filename, detection_results

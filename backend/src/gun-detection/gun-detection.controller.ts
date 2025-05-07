@@ -1,9 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-
 import {
   Controller,
   Get,
@@ -20,22 +14,7 @@ import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestj
 import { PrismaClient } from '@prisma/client';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { GunDetectionService } from './gun-detection.service';
-
-export interface MulterFile {
-  fieldname: string;
-  originalname: string;
-  encoding: string;
-  mimetype: string;
-  size: number;
-  buffer: Buffer;
-}
-
-interface GunDetectionResponse {
-  videoUrl: string;
-  overallStatus: string;
-  overallConfidence: number;
-  numberOfGuns?: number;
-}
+import { MulterFile, GunVideoPredictionResponse } from '../prisma-sql/prisma-sql.service'
 
 @ApiTags('Gun Detection')
 @Controller('gun-detection')
@@ -105,9 +84,9 @@ export class GunDetectionController  {
   })
   async predictVideo(
     @UploadedFile() file: MulterFile,
-    @Request() req: { user: { sub: string } }
-  ): Promise<GunDetectionResponse> {
-    const userId = req.user.sub;
+    @Request() req: { user: { id: string } }
+  ): Promise<GunVideoPredictionResponse> {
+    const userId = req.user.id;
 
     try {
       return await this.gunDetectionService.predictVideo(file, userId);

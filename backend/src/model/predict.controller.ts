@@ -17,32 +17,14 @@ import * as FormData from 'form-data';
 import { firstValueFrom } from 'rxjs';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { PredictService } from './predict.service';
-
-// Define a custom interface for the uploaded file.
-export interface MulterFile {
-  fieldname: string;
-  originalname: string;
-  encoding: string;
-  mimetype: string;
-  size: number;
-  buffer: Buffer;
-}
+import { MulterFile, ViolenceVideoPredictionResponse } from '../prisma-sql/prisma-sql.service'
 
 export interface VideoDetectionResult {
   overallStatus: 'VIOLENCE_DETECTED' | 'NON_VIOLENCE';
   overallConfidence: number;
-  violentFrames?: number;
-  totalFrames?: number;
-}
-
-interface VideoPredictionResponse {
-  videoUrl: string;
-  overallStatus: string;
-  overallConfidence: number;
-  violentFrames: number;
   totalFrames: number;
+  violentFrames?: number;
 }
-
 interface ImagePredictionResponse {
   contentType: string;
   contentDisposition: string;
@@ -153,9 +135,9 @@ export class PredictController {
   })
   async predictVideo(
     @UploadedFile() file: MulterFile,
-    @Request() req: { user: { sub: string } },
-  ): Promise<VideoPredictionResponse> {
-    const userId = req.user.sub;
+    @Request() req: { user: { id: string } },
+  ): Promise<ViolenceVideoPredictionResponse> {
+    const userId = req.user.id;
 
     try {
       return await this.predictService.predictVideo(file, userId);

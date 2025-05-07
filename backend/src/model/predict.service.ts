@@ -1,22 +1,21 @@
 import { Injectable } from "@nestjs/common";
-import { FileType, PrismaClient } from "@prisma/client";
-import { MulterFile, VideoDetectionResult } from "./predict.controller";
+import { PrismaClient } from "@prisma/client";
+import { VideoDetectionResult } from "./predict.controller";
 import { HttpService } from "@nestjs/axios";
 import { firstValueFrom } from "rxjs";
 import { HttpException } from "@nestjs/common";
 import * as FormData from "form-data";
+import {
+  MulterFile,
+  PrismaSqlService,
+  ViolenceVideoPredictionResponse,
+} from "../prisma-sql/prisma-sql.service";
 
-interface VideoPredictionResponse {
-  videoUrl: string;
-  overallStatus: string;
-  overallConfidence: number;
-  violentFrames: number;
-  totalFrames: number;
-}
 @Injectable()
 export class PredictService {
   constructor(
     private readonly httpService: HttpService,
+    private readonly prismaSqlService: PrismaSqlService,
     private prisma: PrismaClient
   ) {}
 
@@ -31,88 +30,25 @@ export class PredictService {
   //     );
   //     return response.data;
   //   }
-  createUploadRecord(userId: string, file: MulterFile, fileType: FileType) {
-    return this.prisma.$transaction(async (prisma) => {
-      const upload = await prisma.uploadsHistory.create({
-        data: {
-          userId,
-          fileType,
-          fileSize: file.size,
-          processingStatus: "PENDING",
-          uploadedAt: new Date(),
-        },
-      });
-
-      // Update or create UserUploadStats
-      await prisma.userStats.upsert({
-        where: { userId },
-        update: {
-          totalUploads: { increment: 1 },
-          lastUploadDate: new Date(),
-        },
-        create: {
-          userId,
-          totalUploads: 1,
-          lastUploadDate: new Date(),
-        },
-      });
-
-      return upload;
-    });
-  }
-
-  async handleDetectionResults(uploadId: string, detectionData: any) {
-    return this.prisma.$transaction(async (prisma) => {
-      // Get the upload record to access userId
-      const upload = await prisma.uploadsHistory.findUnique({
-        where: { id: uploadId },
-        select: { userId: true, duration: true },
-      });
-
-      if (!upload) {
-        throw new Error("Upload record not found");
-      }
-
-      const updatedUpload = await prisma.uploadsHistory.update({
-        where: { id: uploadId },
-        data: {
-          processingStatus: "COMPLETED",
-          detectionStatus: detectionData.overallStatus,
-          overallConfidence: detectionData.overallConfidence,
-        },
-        include: {
-          detectionResults: true,
-        },
-      });
-
-      await prisma.userStats.update({
-        where: { userId: upload.userId },
-        data: {
-          lastDetectionStatus: detectionData.overallStatus,
-          averageDuration: {
-            set: upload.duration || 0,
-          },
-        },
-      });
-
-      return updatedUpload;
-    });
-  }
 
   async predictVideo(
     file: MulterFile,
     userId: string
-  ): Promise<VideoPredictionResponse> {
-    const uploadRecord = await this.createUploadRecord(userId, file, "VIDEO");
+  ): Promise<ViolenceVideoPredictionResponse> {
+    const uploadRecord = await this.prismaSqlService.createUploadRecord(
+      userId,
+      file,
+      "VIDEO"
+    );
 
     try {
       const formData = new FormData();
       const apiUrl = process.env.PREDICT_VIDEO_API as string;
 
-      formData.append('file', file.buffer, {
+      formData.append("file", file.buffer, {
         filename: file.originalname,
         contentType: file.mimetype,
-      }); 
+      });
 
       const response = await firstValueFrom(
         this.httpService.post(apiUrl, formData, {
@@ -127,7 +63,7 @@ export class PredictService {
         response.headers["x-detection-results"] as string
       ) as VideoDetectionResult;
 
-      const updatedUpload = await this.handleDetectionResults(
+      const updatedUpload = await this.prismaSqlService.handleDetectionResults(
         uploadRecord.id,
         detectionData
       );

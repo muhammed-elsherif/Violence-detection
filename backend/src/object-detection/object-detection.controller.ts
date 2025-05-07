@@ -16,22 +16,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ObjectDetectionService } from './object-detection.service';
 import { PrismaClient } from '@prisma/client';
 import { Response } from 'express';
-
-export interface MulterFile {
-  fieldname: string;
-  originalname: string;
-  encoding: string;
-  mimetype: string;
-  size: number;
-  buffer: Buffer;
-}
-
-interface VideoPredictionResponse {
-  videoUrl: string;
-  overallStatus: string;
-  overallConfidence: number;
-  totalFrames: number;
-}
+import { MulterFile, ObjectVideoPredictionResponse } from '../prisma-sql/prisma-sql.service'
 
 interface ImagePredictionResponse {
   contentType: string;
@@ -136,9 +121,9 @@ export class ObjectDetectionController {
   })
   async detectObjectsInVideo(
     @UploadedFile() file: MulterFile,
-    @Request() req: { user: { sub: string } },
-  ): Promise<VideoPredictionResponse> {
-    const userId = req.user.sub;
+    @Request() req: { user: { id: string } },
+  ): Promise<ObjectVideoPredictionResponse> {
+    const userId = req.user.id;
 
     try {
       return await this.objectDetectionService.detectObjectsInVideo(file, userId);
@@ -165,48 +150,48 @@ export class ObjectDetectionController {
     res.sendFile(upload.annotatedFilePath, { root: '.' });
   }
 
-  @Post('image')
-  @UseInterceptors(FileInterceptor('file'))
-  @ApiConsumes('multipart/form-data')
-  @ApiOperation({ summary: 'Detect objects in an image' })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        file: {
-          type: 'string',
-          format: 'binary',
-          description: 'Image file to analyze (supported formats: jpg, png, bmp)',
-        },
-      },
-    },
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Image successfully analyzed',
-    content: { 'image/png': { schema: { type: 'string', format: 'binary' } } },
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid file format',
-  })
-  @ApiResponse({
-    status: 500,
-    description: 'Internal server error during prediction',
-  })
-  async detectObjectsInImage(
-    @UploadedFile() file: MulterFile,
-    @Res() res: Response,
-  ): Promise<void> {
-    try {
-      const result = await this.objectDetectionService.detectObjectsInImage(file);
-      res.set({
-        'Content-Type': result.contentType,
-        'Content-Disposition': result.contentDisposition,
-      });
-      res.send(result.data);
-    } catch {
-      throw new HttpException('Error during image prediction', 500);
-    }
-  }
+  // @Post('image')
+  // @UseInterceptors(FileInterceptor('file'))
+  // @ApiConsumes('multipart/form-data')
+  // @ApiOperation({ summary: 'Detect objects in an image' })
+  // @ApiBody({
+  //   schema: {
+  //     type: 'object',
+  //     properties: {
+  //       file: {
+  //         type: 'string',
+  //         format: 'binary',
+  //         description: 'Image file to analyze (supported formats: jpg, png, bmp)',
+  //       },
+  //     },
+  //   },
+  // })
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'Image successfully analyzed',
+  //   content: { 'image/png': { schema: { type: 'string', format: 'binary' } } },
+  // })
+  // @ApiResponse({
+  //   status: 400,
+  //   description: 'Invalid file format',
+  // })
+  // @ApiResponse({
+  //   status: 500,
+  //   description: 'Internal server error during prediction',
+  // })
+  // async detectObjectsInImage(
+  //   @UploadedFile() file: MulterFile,
+  //   @Res() res: Response,
+  // ): Promise<void> {
+  //   try {
+  //     const result = await this.objectDetectionService.detectObjectsInImage(file);
+  //     res.set({
+  //       'Content-Type': result.contentType,
+  //       'Content-Disposition': result.contentDisposition,
+  //     });
+  //     res.send(result.data);
+  //   } catch {
+  //     throw new HttpException('Error during image prediction', 500);
+  //   }
+  // }
 }

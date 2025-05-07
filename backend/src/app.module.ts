@@ -16,10 +16,11 @@ import { DashboardController } from './dashboard/dashboard.controller';
 import { DashboardService } from './dashboard/dashboard.service';
 import { LiveViolenceModule } from './live-violence/live-violence.module';
 import { GunDetectionModule } from './gun-detection/gun-detection.module';
-// import { ObjectDetectionModule } from './object-detection/object-detection.module';
+import { ObjectDetectionModule } from './object-detection/object-detection.module';
+import { PrismaSqlModule } from './prisma-sql/prisma-sql.module';
 
 @Module({
-  imports: [AuthModule, UserModule, PredictModule, UserStatsModule,PrismaModule, LiveViolenceModule, GunDetectionModule /*ObjectDetectionModule*/],
+  imports: [AuthModule, UserModule, PredictModule, UserStatsModule,PrismaModule, LiveViolenceModule, GunDetectionModule, PrismaSqlModule, ObjectDetectionModule],
   controllers: [AppController,DashboardController],
   providers: [AppService, AuthService, UserService, PrismaClient,DashboardService],
 })
