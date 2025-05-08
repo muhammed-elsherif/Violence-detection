@@ -22,6 +22,13 @@ import { AlertsGateway } from "./alerts/alerts.gateway";
 import { AlertsController } from "./alerts/alerts.controller";
 import { AlertsService } from './alerts/alerts.service';
 import { AlertsModule } from './alerts/alerts.module';
+import { AiModelService } from './aimodel/aimodel.service';
+import { AiModelController } from './aimodel/aimodel.controller';
+import { CustomerService } from './customer/customer.service';
+import { CustomerController } from './customer/customer.controller';
+import { MailService } from './mail/mail.service';
+import { MailController } from './mail/mail.controller';
+import { CustomerModule } from './customer/customer.module';
 
 @Module({
   imports: [
@@ -35,8 +42,9 @@ import { AlertsModule } from './alerts/alerts.module';
     PrismaSqlModule,
     ObjectDetectionModule,
     AlertsModule,
+    CustomerModule,
   ],
-  controllers: [AppController, DashboardController, AlertsController],
+  controllers: [AppController, DashboardController, AlertsController, AiModelController, CustomerController, MailController],
   providers: [
     AppService,
     AuthService,
@@ -44,7 +52,10 @@ import { AlertsModule } from './alerts/alerts.module';
     PrismaClient,
     DashboardService,
     AlertsGateway,
-    AlertsService
+    AlertsService,
+    AiModelService,
+    CustomerService,
+    MailService
   ],
 })
 export class AppModule {}

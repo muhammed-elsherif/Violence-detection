@@ -135,9 +135,9 @@ export class PredictController {
   })
   async predictVideo(
     @UploadedFile() file: MulterFile,
-    @Request() req: { user: { id: string } },
+    @Request() req: { user: { sub: string } },
   ): Promise<ViolenceVideoPredictionResponse> {
-    const userId = req.user.id;
+    const userId = req.user.sub;
 
     try {
       return await this.predictService.predictVideo(file, userId);

@@ -1,0 +1,73 @@
+import { BadRequestException, Injectable } from "@nestjs/common";
+import * as bcrypt from "bcrypt";
+import { MailService } from "src/mail/mail.service";
+import { randomBytes } from "crypto";
+import { CreateCustomerDto } from "./dto/customer.dto";
+import { PrismaClient } from "@prisma/client";
+import { ForceChangePasswordDto } from "./dto/force-change-password.dto";
+
+@Injectable()
+export class CustomerService {
+  constructor(
+    private prisma: PrismaClient,
+    private mailService: MailService
+  ) {}
+
+  async createCustomer(dto: CreateCustomerDto) {
+    const tempPassword = randomBytes(6).toString("hex"); // 12-char temp password
+    const hashedPassword = await bcrypt.hash(tempPassword, 10);
+
+    const customer = await this.prisma.customer.create({
+      data: {
+        ...dto,
+        password: hashedPassword,
+      },
+    });
+
+    await this.mailService.sendUserCredentials(customer.email, tempPassword);
+
+    return { message: "Customer created and credentials sent." };
+  }
+
+  async validateCustomer(email: string, password: string) {
+    const customer = await this.prisma.customer.findUnique({
+      where: { email },
+    });
+
+    if (!customer) {
+      throw new BadRequestException("User not found");
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, customer.password);
+
+    if (!isPasswordValid) {
+      throw new BadRequestException("Invalid credentials");
+    }
+
+    // Force password change on first login
+    if (!customer.hasChangedPassword) {
+      return {
+        mustChangePassword: true,
+        customerId: customer.id,
+        email: customer.email,
+        fullName: customer.fullName,
+      };
+    }
+
+    return customer;
+  }
+
+  async forceChangePassword(customerId: string, dto: ForceChangePasswordDto) {
+    const hashedPassword = await bcrypt.hash(dto.newPassword, 10);
+
+    const updatedCustomer = await this.prisma.customer.update({
+      where: { id: customerId },
+      data: {
+        password: hashedPassword,
+        hasChangedPassword: true,
+      },
+    });
+
+    return { message: "Password successfully changed." };
+  }
+}

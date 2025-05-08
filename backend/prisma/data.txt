@@ -1,0 +1,92 @@
+1. user
+{
+    "id": "9d6f74f2-091b-47b1-a0f9-5d3c63a44c73",
+    "username": "johndoe",
+    "email": "johndoe@example.com",
+    "password": "hashed_password_123",
+    "role": "USER",
+    "isActive": true,
+    "createdAt": "2025-05-08T12:00:00Z",
+    "updatedAt": "2025-05-08T12:00:00Z"
+  }
+2. UploadsHistory Model
+  {
+  "id": "b8b5fd16-8e2c-4bb5-bc16-2f6e99b0c433",
+  "userId": "9d6f74f2-091b-47b1-a0f9-5d3c63a44c73",
+  "fileType": "IMAGE",
+  "processingStatus": "PENDING",
+  "detectionStatus": "VIOLENCE_DETECTED",
+  "overallConfidence": 0.92,
+  "duration": null,
+  "fileSize": 1024,
+  "uploadedAt": "2025-05-08T12:10:00Z",
+  "annotatedFilePath": "path/to/processed/file.jpg",
+  "detectionResults": [
+    {
+      "id": "34b4df39-830b-4b25-a3b5-74ed9b9edaba",
+      "uploadId": "b8b5fd16-8e2c-4bb5-bc16-2f6e99b0c433",
+      "timestamp": null,
+      "confidence": 0.95,
+      "label": "blood",
+      "severity": 0.9,
+      "createdAt": "2025-05-08T12:12:00Z"
+    }
+  ]
+}
+
+3. DetectionResult Model
+{
+  "id": "34b4df39-830b-4b25-a3b5-74ed9b9edaba",
+  "uploadId": "b8b5fd16-8e2c-4bb5-bc16-2f6e99b0c433",
+  "timestamp": 35.5,
+  "confidence": 0.95,
+  "label": "blood",
+  "severity": 0.9,
+  "createdAt": "2025-05-08T12:12:00Z"
+}
+
+4. UserStats Model
+
+{
+  "id": "dcebcf68-2571-4b87-bd9d-926b8d5a11c8",
+  "userId": "9d6f74f2-091b-47b1-a0f9-5d3c63a44c73",
+  "totalUploads": 5,
+  "averageDuration": 120.5,
+  "lastDetectionStatus": "VIOLENCE_DETECTED",
+  "lastUploadDate": "2025-05-08T12:10:00Z",
+  "createdAt": "2025-05-08T12:00:00Z",
+  "updatedAt": "2025-05-08T12:00:00Z"
+}
+5. Alert Model
+{
+  "id": 1,
+  "image": "path/to/alert/image.jpg",
+  "lat": 30.0444,
+  "lng": 31.2357,
+  "timestamp": "2025-05-08T12:15:00Z"
+}
+6. AIModel Model
+{
+  "id": 1,
+  "name": "Violence Detection Model",
+  "type": "CV",
+  "description": "Model for detecting violence in video footage.",
+  "endpoint": "https://api.example.com/violence-detection",
+  "createdAt": "2025-05-08T12:00:00Z"
+}
+7. Customer Model
+{
+  "id": 1,
+  "email": "customer@example.com",
+  "fullName": "Alice Smith",
+  "companyName": "Tech Innovations",
+  "companyType": "Technology",
+  "purchasedModels": ["Violence Detection Model", "NLP Model"],
+  "contactNumber": "123-456-7890",
+  "address": "123 Tech Street, Silicon Valley, CA",
+  "industry": "Technology",
+  "password": "hashed_password_abc",
+  "hasChangedPassword": false,
+  "createdAt": "2025-05-08T12:00:00Z",
+  "updatedAt": "2025-05-08T12:00:00Z"
+}

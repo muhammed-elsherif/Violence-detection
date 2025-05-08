@@ -18,6 +18,11 @@ enum FileType {
   VIDEO
 }
 
+enum ModelType {
+  CV
+  NLP
+}
+
 enum ProcessingStatus {
   PENDING
   PROCESSING
@@ -34,30 +39,30 @@ enum DetectionStatus {
 }
 
 model User {
-  id          String       @id @default(uuid())
-  username    String      
-  email       String       @unique
-  password    String
-  role        UserRole     @default(USER)
-  isActive   Boolean     @default(true) 
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  uploadsHistory     UploadsHistory[]
-  uploadStats        UserStats?
+  id             String           @id @default(uuid())
+  username       String
+  email          String           @unique
+  password       String
+  role           UserRole         @default(USER)
+  isActive       Boolean          @default(true)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  uploadsHistory UploadsHistory[]
+  uploadStats    UserStats?
 }
 
 model UploadsHistory {
-  id                String              @id @default(uuid())
+  id                String            @id @default(uuid())
   userId            String
-  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   fileType          FileType
-  processingStatus  ProcessingStatus    @default(PENDING)
+  processingStatus  ProcessingStatus  @default(PENDING)
   detectionStatus   DetectionStatus?
-  overallConfidence Float?              // Overall confidence score for detection
-  duration          Float?              // For videos (in seconds)
-  fileSize          Int                 // In bytes
-  uploadedAt        DateTime            @default(now())
-  annotatedFilePath String?             // Path to processed file
+  overallConfidence Float? // Overall confidence score for detection
+  duration          Float? // For videos (in seconds)
+  fileSize          Int // In bytes
+  uploadedAt        DateTime          @default(now())
+  annotatedFilePath String? // Path to processed file
   detectionResults  DetectionResult[]
 
   @@index([userId])
@@ -66,28 +71,28 @@ model UploadsHistory {
 }
 
 model DetectionResult {
-  id          String   @id @default(uuid())
-  uploadId    String
-  upload      UploadsHistory   @relation(fields: [uploadId], references: [id], onDelete: Cascade)
-  timestamp   Float?   // For videos (seconds into media)
-  confidence  Float
-  label       String?  // Specific detection label (e.g., "blood", "weapon")
-  severity    Float?   // Severity score (0-1)
-  createdAt   DateTime @default(now())
+  id         String         @id @default(uuid())
+  uploadId   String
+  upload     UploadsHistory @relation(fields: [uploadId], references: [id], onDelete: Cascade)
+  timestamp  Float? // For videos (seconds into media)
+  confidence Float
+  label      String? // Specific detection label (e.g., "blood", "weapon")
+  severity   Float? // Severity score (0-1)
+  createdAt  DateTime       @default(now())
 
   @@index([uploadId])
 }
 
 model UserStats {
-  id                String    @id @default(uuid())
-  userId            String    @unique
-  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  totalUploads      Int       @default(0)
-  averageDuration   Float?    // Average duration of all videos
+  id                  String           @id @default(uuid())
+  userId              String           @unique
+  user                User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  totalUploads        Int              @default(0)
+  averageDuration     Float? // Average duration of all videos
   lastDetectionStatus DetectionStatus?
-  lastUploadDate    DateTime?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+  lastUploadDate      DateTime?
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
 
   @@index([userId])
 }
@@ -98,4 +103,29 @@ model Alert {
   lat       Float
   lng       Float
   timestamp DateTime @default(now())
+}
+
+model AIModel {
+  id          Int       @id @default(autoincrement())
+  name        String
+  type        ModelType // 'CV' or 'NLP'
+  description String
+  endpoint    String
+  createdAt   DateTime  @default(now())
+}
+
+model Customer {
+  id                 String   @id @default(uuid())
+  email              String   @unique
+  fullName           String
+  companyName        String
+  companyType        String // e.g., Retail, Manufacturing, Government
+  purchasedModels    Json // List of model IDs or names
+  contactNumber      String?
+  address            String?
+  industry           String? // Optional extra info
+  password           String
+  hasChangedPassword Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 }
