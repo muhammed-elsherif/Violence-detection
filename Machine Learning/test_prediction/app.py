@@ -15,6 +15,7 @@ app = FastAPI()
 
 # Load the trained model at startup (no changes needed)
 model = selected_model()
+gun_model = selected_model(True)
 
 def predict_and_annotate_video(video_path: str, model) -> str:
     cap = cv2.VideoCapture(video_path)
@@ -120,8 +121,6 @@ def predict_and_annotate_video_object(video_path: str) -> str:
     return output_filename, detection_results
 
 def predict_and_annotate_video_gun(video_path: str) -> str:
-    model = selected_model(True)
-
     cap = cv2.VideoCapture(video_path)
     fps = int(cap.get(cv2.CAP_PROP_FPS))
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -144,7 +143,7 @@ def predict_and_annotate_video_gun(video_path: str) -> str:
         if not ret:
             break
 
-        results = model.predict(frame, conf=CONFIDENCE_THRESHOLD)
+        results = gun_model.predict(frame, conf=CONFIDENCE_THRESHOLD)
         annotated_frame = results[0].plot()
         out.write(annotated_frame) # Gun
 

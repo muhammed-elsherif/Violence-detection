@@ -91,3 +91,11 @@ model UserStats {
 
   @@index([userId])
 }
+
+model Alert {
+  id        Int      @id @default(autoincrement())
+  image     String
+  lat       Float
+  lng       Float
+  timestamp DateTime @default(now())
+}
