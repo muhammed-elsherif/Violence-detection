@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { UploadService } from '../../core/services/upload.service';
-import { RouterLink } from '@angular/router';
+
 
 @Component({
   selector: 'app-technology',
-  imports: [RouterLink],
+  imports: [],
   templateUrl: './technology.component.html',
   styleUrls: ['./technology.component.scss'],
 })
