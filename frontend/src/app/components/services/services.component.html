@@ -1,1 +1,43 @@
-<p>services works!</p>
+<div class="container my-5">
+    <div class="text-center mb-3">
+        <h1 class="fw-bold mb-3">Services</h1>
+        <h5 class="text-secondary"> Implement a wide range of computer vision and NLP models in your projects</h5>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3 pt-4">
+        <select class="form-select w-25" aria-label="Default select example">
+            <option selected disabled>Filter</option>
+            <option value="cv">CV</option>
+            <option value="nlp">NLP</option>
+        </select>
+        
+        <div class="input-group w-25">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fas fa-search"></i>
+            </span>
+            <input type="text" class="form-control border-start-0" placeholder="Search" />
+        </div>
+    </div>
+
+    <div class="d-flex flex-wrap gap-3 py-4">
+        @for (model of models; track model.id) {
+        <div class="card shadow-sm p-3" style="width: 250px;">
+            <div class="card-body">
+                <!-- Icon and Title -->
+                <h5 class="card-title d-flex align-items-center gap-2 mb-2 justify-content-center">
+                    <i class="fas fa-crosshairs"></i> {{ model.name }}
+                </h5>
+
+                <p class="card-text text-muted text-center" style="font-size: 0.9rem;">
+                    {{ model.description }}
+                </p>
+
+                <!-- Button -->
+                <a [routerLink]="['/try', model.id]" class="btn btn-primary d-flex align-items-center justify-content-center gap-2">
+                    <i class="fas fa-rocket"></i> TRY IT OUT
+                </a>
+            </div>
+        </div>
+        }
+    </div>
+</div>
