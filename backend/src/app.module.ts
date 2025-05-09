@@ -29,6 +29,7 @@ import { CustomerController } from './customer/customer.controller';
 import { MailService } from './mail/mail.service';
 import { MailController } from './mail/mail.controller';
 import { CustomerModule } from './customer/customer.module';
+import { DownloadController } from './download/download.controller';
 
 @Module({
   imports: [
@@ -44,7 +45,7 @@ import { CustomerModule } from './customer/customer.module';
     AlertsModule,
     CustomerModule,
   ],
-  controllers: [AppController, DashboardController, AlertsController, AiModelController, CustomerController, MailController],
+  controllers: [AppController, DashboardController, AlertsController, AiModelController, CustomerController, MailController, DownloadController],
   providers: [
     AppService,
     AuthService,

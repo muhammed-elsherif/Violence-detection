@@ -1,4 +1,5 @@
 node_modules
+dist
 .angular
 venv
 sent_images
@@ -6,3 +7,4 @@ violence detection.yolov8
 .DS_Store
 loaded_models
 accident_data*
+output

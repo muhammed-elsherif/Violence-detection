@@ -41,3 +41,6 @@ Run the following commands to set up and start the project:
    ```
 
 The application should now be running on the specified `PORT`.
+
+cp dist/**/*.js ../ai-desktop/backend/dist/ 
+mohamedelsherif@MohamedElsherif-Mac-Cairo backend % mkdir -p ../ai-desktop/backend/dist
