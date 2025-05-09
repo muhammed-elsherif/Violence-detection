@@ -1,25 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "prisma/prisma.service";
+import { CreateModelDto } from "./dto/create-model.dto";
 
 @Injectable()
 export class AiModelService {
-    getAllModels() {
-        return [
-          {
-            id: 1,
-            name: 'Fire Detection',
-            type: 'CV',
-            description: 'Detect fire incidents in real-time video feed.',
-            endpoint: '/api/models/fire-detection',
-            createdAt: new Date(),
-          },
-          {
-            id: 2,
-            name: 'Sentiment Analyzer',
-            type: 'NLP',
-            description: 'Analyze text sentiment (positive, negative, neutral).',
-            endpoint: '/api/models/sentiment',
-            createdAt: new Date(),
-          },
-        ];
-      }
+  constructor(private readonly prisma: PrismaService) {}
+  async getAllModels() {
+    return await this.prisma.aIModel.findMany({
+      orderBy: { createdAt: 'desc' }, // Optional: returns latest models first
+    });
+  }
+
+  async createModel(data: CreateModelDto) {
+    const model = await this.prisma.aIModel.create({
+      data: {
+        name: data.name,
+        type: data.type,
+        description: data.description,
+        endpoint: data.endpoint,
+      },
+    });
+    return model;
+  }
 }
