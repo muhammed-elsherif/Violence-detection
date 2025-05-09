@@ -15,6 +15,8 @@ import { PlacesComponent } from "./components/places/places.component";
 import { AnalyticsComponent } from "./components/analytics/analytics.component";
 import { UserMagementNavComponent } from "./components/userManagement/user-magement-nav/user-magement-nav.component";
 import { CreateUserComponent } from "./components/userManagement/create-user/create-user.component";
+import { AboutComponent } from "./components/about/about.component";
+import { ContactComponent } from "./components/contact/contact.component";
 
 export const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
@@ -54,7 +56,8 @@ export const routes: Routes = [
       { path: "services", component: ServicesComponent },
       { path: "industries", component: IndustriesComponent },
       { path: "technology", component: TechnologyComponent },
-      { path: "places", component: PlacesComponent },
+      { path: "about", component: AboutComponent },
+      { path: "contact", component: ContactComponent },
     ],
   },
 ];
