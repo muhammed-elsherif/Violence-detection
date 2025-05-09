@@ -1,0 +1,38 @@
+{
+  "name": "ai-desktop-app",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build:mac": "electron-builder --mac --publish never",
+    "pack": "electron-builder",
+    "postinstall": "pip install -r requirements.txt"
+  },
+  "build": {
+    "appId": "com.videcto.ai-desktop",
+    "productName": "AI-Detector",
+    "files": [
+      "main.js",
+      "preload.js",
+      "index.html",
+      "../backend/dist/**/*",
+      "../ml/**/*",
+      "requirements.txt"
+    ],
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "artifactName": "AI-Detector-${version}-mac.dmg"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "artifactName": "AI-Detector-${version}-win.exe"
+    }
+  },
+  "devDependencies": {
+    "electron-builder": "^24.13.3"
+  }
+}

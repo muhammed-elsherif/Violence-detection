@@ -169,25 +169,6 @@ def predict_and_annotate_video_gun(video_path: str) -> str:
     }
     return output_filename, detection_results
 
-def predict_and_annotate_stream():
-    cap = cv2.VideoCapture(0)
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 112)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 112)
-
-    st.title("Real-Time Violence Detection")
-    stframe = st.empty()
-    while cap.isOpened():
-        success, frame = cap.read()
-        if not success:
-            st.error("Error: Failed to capture frame")
-            break
-
-        processed_frame, _, _ = yolo_detect(frame, CONFIDENCE_THRESHOLD)
-        # Show the frame with predictions
-        stframe.image(processed_frame, channels="BGR")
-
-    cap.release()
-
 def predict_and_annotate_image(image_path: str, model) -> str:
     img = cv2.imread(image_path)
     resized_img = cv2.resize(img, FRAME_SIZE) / 255.0
@@ -350,7 +331,3 @@ async def predict_video(file: UploadFile = File(...)):
     except Exception as e:
         os.remove(temp_video_path)
         raise HTTPException(status_code=500, detail=str(e))
-    
-@app.post("/predict_object_stream")
-async def predict_video():
-    predict_and_annotate_stream()
