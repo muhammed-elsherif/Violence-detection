@@ -1,0 +1,56 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-6xl mx-auto">
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-bold">My Models</h1>
+      <button routerLink="/user/request-model"
+              class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+        Request New Model
+      </button>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex justify-center items-center py-12">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+
+    <!-- Models Grid -->
+    <div *ngIf="!loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div *ngFor="let model of models" 
+           class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="p-6">
+          <div class="flex justify-between items-start mb-4">
+            <h3 class="text-xl font-semibold">{{model.name}}</h3>
+            <span [class]="'px-2 py-1 rounded-full text-sm font-medium ' + getStatusClass(model.status)">
+              {{model.status}}
+            </span>
+          </div>
+          
+          <p class="text-gray-600 mb-4">{{model.description}}</p>
+          
+          <div class="text-sm text-gray-500 mb-4">
+            Purchased on {{model.purchaseDate | date:'mediumDate'}}
+          </div>
+
+          <div class="flex justify-end">
+            <button *ngIf="model.status === 'active' && model.downloadUrl"
+                    (click)="downloadModel(model)"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+              Download
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && models.length === 0" 
+         class="text-center py-12">
+      <h3 class="text-xl font-medium text-gray-900 mb-2">No models found</h3>
+      <p class="text-gray-500 mb-4">You haven't purchased any models yet.</p>
+      <button routerLink="/user/request-model"
+              class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+        Browse Available Models
+      </button>
+    </div>
+  </div>
+</div> 

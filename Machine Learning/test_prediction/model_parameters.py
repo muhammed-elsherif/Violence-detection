@@ -1,11 +1,12 @@
 import cv2
+import os
 import random
 import numpy as np
 from ultralytics import YOLO
 from tensorflow.keras.models import load_model
 from tensorflow.keras.applications.mobilenet import preprocess_input
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from config import NUM_FRAMES, FRAME_SIZE, GUN_DETECTION_ENABLED, YOLO_ENABLED
+from config import NUM_FRAMES, FRAME_SIZE, GUN_DETECTION_ENABLED, FACE_DETECTION_ENABLED, YOLO_ENABLED, FIRE_DETECTION_ENABLED
 
 def selected_model(gun_detection=False):
     # Load all trained models
@@ -17,6 +18,9 @@ def selected_model(gun_detection=False):
         model = YOLO(model_path)
     elif GUN_DETECTION_ENABLED or gun_detection:
         model_path = "../loaded_models/gun_best.pt" # working
+        model = YOLO(model_path)
+    elif FIRE_DETECTION_ENABLED:
+        model_path = "../loaded_models/fire.pt" # working
         model = YOLO(model_path)
     else:
         # model_name = '../loaded_models/inceptionV3_violence_detection_model.h5'

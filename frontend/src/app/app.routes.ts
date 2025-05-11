@@ -11,19 +11,46 @@ import { DashboardComponent } from "./components/dashboard/dashboard.component";
 import { UsersComponent } from "./components/users/users.component";
 import { SettingsComponent } from "./components/settings/settings.component";
 import { ReportsComponent } from "./components/reports/reports.component";
-import { PlacesComponent } from "./components/places/places.component";
 import { AnalyticsComponent } from "./components/analytics/analytics.component";
 import { UserMagementNavComponent } from "./components/userManagement/user-magement-nav/user-magement-nav.component";
 import { CreateUserComponent } from "./components/userManagement/create-user/create-user.component";
 import { AboutComponent } from "./components/about/about.component";
 import { ContactComponent } from "./components/contact/contact.component";
+import { RequestModelComponent } from "./components/request-model/request-model.component";
+import { MyModelsComponent } from "./components/my-models/my-models.component";
+import { AddServiceComponent } from "./components/add-service/add-service.component";
 
 export const routes: Routes = [
-  { path: "", redirectTo: "login", pathMatch: "full" },
+  { path: "", redirectTo: "home", pathMatch: "full" },
+
+  // Public Routes
+  { path: "home", component: HomeComponent },
+  { path: "about", component: AboutComponent },
+  { path: "contact", component: ContactComponent },
+  { path: "services", component: ServicesComponent },
+  { path: "technology", component: TechnologyComponent },
+  { path: "industries", component: IndustriesComponent },
 
   // Auth Routes
   { path: "login", component: LoginComponent },
   { path: "signup", component: SignupComponent },
+
+  // Protected User Routes
+  {
+    path: "user",
+    component: UserComponent,
+    children: [
+      { path: "", redirectTo: "home", pathMatch: "full" },
+      { path: "home", component: HomeComponent },
+      { path: "services", component: ServicesComponent },
+      { path: "industries", component: IndustriesComponent },
+      { path: "technology", component: TechnologyComponent },
+      { path: "about", component: AboutComponent },
+      { path: "contact", component: ContactComponent },
+      { path: "request-model", component: RequestModelComponent },
+      { path: "my-models", component: MyModelsComponent },
+    ],
+  },
 
   // Admin Routes
   {
@@ -43,21 +70,7 @@ export const routes: Routes = [
       { path: "settings", component: SettingsComponent },
       { path: "reports", component: ReportsComponent },
       { path: "analytics", component: AnalyticsComponent },
-    ],
-  },
-
-  // User Routes
-  {
-    path: "user",
-    component: UserComponent,
-    children: [
-      { path: "", redirectTo: "home", pathMatch: "full" },
-      { path: "home", component: HomeComponent },
-      { path: "services", component: ServicesComponent },
-      { path: "industries", component: IndustriesComponent },
-      { path: "technology", component: TechnologyComponent },
-      { path: "about", component: AboutComponent },
-      { path: "contact", component: ContactComponent },
+      { path: "add-service", component: AddServiceComponent },
     ],
   },
 ];

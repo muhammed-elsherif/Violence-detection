@@ -9,7 +9,7 @@ from datetime import datetime
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from model_parameters import selected_model, process_video
 from object_detection.yolo import yolo_detect
-from config import YOLO_ENABLED, OBJECT_DETECTION_ENABLED, GUN_DETECTION_ENABLED, FRAME_SIZE, NUM_FRAMES, CONFIDENCE_THRESHOLD
+from config import YOLO_ENABLED, OBJECT_DETECTION_ENABLED, GUN_DETECTION_ENABLED, FIRE_DETECTION_ENABLED, FRAME_SIZE, NUM_FRAMES, CONFIDENCE_THRESHOLD
 
 model = selected_model()
 violent_frames = []
@@ -43,6 +43,20 @@ if OBJECT_DETECTION_ENABLED:
         stframe.image(processed_frame, channels="BGR")
 
 elif GUN_DETECTION_ENABLED:
+    while cap.isOpened():
+        success, frame = cap.read()
+        if not success:
+            st.error("Error: Failed to capture frame")
+            break
+        # Run YOLO model on the frame
+        results = model.predict(frame, conf=0.6)
+        # Annotate frame with detections
+        annotated_frame = results[0].plot()
+
+        # Show the frame with predictions
+        stframe.image(annotated_frame, channels="BGR")
+
+elif FIRE_DETECTION_ENABLED:
     while cap.isOpened():
         success, frame = cap.read()
         if not success:

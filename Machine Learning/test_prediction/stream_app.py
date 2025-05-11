@@ -113,20 +113,6 @@ def camera_worker():
         for client in clients:
             asyncio.run(client.send_text(b64_frame))
 
-        # Encode frame to JPEG
-        # ret, buffer = cv2.imencode('.jpg', processed_frame)
-        # if not ret:
-        #     continue
-
-        # # Maintain small buffer
-        # if frame_queue.full():
-        #     try:
-        #         frame_queue.get_nowait()
-        #     except queue.Empty:
-        #         pass
-
-        # frame_queue.put(buffer.tobytes())
-
     cap.release()
 
 @app.websocket("/ws")

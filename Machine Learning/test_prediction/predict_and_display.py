@@ -9,7 +9,7 @@ from object_detection.yolo import yolo_detect
 from crash_detection import CarAccidentDetectionProcessor
 from tensorflow.keras.applications.mobilenet import preprocess_input
 from config import YOLO_ENABLED, OBJECT_DETECTION_ENABLED, GUN_DETECTION_ENABLED, CRASH_DETECTION_ENABLED, \
-                    CONFIDENCE_THRESHOLD, VIDEO_OUTPUT_DIR, FRAME_SIZE, NUM_FRAMES
+                    FACE_DETECTION_ENABLED, FIRE_DETECTION_ENABLED, CONFIDENCE_THRESHOLD, VIDEO_OUTPUT_DIR, FRAME_SIZE, NUM_FRAMES
 
 model = selected_model()
 logging.basicConfig(level=logging.INFO)
@@ -35,6 +35,16 @@ def predict_and_display(video_path, model, output_path):
         if OBJECT_DETECTION_ENABLED:
             processed_frame, _, _ = yolo_detect(frame, CONFIDENCE_THRESHOLD)
             out.write(processed_frame)
+
+        elif FACE_DETECTION_ENABLED:
+            results = model.predict(frame, conf=0.6)
+            annotated_frame = results[0].plot()
+            out.write(annotated_frame)
+
+        elif FIRE_DETECTION_ENABLED:
+            results = model.predict(frame, conf=0.6)
+            annotated_frame = results[0].plot()
+            out.write(annotated_frame)
 
         elif GUN_DETECTION_ENABLED or YOLO_ENABLED:
             results = model.predict(frame, conf=0.6)
