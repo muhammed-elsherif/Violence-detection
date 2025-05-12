@@ -12,7 +12,7 @@ def selected_model(gun_detection=False, fire_detection=False):
     # Load all trained models
     if YOLO_ENABLED:
         model_path = "../loaded_models/yolo_best.pt"
-        model_path = "../loaded_models/best.pt"
+        model_path = "../loaded_models/violoence_best.pt"
         model_path = "../loaded_models/vil_best.pt"
         model_path = "../loaded_models/violence_weights.pt" # best
         model = YOLO(model_path)
