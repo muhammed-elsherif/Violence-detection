@@ -116,18 +116,48 @@ model AIModel {
   createdAt   DateTime  @default(now())
 }
 
+model Service {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  category    String
+  price       Float
+  features    String
+  requirements String
+  modelFile   String
+  demoVideo   String?
+  documentation String?
+  isPublic    Boolean  @default(false)
+  supportedPlatforms Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  requests    ServiceRequest[]
+}
+
+model ServiceRequest {
+  id          String   @id @default(uuid())
+  serviceId   String
+  service     Service  @relation(fields: [serviceId], references: [id])
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id])
+  status      String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 model Customer {
-  id                 String   @id @default(uuid())
-  email              String   @unique
+  id                 String           @id @default(uuid())
+  email              String           @unique
   fullName           String
   companyName        String
-  companyType        String // e.g., Retail, Manufacturing, Government
-  purchasedModels    Json // List of model IDs or names
+  companyType        String
+  purchasedModels    Json
   contactNumber      String?
   address            String?
-  industry           String? // Optional extra info
+  industry           String?
   password           String
-  hasChangedPassword Boolean  @default(false)
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  hasChangedPassword Boolean          @default(false)
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  serviceRequests    ServiceRequest[]
 }

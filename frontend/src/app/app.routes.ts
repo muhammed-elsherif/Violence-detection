@@ -21,23 +21,9 @@ import { MyModelsComponent } from "./components/my-models/my-models.component";
 import { AddServiceComponent } from "./components/add-service/add-service.component";
 
 export const routes: Routes = [
-  { path: "", redirectTo: "home", pathMatch: "full" },
 
-  // Public Routes
-  { path: "home", component: HomeComponent },
-  { path: "about", component: AboutComponent },
-  { path: "contact", component: ContactComponent },
-  { path: "services", component: ServicesComponent },
-  { path: "technology", component: TechnologyComponent },
-  { path: "industries", component: IndustriesComponent },
-
-  // Auth Routes
-  { path: "login", component: LoginComponent },
-  { path: "signup", component: SignupComponent },
-
-  // Protected User Routes
   {
-    path: "user",
+    path: "",
     component: UserComponent,
     children: [
       { path: "", redirectTo: "home", pathMatch: "full" },
@@ -49,6 +35,20 @@ export const routes: Routes = [
       { path: "contact", component: ContactComponent },
       { path: "request-model", component: RequestModelComponent },
       { path: "my-models", component: MyModelsComponent },
+    ],
+  },
+
+  // Auth Routes
+  { path: "login", component: LoginComponent },
+  { path: "signup", component: SignupComponent },
+
+  // Protected User Routes
+  {
+    path: "user",
+    component: UserComponent,
+    children: [
+      { path: "", redirectTo: "home", pathMatch: "full" },
+      { path: "profile", component: HomeComponent },
     ],
   },
 
