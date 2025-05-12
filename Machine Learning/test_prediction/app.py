@@ -16,6 +16,7 @@ app = FastAPI()
 # Load the trained model at startup (no changes needed)
 model = selected_model()
 gun_model = selected_model(True)
+fire_model = selected_model(fire_detection=True)
 
 def predict_and_annotate_video(video_path: str, model) -> str:
     cap = cv2.VideoCapture(video_path)
@@ -169,6 +170,45 @@ def predict_and_annotate_video_gun(video_path: str) -> str:
     }
     return output_filename, detection_results
 
+def predict_and_annotate_video_fire(video_path: str) -> str:
+    cap = cv2.VideoCapture(video_path)
+    fps = int(cap.get(cv2.CAP_PROP_FPS))
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+
+    # Ensure the output folder exists
+    os.makedirs(VIDEO_OUTPUT_DIR, exist_ok=True)
+    output_filename = os.path.join(VIDEO_OUTPUT_DIR, f"{uuid.uuid4().hex}.mp4")
+
+    out = cv2.VideoWriter(output_filename, fourcc, fps, (width, height))
+
+    predicted_label = 0
+    total_confidence = 0.0
+    gun_detections = 0
+
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            break
+
+        results = fire_model.predict(frame, conf=CONFIDENCE_THRESHOLD)
+        annotated_frame = results[0].plot()
+        out.write(annotated_frame)
+
+    cap.release()
+    out.release()
+
+    avg_confidence = (total_confidence / gun_detections) if gun_detections > 0 else 0.0
+
+    detection_results = {
+        "overallStatus": "FIRE_DETECTED" if predicted_label == 1 else "NO_FIRE",
+        "overallConfidence": round(avg_confidence, 3),
+        "totalFrames": total_frames,
+    }
+    return output_filename, detection_results
+
 def predict_and_annotate_image(image_path: str, model) -> str:
     img = cv2.imread(image_path)
     resized_img = cv2.resize(img, FRAME_SIZE) / 255.0
@@ -292,6 +332,32 @@ async def predict_object(file: UploadFile = File(...)):
 
     try:
         output_video, detection_results = predict_and_annotate_video_gun(temp_video_path)
+        response = FileResponse(
+            output_video,
+            media_type="video/mp4",
+            filename=os.path.basename(output_video),
+            headers={
+                "X-Detection-Results": json.dumps(detection_results)
+            }
+        )
+        os.remove(temp_video_path)
+        return response
+    except Exception as e:
+        os.remove(temp_video_path)
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/fire_detection")
+async def predict_object(file: UploadFile = File(...)):
+    if not file.filename.lower().endswith(('.mp4', '.avi', '.mov')):
+        raise HTTPException(status_code=400, detail="Unsupported video format")
+
+    # Save the uploaded video temporarily
+    temp_video_path = f"temp_{uuid.uuid4().hex}_{file.filename}"
+    with open(temp_video_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    try:
+        output_video, detection_results = predict_and_annotate_video_fire(temp_video_path)
         response = FileResponse(
             output_video,
             media_type="video/mp4",

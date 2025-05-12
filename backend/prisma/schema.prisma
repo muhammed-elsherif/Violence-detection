@@ -36,6 +36,8 @@ enum DetectionStatus {
   INCONCLUSIVE
   GUN_DETECTED
   NO_GUN
+  FIRE_DETECTED
+  NO_FIRE
 }
 
 model User {

@@ -34,6 +34,12 @@ export interface ObjectVideoPredictionResponse {
   detectedLabels?: { label: string; confidence: number }[];
 }
 
+export interface FireVideoPredictionResponse {
+  videoUrl: string;
+  totalFrames: number;
+  overallStatus: string;
+  overallConfidence: number;
+}
 @Injectable()
 export class PrismaSqlService {
   constructor(private prisma: PrismaClient) {}

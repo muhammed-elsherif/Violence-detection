@@ -30,6 +30,7 @@ import { MailService } from './mail/mail.service';
 import { MailController } from './mail/mail.controller';
 import { CustomerModule } from './customer/customer.module';
 import { DownloadController } from './download/download.controller';
+import { FireDetectionModule } from './fire-detection/fire-detection.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { DownloadController } from './download/download.controller';
     ObjectDetectionModule,
     AlertsModule,
     CustomerModule,
+    FireDetectionModule,
   ],
   controllers: [AppController, DashboardController, AlertsController, AiModelController, CustomerController, MailController, DownloadController],
   providers: [
