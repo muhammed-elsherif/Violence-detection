@@ -10,7 +10,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 export class ServiceController {
   constructor(private readonly serviceService: ServiceService) {}
 
-  @Post()
+  @Post('create')
   @UseGuards(JwtAuthGuard)
   //   @Roles('ADMIN')
   async createService(@Body() createServiceDto: CreateServiceDto) {
@@ -22,12 +22,14 @@ export class ServiceController {
     return this.serviceService.getAllServices();
   }
 
+  // not verified
   @Post('request')
   @UseGuards(JwtAuthGuard)
   async createServiceRequest(@Body() createServiceRequestDto: CreateServiceRequestDto) {
     return this.serviceService.createServiceRequest(createServiceRequestDto);
   }
-
+  
+  // not verified
   @Get('customer/:customerId/requests')
   @UseGuards(JwtAuthGuard)
   async getCustomerServiceRequests(@Param('customerId') customerId: string) {
@@ -39,10 +41,8 @@ export class ServiceController {
     return this.serviceService.getMostUsedModels();
   }
 
-  @Get('customers')
-  @UseGuards(JwtAuthGuard)
-//   @Roles('ADMIN')
-  async getAllCustomers() {
-    return this.serviceService.getAllCustomers();
+  @Get('all')
+  async getAllServiceRequests() {
+    return this.serviceService.getAllServiceRequests();
   }
 } 

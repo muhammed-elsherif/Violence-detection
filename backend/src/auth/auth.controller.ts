@@ -4,6 +4,7 @@ import {
   Body,
   BadRequestException,
   Request,
+  UseGuards,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { SignUpDto } from "./dto/signup.dto";
@@ -14,6 +15,7 @@ import { PrismaClient } from "@prisma/client";
 import * as bcrypt from "bcrypt";
 import { ChangePasswordDto } from "./dto/change-password.dto";
 import { ForceChangePasswordDto } from "src/customer/dto/force-change-password.dto";
+import { JwtAuthGuard } from "./jwt-auth.guard";
 
 @ApiTags("auth")
 @Controller("auth")
@@ -73,6 +75,7 @@ export class AuthController {
   }
 
   @Post("first-login")
+  @UseGuards(JwtAuthGuard)
   @ApiResponse({ status: 200, description: "Password changed successfully" })
   async firstLogin(@Request() req, @Body() dto: ForceChangePasswordDto) {
     const customer = await this.prisma.customer.findUnique({
@@ -96,6 +99,7 @@ export class AuthController {
   }
 
   @Post("change-password")
+  @UseGuards(JwtAuthGuard)
   async changePassword(@Request() req, @Body() dto: ChangePasswordDto) {
     const newHashed = await bcrypt.hash(dto.newPassword, 10);
     await this.prisma.customer.update({
@@ -103,6 +107,20 @@ export class AuthController {
       data: {
         password: newHashed,
         hasChangedPassword: true,
+      },
+    });
+
+    return { message: "Password changed successfully" };
+  }
+
+  @Post("forgot-password")
+  @UseGuards(JwtAuthGuard)
+  async forgotPassword(@Request() req, @Body() dto: ChangePasswordDto) {
+    const newHashed = await bcrypt.hash(dto.newPassword, 10);
+    await this.prisma.user.update({
+      where: { id: req.user.sub },
+      data: {
+        password: newHashed,
       },
     });
 

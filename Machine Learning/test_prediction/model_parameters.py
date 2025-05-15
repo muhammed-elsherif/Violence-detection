@@ -8,9 +8,9 @@ from tensorflow.keras.applications.mobilenet import preprocess_input
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from config import NUM_FRAMES, FRAME_SIZE, GUN_DETECTION_ENABLED, FACE_DETECTION_ENABLED, YOLO_ENABLED, FIRE_DETECTION_ENABLED
 
-def selected_model(gun_detection=False, fire_detection=False):
+def selected_model(gun_detection=False, fire_detection=False, violence_detection=False):
     # Load all trained models
-    if YOLO_ENABLED:
+    if YOLO_ENABLED or violence_detection:
         model_path = "../loaded_models/yolo_best.pt"
         model_path = "../loaded_models/violoence_best.pt"
         model_path = "../loaded_models/vil_best.pt"

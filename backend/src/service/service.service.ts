@@ -67,15 +67,7 @@ export class ServiceService {
     }));
   }
 
-  async getAllCustomers() {
-    return this.prisma.customer.findMany({
-      include: {
-        serviceRequests: {
-          include: {
-            service: true,
-          },
-        },
-      },
-    });
+  async getAllServiceRequests() {
+    return this.prisma.serviceRequest.findMany();
   }
 } 

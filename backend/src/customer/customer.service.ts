@@ -20,6 +20,7 @@ export class CustomerService {
     const customer = await this.prisma.customer.create({
       data: {
         ...dto,
+        hasChangedPassword: false,
         password: hashedPassword,
       },
     });
@@ -69,5 +70,9 @@ export class CustomerService {
     });
 
     return { message: "Password successfully changed." };
+  }
+
+  async getCustomers() {
+    return this.prisma.customer.findMany();
   }
 }

@@ -139,7 +139,6 @@ model ServiceRequest {
   serviceId   String
   service     Service  @relation(fields: [serviceId], references: [id])
   customerId  String
-  customer    Customer @relation(fields: [customerId], references: [id])
   status      String   @default("PENDING") // PENDING, APPROVED, REJECTED
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -159,5 +158,4 @@ model Customer {
   hasChangedPassword Boolean          @default(false)
   createdAt          DateTime         @default(now())
   updatedAt          DateTime         @updatedAt
-  serviceRequests    ServiceRequest[]
 }

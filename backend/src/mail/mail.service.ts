@@ -4,21 +4,22 @@ import * as nodemailer from "nodemailer";
 @Injectable()
 export class MailService {
   private transporter = nodemailer.createTransport({
+    service: "Gmail",
     host: process.env.EMAIL_HOST! as string,
     port: parseInt(process.env.EMAIL_PORT!),
-    secure: false,
+    secure: true,
     auth: {
       user: process.env.EMAIL_USER! as string,
       pass: process.env.EMAIL_PASS! as string,
     },
   });
-
+  
   async sendUserCredentials(email: string, password: string) {
     await this.transporter.sendMail({
-      from: `"Admin" <${process.env.EMAIL_USER}>`,
+      from: '"Admin" <noreply@videcto.com>',
       to: email,
       subject: "Your Account Credentials",
-      text: `Hello, here are your login credentials:\n\nEmail: ${email}\nTemporary Password: ${password}\nPlease change it after your first login.`,
+      html: `<p>Hello, here are your login credentials:</p><p><strong>Email:</strong> ${email}<br/><strong>Password:</strong> ${password}</p><p>Please change it after your first login.</p>`,
     });
   }
 
