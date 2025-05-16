@@ -82,8 +82,8 @@ def predict_and_display(video_path, model, output_path):
 
 def play_video(filepath):
     if os.path.exists(filepath):
-        os.system(f"start {filepath}")  # Windows
-        # os.system(f"open {filepath}")   # macOS
+        # os.system(f"start {filepath}")  # Windows
+        os.system(f"open {filepath}")   # macOS
         # os.system(f"xdg-open {filepath}")  # Linux
     else:
         print("Error: File not found!", filepath)
