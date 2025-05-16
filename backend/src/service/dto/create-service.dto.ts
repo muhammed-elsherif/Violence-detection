@@ -40,3 +40,14 @@ export class CreateServiceDto {
     linux: boolean;
   };
 } 
+
+export class CreateServiceRequestDto {
+  @IsString()
+  serviceName: string;
+
+  @IsString()
+  serviceDescription: string;
+
+  @IsString()
+  serviceCategory: string;
+}

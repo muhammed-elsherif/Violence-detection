@@ -9,8 +9,8 @@ export class MailService {
     port: parseInt(process.env.EMAIL_PORT!),
     secure: true,
     auth: {
-      user: process.env.EMAIL_USER! as string,
-      pass: process.env.EMAIL_PASS! as string,
+      user: process.env.SYSTEM_EMAIL! as string,
+      pass: process.env.SYSTEM_PASSWORD! as string,
     },
   });
   
@@ -20,6 +20,15 @@ export class MailService {
       to: email,
       subject: "Your Account Credentials",
       html: `<p>Hello, here are your login credentials:</p><p><strong>Email:</strong> ${email}<br/><strong>Password:</strong> ${password}</p><p>Please change it after your first login.</p>`,
+    });
+  }
+
+  async sendServiceRequestEmail(serviceName: string, serviceDescription: string, serviceCategory: string) {
+    await this.transporter.sendMail({
+      from: '"Admin" <noreply@videcto.com>',
+      to: process.env.SYSTEM_EMAIL!,
+      subject: "Service Request",
+      html: `<p>Hello, a new service request has been made:</p><p><strong>Service Name:</strong> ${serviceName}<br/><strong>Service Description:</strong> ${serviceDescription}<br/><strong>Service Category:</strong> ${serviceCategory}</p>`,
     });
   }
 
@@ -33,12 +42,22 @@ export class MailService {
     `;
 
     await this.transporter.sendMail({
-      from: `${type.toUpperCase()} <${process.env.EMAIL_USER}>`,
+      from: `${type.toUpperCase()} <${process.env.SYSTEM_EMAIL}>`,
       to: process.env.ALERT_RECEIVER!,
       subject: `🚨 ${type.toUpperCase()} DETECTED`,
       html: htmlContent,
     });
   }
+
+  async sendModelPurchaseEmail(username: string, modelName: string) {
+    await this.transporter.sendMail({
+      from: '"Admin" <noreply@videcto.com>',
+      to: process.env.SYSTEM_EMAIL!,
+      subject: "Model Purchase",
+      html: `<p>Hello, a new model has been purchased:</p><p><strong>Username:</strong> ${username}<br/><strong>Model Name:</strong> ${modelName}</p>`, 
+    });
+  }
+  
   //   async callEmergencyService(location: { lat: number; lng: number }) {
   //     const message = `🔥 Fire detected at location ${location.lat}, ${location.lng}`;
   //     await this.twilio.calls.create({

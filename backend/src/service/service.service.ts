@@ -1,9 +1,12 @@
 import { Injectable } from "@nestjs/common";
-import { CreateServiceDto } from "./dto/create-service.dto";
+import { CreateServiceDto, CreateServiceRequestDto } from "./dto/create-service.dto";
 import { ModelType, PrismaClient } from "@prisma/client";
+import { MailService } from "../mail/mail.service";
+import { AlertsGateway } from "../alerts/alerts.gateway";
+
 @Injectable()
 export class ServiceService {
-  constructor(private prisma: PrismaClient) {}
+  constructor(private prisma: PrismaClient, private mail: MailService, private alertsGateway: AlertsGateway) {}
 
   async createService(createServiceDto: CreateServiceDto) {
     return this.prisma.service.create({
@@ -15,25 +18,63 @@ export class ServiceService {
   }
 
   async getAllServices() {
-    return this.prisma.service.findMany({
-      where: { isPublic: true },
-    });
+    return this.prisma.service.findMany();
   }
 
-  async createServiceRequest(userId: string, serviceId: string) {
-    return this.prisma.serviceRequest.create({
+  async createServiceRequest(userId: string, createServiceRequestDto: CreateServiceRequestDto) {
+    const admin = await this.prisma.user.findFirst({
+      where: { role: "ADMIN" },
+    });
+
+    const serviceRequest = await this.prisma.serviceRequest.create({
       data: {
-        serviceId,
+        ...createServiceRequestDto,
         userId,
       },
-      include: {
-        service: true,
-      },
+    });
+
+    if (admin) {
+      this.alertsGateway.sendServiceRequest({
+        id: serviceRequest.id,
+        serviceName: serviceRequest.serviceName,
+        serviceDescription: serviceRequest.serviceDescription,
+        serviceCategory: serviceRequest.serviceCategory,
+        userId: serviceRequest.userId,
+        status: serviceRequest.status,
+        createdAt: serviceRequest.createdAt,
+      });
+
+      // Send email to admin
+      await this.mail.sendServiceRequestEmail(
+        serviceRequest.serviceName,
+        serviceRequest.serviceDescription,
+        serviceRequest.serviceCategory
+      );
+    }
+
+    return serviceRequest;
+  }
+
+  async getServiceRequests(userId: string) {
+    return this.prisma.serviceRequest.findMany({
+      where: { userId },
     });
   }
 
   async purchaseModel(userId: string, modelId: string) {
-    return this.prisma.customer.update({
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    const model = await this.prisma.service.findUnique({
+      where: { id: modelId },
+    });
+
+    if (!user || !model) {
+      throw new Error('User or model not found');
+    }
+
+    const updatedCustomer = await this.prisma.customer.update({
       where: { id: userId },
       data: {
         purchasedModels: {
@@ -41,44 +82,40 @@ export class ServiceService {
         },
       },
     });
-  }
 
-  async getServiceRequests(userId: string) {
-    return this.prisma.serviceRequest.findMany({
-      where: { userId },
-      include: {
-        service: true,
-      },
+    // Emit model purchase event
+    this.alertsGateway.sendModelPurchase({
+      username: user.username,
+      modelName: model.name
     });
+
+    return updatedCustomer;
   }
 
   async getMostUsedModels() {
-    const serviceRequests = await this.prisma.serviceRequest.groupBy({
-      by: ["serviceId"],
+    const serviceRequests = await this.prisma.customer.groupBy({
+      by: ["purchasedModels"],
       _count: {
-        serviceId: true,
+        purchasedModels: true,
       },
       orderBy: {
         _count: {
-          serviceId: "desc",
+          purchasedModels: "desc",
         },
       },
       take: 10,
     });
 
-    const serviceIds = serviceRequests.map((sr) => sr.serviceId);
+    const serviceIds = serviceRequests.map((sr) => sr.purchasedModels as string[]);
     const services = await this.prisma.service.findMany({
       where: {
         id: {
-          in: serviceIds,
+          in: serviceIds.flat(),
         },
       },
     });
 
-    return serviceRequests.map((sr) => ({
-      service: services.find((s) => s.id === sr.serviceId),
-      requestCount: sr._count.serviceId,
-    }));
+    return services;
   }
 
   async getAllServiceRequests() {

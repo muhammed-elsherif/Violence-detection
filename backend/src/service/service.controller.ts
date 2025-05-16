@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Param, UseGuards, Request } from '@nestjs/common';
 import { ServiceService } from './service.service';
-import { CreateServiceDto } from './dto/create-service.dto';
+import { CreateServiceDto, CreateServiceRequestDto } from './dto/create-service.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 // import { RolesGuard } from '../auth/guards/roles.guard';
 // import { Roles } from '../auth/decorators/roles.decorator';
@@ -23,8 +23,8 @@ export class ServiceController {
 
   @Post('request')
   @UseGuards(JwtAuthGuard)
-  async createServiceRequest(@Request() req, @Body('serviceId') serviceId: string) {
-    return this.serviceService.createServiceRequest(req.user.sub, serviceId);
+  async createServiceRequest(@Request() req, @Body() createServiceRequestDto: CreateServiceRequestDto) {
+    return this.serviceService.createServiceRequest(req.user.sub, createServiceRequestDto);
   }
 
   // not verified
@@ -41,12 +41,13 @@ export class ServiceController {
     return this.serviceService.getServiceRequests(customerId);
   }
 
+  // not verified
   @Get('most-used')
   async getMostUsedModels() {
     return this.serviceService.getMostUsedModels();
   }
 
-  @Get('all')
+  @Get('requests')
   async getAllServiceRequests() {
     return this.serviceService.getAllServiceRequests();
   }

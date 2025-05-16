@@ -1,13 +1,16 @@
 import { Component } from '@angular/core';
 import { AdminNavComponent } from "../../components/admin-nav/admin-nav.component";
 import { RouterOutlet } from '@angular/router';
+import { NotificationsComponent } from '../../components/notifications/notifications.component';
 
 @Component({
   selector: 'app-admin',
-  imports: [AdminNavComponent , RouterOutlet],
-  templateUrl: './admin.component.html',
-  styleUrl: './admin.component.scss'
+  standalone: true,
+  imports: [AdminNavComponent, RouterOutlet, NotificationsComponent],
+  template: `
+    <app-notifications></app-notifications>
+    <app-admin-nav></app-admin-nav>
+    <router-outlet></router-outlet>
+  `
 })
-export class AdminComponent {
-
-}
+export class AdminComponent {}

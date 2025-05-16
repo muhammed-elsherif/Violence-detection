@@ -123,13 +123,13 @@ model Service {
   supportedPlatforms Json
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  requests    ServiceRequest[]
 }
 
 model ServiceRequest {
   id          String   @id @default(uuid())
-  serviceId   String
-  service     Service  @relation(fields: [serviceId], references: [id])
+  serviceName   String
+  serviceDescription String
+  serviceCategory String
   userId      String
   user        User     @relation(fields: [userId], references: [id])
   status      String   @default("PENDING") // PENDING, APPROVED, REJECTED

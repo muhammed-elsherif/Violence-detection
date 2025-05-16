@@ -19,6 +19,7 @@ import { ContactComponent } from "./components/contact/contact.component";
 import { RequestModelComponent } from "./components/request-model/request-model.component";
 import { MyModelsComponent } from "./components/my-models/my-models.component";
 import { AddServiceComponent } from "./components/add-service/add-service.component";
+import { ServiceRequestsComponent } from "./components/admin/service-requests/service-requests.component";
 
 export const routes: Routes = [
 
@@ -71,6 +72,7 @@ export const routes: Routes = [
       { path: "reports", component: ReportsComponent },
       { path: "analytics", component: AnalyticsComponent },
       { path: "add-service", component: AddServiceComponent },
+      { path: "service-requests", component: ServiceRequestsComponent },
     ],
   },
 ];
