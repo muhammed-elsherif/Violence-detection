@@ -50,6 +50,7 @@ model User {
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
   uploadsHistory UploadsHistory[]
+  serviceRequests ServiceRequest[]
   uploadStats    UserStats?
 }
 
@@ -129,7 +130,8 @@ model ServiceRequest {
   id          String   @id @default(uuid())
   serviceId   String
   service     Service  @relation(fields: [serviceId], references: [id])
-  customerId  String
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
   status      String   @default("PENDING") // PENDING, APPROVED, REJECTED
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

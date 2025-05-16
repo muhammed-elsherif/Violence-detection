@@ -1,7 +1,6 @@
-import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards, Request } from '@nestjs/common';
 import { ServiceService } from './service.service';
 import { CreateServiceDto } from './dto/create-service.dto';
-import { CreateServiceRequestDto } from './dto/create-service-request.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 // import { RolesGuard } from '../auth/guards/roles.guard';
 // import { Roles } from '../auth/decorators/roles.decorator';
@@ -22,11 +21,17 @@ export class ServiceController {
     return this.serviceService.getAllServices();
   }
 
-  // not verified
   @Post('request')
   @UseGuards(JwtAuthGuard)
-  async createServiceRequest(@Body() createServiceRequestDto: CreateServiceRequestDto) {
-    return this.serviceService.createServiceRequest(createServiceRequestDto);
+  async createServiceRequest(@Request() req, @Body('serviceId') serviceId: string) {
+    return this.serviceService.createServiceRequest(req.user.sub, serviceId);
+  }
+
+  // not verified
+  @Post('purchase-model')
+  @UseGuards(JwtAuthGuard)
+  async purchaseModel(@Request() req, @Body('modelId') modelId: string) {
+    return this.serviceService.purchaseModel(req.user.sub, modelId);
   }
   
   // not verified

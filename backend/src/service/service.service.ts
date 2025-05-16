@@ -1,8 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { CreateServiceDto } from './dto/create-service.dto';
-import { CreateServiceRequestDto } from './dto/create-service-request.dto';
-import { ModelType, PrismaClient } from '@prisma/client';
-
+import { Injectable } from "@nestjs/common";
+import { CreateServiceDto } from "./dto/create-service.dto";
+import { ModelType, PrismaClient } from "@prisma/client";
 @Injectable()
 export class ServiceService {
   constructor(private prisma: PrismaClient) {}
@@ -22,18 +20,32 @@ export class ServiceService {
     });
   }
 
-  async createServiceRequest(createServiceRequestDto: CreateServiceRequestDto) {
+  async createServiceRequest(userId: string, serviceId: string) {
     return this.prisma.serviceRequest.create({
-      data: createServiceRequestDto,
+      data: {
+        serviceId,
+        userId,
+      },
       include: {
         service: true,
       },
     });
   }
 
-  async getServiceRequests(customerId: string) {
+  async purchaseModel(userId: string, modelId: string) {
+    return this.prisma.customer.update({
+      where: { id: userId },
+      data: {
+        purchasedModels: {
+          push: modelId,
+        },
+      },
+    });
+  }
+
+  async getServiceRequests(userId: string) {
     return this.prisma.serviceRequest.findMany({
-      where: { customerId },
+      where: { userId },
       include: {
         service: true,
       },
@@ -42,13 +54,13 @@ export class ServiceService {
 
   async getMostUsedModels() {
     const serviceRequests = await this.prisma.serviceRequest.groupBy({
-      by: ['serviceId'],
+      by: ["serviceId"],
       _count: {
         serviceId: true,
       },
       orderBy: {
         _count: {
-          serviceId: 'desc',
+          serviceId: "desc",
         },
       },
       take: 10,
@@ -72,4 +84,4 @@ export class ServiceService {
   async getAllServiceRequests() {
     return this.prisma.serviceRequest.findMany();
   }
-} 
+}
