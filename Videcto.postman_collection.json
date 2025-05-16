@@ -1,0 +1,707 @@
+{
+	"info": {
+		"_postman_id": "431caf90-3e46-4d30-98e6-e534596b14f8",
+		"name": "Videcto",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29902493"
+	},
+	"item": [
+		{
+			"name": "signup",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"mohamed\",\n    \"email\": \"mody@gmail.com\",\n    \"password\": \"1111111\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/signup",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "signin",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"role\": \"User\",\n    \"email\": \"mo@gmail.com\",\n    \"password\": \"1111111\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/signin",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "forgot-password",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vaGFtZWQyQGdtYWlsLmNvbSIsInN1YiI6ImFiZDViZjEyLWRlMGQtNDQwYi1iZDIwLWNiNGQzOTViZjY2NCIsImlhdCI6MTc0NzMyNzIxNCwiZXhwIjoxNzQ3OTMyMDE0fQ.W10jAOWJmiwjaHawcQ_SPtBymV3mTGuoDIYkcQLq6Go",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"newPassword\": \"1111111\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4000/auth/forgot-password",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"auth",
+						"forgot-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "customer-change-password",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"newPassword\": \"1111111\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4000/auth/change-password",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"auth",
+						"change-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "customer-first-login",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"mody10726@gmail.com\",\n    \"password\": \"535766012cb1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4000/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create-customer",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"mody10726@gmail.com\",\n    \"fullName\": \"Alice Smith\",\n    \"companyName\": \"Tech Innovations\",\n    \"companyType\": \"Technology\",\n    \"purchasedModels\": [\n        \"Violence Detection Model\",\n        \"NLP Model\"\n    ],\n    \"contactNumber\": \"123-456-7890\",\n    \"address\": \"123 Tech Street, Silicon Valley, CA\",\n    \"industry\": \"Technology\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4000/customer",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"customer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "service-create",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vaGFtZWQyQGdtYWlsLmNvbSIsInN1YiI6ImFiZDViZjEyLWRlMGQtNDQwYi1iZDIwLWNiNGQzOTViZjY2NCIsImlhdCI6MTc0NzMyNzIxNCwiZXhwIjoxNzQ3OTMyMDE0fQ.W10jAOWJmiwjaHawcQ_SPtBymV3mTGuoDIYkcQLq6Go",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Advanced Anomaly Detection\",\n  \"description\": \"A service to detect anomalies in time-series data using machine learning.\",\n  \"category\": \"CV\",\n  \"price\": 299.99,\n  \"features\": \"Real-time processing, Customizable thresholds, API access\",\n  \"requirements\": \"Data in CSV or JSON format, Minimum 1000 data points\",\n  \"modelFile\": \"path/to/your/model/anomaly_detection_v1.2.pkl\",\n  \"demoVideo\": \"https://example.com/videos/anomaly_detection_demo.mp4\",\n  \"documentation\": \"https://example.com/docs/anomaly_detection_api\",\n  \"isPublic\": true,\n  \"supportedPlatforms\": {\n    \"windows\": true,\n    \"macos\": false,\n    \"linux\": true\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/services/create",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"services",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "service-request",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vQGdtYWlsLmNvbSIsInN1YiI6IjVjNjYxMTFiLWEwMzYtNDc3My05OWI5LTg5YzA2ZTQ5MDdkNyIsImlhdCI6MTc0NzQwMDEwMiwiZXhwIjoxNzQ4MDA0OTAyfQ.yVh9V8jfQSogkuhXJ3LxyiXPlcXfRP-xt8xE2LVmekU",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"serviceName\": \"Sentiment Analysis\",\n  \"serviceDescription\": \"Like and dislike\",\n  \"serviceCategory\": \"NLP\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/services/request",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"services",
+						"request"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "predict/vil-video",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vQGdtYWlsLmNvbSIsInN1YiI6IjVjNjYxMTFiLWEwMzYtNDc3My05OWI5LTg5YzA2ZTQ5MDdkNyIsImlhdCI6MTc0NzM1MTg2MywiZXhwIjoxNzQ3OTU2NjYzfQ.O1llXys8yCZ1dg6hDGj22jfVAmEXkrjWlwqjXrLDASk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Users/mohamedelsherif/Documents/GitHub/Violence-detection/Machine Learning/test_prediction/test_samples/violent/office_fight.mp4"
+						},
+						{
+							"key": "sub",
+							"value": "8434eb11-5639-40de-a26c-879fb2296597",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/predict/video",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"predict",
+						"video"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "predict/video-fire",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vQGdtYWlsLmNvbSIsInN1YiI6IjVjNjYxMTFiLWEwMzYtNDc3My05OWI5LTg5YzA2ZTQ5MDdkNyIsImlhdCI6MTc0NzM1MTg2MywiZXhwIjoxNzQ3OTU2NjYzfQ.O1llXys8yCZ1dg6hDGj22jfVAmEXkrjWlwqjXrLDASk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Users/mohamedelsherif/Documents/GitHub/Violence-detection/Machine Learning/test_prediction/test_samples/violent/office_fight.mp4"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/fire-detection/video",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"fire-detection",
+						"video"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "predict/video-gun",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vQGdtYWlsLmNvbSIsInN1YiI6IjVjNjYxMTFiLWEwMzYtNDc3My05OWI5LTg5YzA2ZTQ5MDdkNyIsImlhdCI6MTc0NzM1MTg2MywiZXhwIjoxNzQ3OTU2NjYzfQ.O1llXys8yCZ1dg6hDGj22jfVAmEXkrjWlwqjXrLDASk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Users/mohamedelsherif/Documents/GitHub/Violence-detection/Machine Learning/test_prediction/test_samples/violent/office_fight.mp4"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/gun-detection/video",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"gun-detection",
+						"video"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "predict/object-video",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vQGdtYWlsLmNvbSIsInN1YiI6IjVjNjYxMTFiLWEwMzYtNDc3My05OWI5LTg5YzA2ZTQ5MDdkNyIsImlhdCI6MTc0NzM1MTg2MywiZXhwIjoxNzQ3OTU2NjYzfQ.O1llXys8yCZ1dg6hDGj22jfVAmEXkrjWlwqjXrLDASk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Users/mohamedelsherif/Documents/GitHub/Violence-detection/Machine Learning/test_prediction/test_samples/violent/office_fight.mp4"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/object-detection/video",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"object-detection",
+						"video"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all-services",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vaGFtZWQyQGdtYWlsLmNvbSIsInN1YiI6ImFiZDViZjEyLWRlMGQtNDQwYi1iZDIwLWNiNGQzOTViZjY2NCIsImlhdCI6MTc0NzMyNzIxNCwiZXhwIjoxNzQ3OTMyMDE0fQ.W10jAOWJmiwjaHawcQ_SPtBymV3mTGuoDIYkcQLq6Go",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Advanced Anomaly Detection\",\n  \"description\": \"A service to detect anomalies in time-series data using machine learning.\",\n  \"category\": \"CV\",\n  \"price\": 299.99,\n  \"features\": \"Real-time processing, Customizable thresholds, API access\",\n  \"requirements\": \"Data in CSV or JSON format, Minimum 1000 data points\",\n  \"modelFile\": \"path/to/your/model/anomaly_detection_v1.2.pkl\",\n  \"demoVideo\": \"https://example.com/videos/anomaly_detection_demo.mp4\",\n  \"documentation\": \"https://example.com/docs/anomaly_detection_api\",\n  \"isPublic\": true,\n  \"supportedPlatforms\": {\n    \"windows\": true,\n    \"macos\": false,\n    \"linux\": true\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/services",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"services"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all-requests",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vaGFtZWQyQGdtYWlsLmNvbSIsInN1YiI6ImFiZDViZjEyLWRlMGQtNDQwYi1iZDIwLWNiNGQzOTViZjY2NCIsImlhdCI6MTc0NzMyNzIxNCwiZXhwIjoxNzQ3OTMyMDE0fQ.W10jAOWJmiwjaHawcQ_SPtBymV3mTGuoDIYkcQLq6Go",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Advanced Anomaly Detection\",\n  \"description\": \"A service to detect anomalies in time-series data using machine learning.\",\n  \"category\": \"CV\",\n  \"price\": 299.99,\n  \"features\": \"Real-time processing, Customizable thresholds, API access\",\n  \"requirements\": \"Data in CSV or JSON format, Minimum 1000 data points\",\n  \"modelFile\": \"path/to/your/model/anomaly_detection_v1.2.pkl\",\n  \"demoVideo\": \"https://example.com/videos/anomaly_detection_demo.mp4\",\n  \"documentation\": \"https://example.com/docs/anomaly_detection_api\",\n  \"isPublic\": true,\n  \"supportedPlatforms\": {\n    \"windows\": true,\n    \"macos\": false,\n    \"linux\": true\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/services/requests",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"services",
+						"requests"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all-customers",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vaGFtZWQyQGdtYWlsLmNvbSIsInN1YiI6ImFiZDViZjEyLWRlMGQtNDQwYi1iZDIwLWNiNGQzOTViZjY2NCIsImlhdCI6MTc0NzMyNzIxNCwiZXhwIjoxNzQ3OTMyMDE0fQ.W10jAOWJmiwjaHawcQ_SPtBymV3mTGuoDIYkcQLq6Go",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/customer/all",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"customer",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "services-most-used",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vaGFtZWQyQGdtYWlsLmNvbSIsInN1YiI6ImFiZDViZjEyLWRlMGQtNDQwYi1iZDIwLWNiNGQzOTViZjY2NCIsImlhdCI6MTc0NzMyNzIxNCwiZXhwIjoxNzQ3OTMyMDE0fQ.W10jAOWJmiwjaHawcQ_SPtBymV3mTGuoDIYkcQLq6Go",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Advanced Anomaly Detection\",\n  \"description\": \"A service to detect anomalies in time-series data using machine learning.\",\n  \"category\": \"CV\",\n  \"price\": 299.99,\n  \"features\": \"Real-time processing, Customizable thresholds, API access\",\n  \"requirements\": \"Data in CSV or JSON format, Minimum 1000 data points\",\n  \"modelFile\": \"path/to/your/model/anomaly_detection_v1.2.pkl\",\n  \"demoVideo\": \"https://example.com/videos/anomaly_detection_demo.mp4\",\n  \"documentation\": \"https://example.com/docs/anomaly_detection_api\",\n  \"isPublic\": true,\n  \"supportedPlatforms\": {\n    \"windows\": true,\n    \"macos\": false,\n    \"linux\": true\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/services/most-used",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"services",
+						"most-used"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "users-count",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vQGdtYWlsLmNvbSIsInN1YiI6IjVjNjYxMTFiLWEwMzYtNDc3My05OWI5LTg5YzA2ZTQ5MDdkNyIsImlhdCI6MTc0NzM1MTg2MywiZXhwIjoxNzQ3OTU2NjYzfQ.O1llXys8yCZ1dg6hDGj22jfVAmEXkrjWlwqjXrLDASk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/dashboard/users",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"dashboard",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "users-stats",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vQGdtYWlsLmNvbSIsInN1YiI6IjVjNjYxMTFiLWEwMzYtNDc3My05OWI5LTg5YzA2ZTQ5MDdkNyIsImlhdCI6MTc0NzM1MTg2MywiZXhwIjoxNzQ3OTU2NjYzfQ.O1llXys8yCZ1dg6hDGj22jfVAmEXkrjWlwqjXrLDASk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/user-stats/upload-stats",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"user-stats",
+						"upload-stats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "download-model",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vQGdtYWlsLmNvbSIsInN1YiI6IjVjNjYxMTFiLWEwMzYtNDc3My05OWI5LTg5YzA2ZTQ5MDdkNyIsImlhdCI6MTc0NzM1MTg2MywiZXhwIjoxNzQ3OTU2NjYzfQ.O1llXys8yCZ1dg6hDGj22jfVAmEXkrjWlwqjXrLDASk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/download/ai-desktop",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"download",
+						"ai-desktop"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:4000",
+			"type": "string"
+		}
+	]
+}
