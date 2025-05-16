@@ -14,7 +14,7 @@ echo "Starting Backend..."
 cd ../backend
 npm run start > backend.log 2>&1 &
 
-# Start Machine Learning API (not working)
+# Start Machine Learning API
 echo "Starting Machine Learning Service..."
 cd ../Machine\ Learning/test_prediction
 source venv/bin/activate

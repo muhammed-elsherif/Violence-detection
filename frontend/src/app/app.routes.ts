@@ -17,10 +17,10 @@ import { CreateUserComponent } from "./components/userManagement/create-user/cre
 import { AboutComponent } from "./components/about/about.component";
 import { ContactComponent } from "./components/contact/contact.component";
 import { RequestModelComponent } from "./components/request-model/request-model.component";
+import { RequestServiceComponent } from "./components/request-service/request-service.component"; 
 import { MyModelsComponent } from "./components/my-models/my-models.component";
 import { AddServiceComponent } from "./components/add-service/add-service.component";
 import { ServiceRequestsComponent } from "./components/admin/service-requests/service-requests.component";
-
 export const routes: Routes = [
 
   {
@@ -34,7 +34,8 @@ export const routes: Routes = [
       { path: "technology", component: TechnologyComponent },
       { path: "about", component: AboutComponent },
       { path: "contact", component: ContactComponent },
-      { path: "request-model", component: RequestModelComponent },
+      { path: "request-service", component: RequestServiceComponent },
+      { path: "purchase-model", component: RequestModelComponent },
       { path: "my-models", component: MyModelsComponent },
     ],
   },
