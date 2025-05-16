@@ -1,17 +1,17 @@
 # Real-Time Camera Inference
-import time
 import cv2
-import logging
 import numpy as np
 import streamlit as st
 from collections import deque
 from datetime import datetime
-from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
-from model_parameters import selected_model, process_video
+from model_parameters import selected_model
 from object_detection.yolo import yolo_detect
 from config import YOLO_ENABLED, OBJECT_DETECTION_ENABLED, GUN_DETECTION_ENABLED, FIRE_DETECTION_ENABLED, FRAME_SIZE, NUM_FRAMES, CONFIDENCE_THRESHOLD
 
-model = selected_model()
+violence_model = selected_model()
+yolo_model = selected_model(violence_detection=True)
+gun_model = selected_model(gun_detection=True)
+fire_model = selected_model(fire_detection=True)
 violent_frames = []
 
 # --- Streamlit Setup ---
@@ -49,7 +49,7 @@ elif GUN_DETECTION_ENABLED:
             st.error("Error: Failed to capture frame")
             break
         # Run YOLO model on the frame
-        results = model.predict(frame, conf=0.6)
+        results = gun_model.predict(frame, conf=0.6)
         # Annotate frame with detections
         annotated_frame = results[0].plot()
 
@@ -63,7 +63,7 @@ elif FIRE_DETECTION_ENABLED:
             st.error("Error: Failed to capture frame")
             break
         # Run YOLO model on the frame
-        results = model.predict(frame, conf=0.6)
+        results = fire_model.predict(frame, conf=0.6)
         # Annotate frame with detections
         annotated_frame = results[0].plot()
 
@@ -77,7 +77,7 @@ elif YOLO_ENABLED:
             st.error("Error: Failed to capture frame")
             break
         # Run YOLO model on the frame
-        results = model.predict(frame, conf=0.6)
+        results = yolo_model.predict(frame, conf=0.6)
         # Annotate frame with detections
         annotated_frame = results[0].plot()
 
@@ -109,7 +109,7 @@ else:
 
         if len(frame_queue) == NUM_FRAMES:
             input_frames = np.expand_dims(np.array(frame_queue), axis=0)
-            prediction = model.predict(input_frames)
+            prediction = violence_model.predict(input_frames)
             predicted_label = np.argmax(prediction)
             # label = "Violence" if np.argmax(prediction) == 1 else "Non-Violence"
             # confidence = prediction[0][predicted_label]
