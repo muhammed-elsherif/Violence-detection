@@ -9,14 +9,23 @@ import {
   HttpException,
   Request,
   Res,
-} from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags, ApiOperation, ApiConsumes, ApiBody, ApiResponse } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { ObjectDetectionService } from './object-detection.service';
-import { PrismaClient } from '@prisma/client';
-import { Response } from 'express';
-import { MulterFile, ObjectVideoPredictionResponse } from '../prisma-sql/prisma-sql.service'
+} from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
+import {
+  ApiTags,
+  ApiOperation,
+  ApiConsumes,
+  ApiBody,
+  ApiResponse,
+} from "@nestjs/swagger";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { ObjectDetectionService } from "./object-detection.service";
+import { PrismaClient } from "@prisma/client";
+import { Response } from "express";
+import {
+  MulterFile,
+  ObjectVideoPredictionResponse,
+} from "../prisma-sql/prisma-sql.service";
 
 interface ImagePredictionResponse {
   contentType: string;
@@ -24,58 +33,61 @@ interface ImagePredictionResponse {
   data: Buffer;
 }
 
-@ApiTags('Object Detection')
-@Controller('object-detection')
+@ApiTags("Object Detection")
+@Controller("object-detection")
 export class ObjectDetectionController {
   constructor(
     private readonly objectDetectionService: ObjectDetectionService,
-    private readonly prisma: PrismaClient,
+    private readonly prisma: PrismaClient
   ) {}
 
-  @Post('video')
+  @Post("video")
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('file'))
-  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor("file"))
+  @ApiConsumes("multipart/form-data")
   @ApiOperation({
-    summary: 'Upload and analyze video for object detection',
-    description: 'Upload a video file to detect objects. The video will be processed and analyzed for object content.',
+    summary: "Upload and analyze video for object detection",
+    description:
+      "Upload a video file to detect objects. The video will be processed and analyzed for object content.",
   })
   @ApiBody({
     schema: {
-      type: 'object',
+      type: "object",
       properties: {
         file: {
-          type: 'string',
-          format: 'binary',
-          description: 'Video file to analyze (supported formats: mp4, avi, mov)',
+          type: "string",
+          format: "binary",
+          description:
+            "Video file to analyze (supported formats: mp4, avi, mov)",
         },
       },
     },
   })
   @ApiResponse({
     status: 200,
-    description: 'Video successfully analyzed',
+    description: "Video successfully analyzed",
     schema: {
-      type: 'object',
+      type: "object",
       properties: {
         videoUrl: {
-          type: 'string',
-          description: 'URL to access the processed video',
-          example: '/object-detection/video/123e4567-e89b-12d3-a456-426614174000',
+          type: "string",
+          description: "URL to access the processed video",
+          example:
+            "/object-detection/video/123e4567-e89b-12d3-a456-426614174000",
         },
         labels: {
-          type: 'array',
+          type: "array",
           items: {
-            type: 'object',
+            type: "object",
             properties: {
-              label: { type: 'string' },
-              confidence: { type: 'number' },
+              label: { type: "string" },
+              confidence: { type: "number" },
             },
           },
         },
         overallConfidence: {
-          type: 'number',
-          description: 'Confidence score of the detection (0-1)',
+          type: "number",
+          description: "Confidence score of the detection (0-1)",
           example: 0.95,
         },
       },
@@ -83,71 +95,79 @@ export class ObjectDetectionController {
   })
   @ApiResponse({
     status: 400,
-    description: 'Invalid file format',
+    description: "Invalid file format",
     schema: {
-      type: 'object',
+      type: "object",
       properties: {
         statusCode: {
-          type: 'number',
+          type: "number",
           example: 400,
         },
         message: {
-          type: 'string',
-          example: 'Unsupported video format',
+          type: "string",
+          example: "Unsupported video format",
         },
       },
     },
   })
   @ApiResponse({
     status: 401,
-    description: 'Unauthorized - JWT token required',
+    description: "Unauthorized - JWT token required",
   })
   @ApiResponse({
     status: 500,
-    description: 'Internal server error during prediction',
+    description: "Internal server error during prediction",
     schema: {
-      type: 'object',
+      type: "object",
       properties: {
         statusCode: {
-          type: 'number',
+          type: "number",
           example: 500,
         },
         message: {
-          type: 'string',
-          example: 'Error during prediction',
+          type: "string",
+          example: "Error during prediction",
         },
       },
     },
   })
   async detectObjectsInVideo(
     @UploadedFile() file: MulterFile,
-    @Request() req: { user: { id: string } },
+    @Request() req: { user: { sub: string } }
   ): Promise<ObjectVideoPredictionResponse> {
-    const userId = req.user.id;
+    const userId = req.user.sub;
 
     try {
-      return await this.objectDetectionService.detectObjectsInVideo(file, userId);
+      return await this.objectDetectionService.detectObjectsInVideo(
+        file,
+        userId
+      );
     } catch (error) {
-      throw new HttpException(error.message || 'Object detection failed', error.status || 500);
+      throw new HttpException(
+        error.message || "Object detection failed",
+        error.status || 500
+      );
     }
   }
 
-  @Get('video/:id')
-  @ApiOperation({ summary: 'Get annotated video by ID' })
+  @Get("video/:id")
+  @ApiOperation({ summary: "Get annotated video by ID" })
   @ApiResponse({
     status: 200,
-    description: 'Returns the annotated video file',
-    content: { 'video/mp4': { schema: { type: 'string', format: 'binary' } } },
+    description: "Returns the annotated video file",
+    content: { "video/mp4": { schema: { type: "string", format: "binary" } } },
   })
-  @ApiResponse({ status: 404, description: 'Video not found' })
-  async getAnnotatedVideo(@Param('id') id: string, @Res() res: Response) {
-    const upload = await this.prisma.uploadsHistory.findUnique({ where: { id } });
+  @ApiResponse({ status: 404, description: "Video not found" })
+  async getAnnotatedVideo(@Param("id") id: string, @Res() res: Response) {
+    const upload = await this.prisma.uploadsHistory.findUnique({
+      where: { id },
+    });
 
     if (!upload || !upload.annotatedFilePath) {
-      throw new HttpException('Video not found', 404);
+      throw new HttpException("Video not found", 404);
     }
 
-    res.sendFile(upload.annotatedFilePath, { root: '.' });
+    res.sendFile(upload.annotatedFilePath, { root: "." });
   }
 
   // @Post('image')

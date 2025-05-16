@@ -107,20 +107,11 @@ model Alert {
   timestamp DateTime @default(now())
 }
 
-model AIModel {
-  id          Int       @id @default(autoincrement())
-  name        String
-  type        ModelType // 'CV' or 'NLP'
-  description String
-  endpoint    String
-  createdAt   DateTime  @default(now())
-}
-
 model Service {
   id          String   @id @default(uuid())
   name        String
   description String
-  category    String
+  category    ModelType
   price       Float
   features    String
   requirements String

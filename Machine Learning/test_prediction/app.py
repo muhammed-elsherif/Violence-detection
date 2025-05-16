@@ -4,7 +4,6 @@ import uuid
 import shutil
 import cv2
 import numpy as np
-import streamlit as st
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.responses import FileResponse
 from object_detection.yolo import yolo_detect, LABELS as LABELS_YOLO
@@ -193,9 +192,8 @@ def predict_and_annotate_video_fire(video_path: str) -> str:
         if not ret:
             break
 
-        results = fire_model.predict(frame, conf=CONFIDENCE_THRESHOLD)
-        annotated_frame = results[0].plot()
-        out.write(annotated_frame)
+        results = fire_model.predict(frame, conf=CONFIDENCE_THRESHOLD) # TODO: Add draw=True
+        out.write(results[0].plot())
 
     cap.release()
     out.release()

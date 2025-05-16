@@ -74,30 +74,6 @@ export class AuthController {
     return this.authService.login(user);
   }
 
-  @Post("first-login")
-  @UseGuards(JwtAuthGuard)
-  @ApiResponse({ status: 200, description: "Password changed successfully" })
-  async firstLogin(@Request() req, @Body() dto: ForceChangePasswordDto) {
-    const customer = await this.prisma.customer.findUnique({
-      where: { id: req.user.sub },
-    });
-
-    if (!customer) {
-      throw new BadRequestException("User not found");
-    }
-
-    if (customer.hasChangedPassword) {
-      throw new BadRequestException("Password already changed.");
-    }
-
-    await this.authService.customerService.forceChangePassword(
-      req.user.sub,
-      dto
-    );
-
-    return { message: "Password successfully changed" };
-  }
-
   @Post("change-password")
   @UseGuards(JwtAuthGuard)
   async changePassword(@Request() req, @Body() dto: ChangePasswordDto) {

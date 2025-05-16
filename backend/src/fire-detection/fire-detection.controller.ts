@@ -85,7 +85,6 @@ export class FireDetectionController {
     @Request() req: { user: { sub: string } }
   ): Promise<FireVideoPredictionResponse> {
     const userId = req.user.sub;
-    // const userId = "e8d4bfce-de04-403f-b6c2-14c6af3c0ea6";
     try {
       return await this.fireDetectionService.predictVideo(file, userId);
     } catch (error) {

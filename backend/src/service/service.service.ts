@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { CreateServiceRequestDto } from './dto/create-service-request.dto';
-import { PrismaClient } from '@prisma/client';
+import { ModelType, PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class ServiceService {
@@ -9,7 +9,10 @@ export class ServiceService {
 
   async createService(createServiceDto: CreateServiceDto) {
     return this.prisma.service.create({
-      data: createServiceDto,
+      data: {
+        ...createServiceDto,
+        category: createServiceDto.category as ModelType,
+      },
     });
   }
 
@@ -24,7 +27,6 @@ export class ServiceService {
       data: createServiceRequestDto,
       include: {
         service: true,
-        customer: true,
       },
     });
   }
