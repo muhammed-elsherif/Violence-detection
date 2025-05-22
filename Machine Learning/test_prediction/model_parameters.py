@@ -7,6 +7,17 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.applications.mobilenet import preprocess_input
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from config import NUM_FRAMES, FRAME_SIZE, GUN_DETECTION_ENABLED, FACE_DETECTION_ENABLED, YOLO_ENABLED, FIRE_DETECTION_ENABLED
+import torch
+import tensorflow as tf
+
+# Enable GPU memory growth to prevent OOM errors
+gpus = tf.config.list_physical_devices('GPU')
+if gpus:
+    try:
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+    except RuntimeError as e:
+        print(f"GPU memory growth error: {e}")
 
 def selected_model(gun_detection=False, fire_detection=False, violence_detection=False):
     # Load all trained models
@@ -16,12 +27,15 @@ def selected_model(gun_detection=False, fire_detection=False, violence_detection
         model_path = "../loaded_models/vil_best.pt"
         model_path = "../loaded_models/violence_weights.pt" # best
         model = YOLO(model_path)
+        model.to('cuda' if torch.cuda.is_available() else 'cpu')
     elif GUN_DETECTION_ENABLED or gun_detection:
         model_path = "../loaded_models/gun_best.pt" # working
         model = YOLO(model_path)
+        model.to('cuda' if torch.cuda.is_available() else 'cpu')
     elif FIRE_DETECTION_ENABLED or fire_detection:
         model_path = "../loaded_models/fire.pt" # working
         model = YOLO(model_path)
+        model.to('cuda' if torch.cuda.is_available() else 'cpu')
     else:
         # model_name = '../loaded_models/inceptionV3_violence_detection_model.h5'
         # model_name = '../loaded_models/inceptionV3_violence_detection_model_with95.h5'
@@ -117,4 +131,4 @@ def process_video(video_path, frame_count=NUM_FRAMES, frame_size=FRAME_SIZE):
     while len(frames) < frame_count:
         frames.append(frames[-1])
 
-    return np.array(frames)
+    return np.array(frames, dtype=np.float32)  # Use float32 for better performance
