@@ -132,7 +132,7 @@ model ServiceRequest {
   serviceCategory String
   userId      String
   user        User     @relation(fields: [userId], references: [id])
-  status      String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  status      String   @default("PENDING") // PENDING, IN_PROGRESS, WAITING_FOR_INFO, COMPLETED
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

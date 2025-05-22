@@ -119,6 +119,39 @@ export class ServiceService {
   }
 
   async getAllServiceRequests() {
-    return this.prisma.serviceRequest.findMany();
+    return this.prisma.serviceRequest.findMany({
+      include: {
+        user: true,
+      },
+    });
+  }
+
+  async updateServiceRequestStatus(requestId: string, status: 'pending' | 'in_progress' | 'waiting_for_info' | 'completed') {
+    return this.prisma.serviceRequest.update({
+      where: { id: requestId },
+      data: { status },
+    });
+  }
+
+  async replyToServiceRequest(requestId: string, message: string) {
+    const request = await this.prisma.serviceRequest.findUnique({
+      where: { id: requestId },
+      include: { user: true },
+    });
+
+    if (!request) {
+      throw new Error('Service request not found');
+    }
+
+    // Send email notification to user && make a socket notification
+    await this.mail.sendServiceRequestReplyEmail(
+      request.user.email,
+      request.serviceName,
+      message,
+      request.serviceCategory
+    );
+
+    this.alertsGateway.sendServiceRequestReply(request);
+    return request;
   }
 }

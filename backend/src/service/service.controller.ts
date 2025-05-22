@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards, Request, Patch } from '@nestjs/common';
 import { ServiceService } from './service.service';
 import { CreateServiceDto, CreateServiceRequestDto } from './dto/create-service.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -50,5 +50,23 @@ export class ServiceController {
   @Get('requests')
   async getAllServiceRequests() {
     return this.serviceService.getAllServiceRequests();
+  }
+
+  @Patch('requests/:requestId/status')
+  @UseGuards(JwtAuthGuard)
+  async updateServiceRequestStatus(
+    @Param('requestId') requestId: string,
+    @Body('status') status: 'pending' | 'in_progress' | 'waiting_for_info' | 'completed'
+  ) {
+    return this.serviceService.updateServiceRequestStatus(requestId, status);
+  }
+
+  @Post('requests/:requestId/reply')
+  @UseGuards(JwtAuthGuard)
+  async replyToServiceRequest(
+    @Param('requestId') requestId: string,
+    @Body('message') message: string
+  ) {
+    return this.serviceService.replyToServiceRequest(requestId, message);
   }
 } 

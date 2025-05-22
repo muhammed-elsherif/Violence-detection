@@ -3,6 +3,44 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
+export interface Model {
+  id: number;
+  name: string;
+  description: string;
+  purchaseDate: Date;
+  status: 'active' | 'expired' | 'pending';
+  downloadUrl?: string;
+  price: number;
+}
+
+export interface AboutData {
+  title: string;
+  description: string;
+  mission: string;
+  vision: string;
+  values: string[];
+  team: {
+    name: string;
+    role: string;
+    bio: string;
+    image: string;
+  }[];
+  stats: {
+    customers: number;
+    models: number;
+    accuracy: number;
+    support: number;
+  };
+}
+
+export interface ContactMessage {
+  name: string;
+  email: string;
+  phone?: string;
+  subject: string;
+  message: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -19,7 +57,7 @@ export class ServiceService {
     return this.http.get(this.apiUrl);
   }
 
-  createServiceRequest(requestData: { serviceId: string, customerId: string }): Observable<any> {
+  createServiceRequest(requestData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/request`, requestData);
   }
 
@@ -45,5 +83,31 @@ export class ServiceService {
 
   getAllCustomers(): Observable<any> {
     return this.http.get(`${this.apiUrl}/customers`);
+  }
+
+  purchaseModel(modelId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/models/${modelId}/purchase`, {});
+  }
+
+  requestModel(modelId: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/request-model`, { modelId });
+  }
+
+  getUserModels(): Observable<Model[]> {
+    return this.http.get<Model[]>(`${this.apiUrl}/models/user`);
+  }
+
+  downloadModel(modelId: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/models/${modelId}/download`, {
+      responseType: 'blob'
+    });
+  }
+
+  getAboutData(): Observable<AboutData> {
+    return this.http.get<AboutData>(`${this.apiUrl}/about`);
+  }
+
+  sendContactMessage(message: ContactMessage): Observable<any> {
+    return this.http.post(`${this.apiUrl}/contact`, message);
   }
 } 

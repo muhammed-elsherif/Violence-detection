@@ -1,8 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import * as nodemailer from "nodemailer";
+import { PrismaClient } from "@prisma/client";
 
 @Injectable()
 export class MailService {
+  constructor(private prisma: PrismaClient) {}
   private transporter = nodemailer.createTransport({
     service: "Gmail",
     host: process.env.EMAIL_HOST! as string,
@@ -29,6 +31,15 @@ export class MailService {
       to: process.env.SYSTEM_EMAIL!,
       subject: "Service Request",
       html: `<p>Hello, a new service request has been made:</p><p><strong>Service Name:</strong> ${serviceName}<br/><strong>Service Description:</strong> ${serviceDescription}<br/><strong>Service Category:</strong> ${serviceCategory}</p>`,
+    });
+  }
+
+  async sendServiceRequestReplyEmail(email: string, serviceName: string, serviceDescription: string, serviceCategory: string) {
+    await this.transporter.sendMail({
+      from: '"Admin" <noreply@videcto.com>',
+      to: email,
+      subject: "Service Request Reply",
+      html: `<p>Hello, your service request has been replied to:</p><p><strong>Service Name:</strong> ${serviceName}<br/><strong>Service Description:</strong> ${serviceDescription}<br/><strong>Service Category:</strong> ${serviceCategory}</p>`,
     });
   }
 

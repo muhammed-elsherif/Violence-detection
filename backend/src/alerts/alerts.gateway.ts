@@ -1,4 +1,5 @@
 import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { ServiceRequest } from '@prisma/client';
 import { Server } from 'socket.io';
 
 @WebSocketGateway({
@@ -28,5 +29,9 @@ export class AlertsGateway {
 
   sendModelPurchase(data: { username: string; modelName: string }) {
     this.server.emit('model_purchase', data);
+  }
+
+  sendServiceRequestReply(data: ServiceRequest) {
+    this.server.emit('service_request_reply', data);
   }
 }

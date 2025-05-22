@@ -9,7 +9,7 @@ interface ServiceRequest {
   serviceDescription: string;
   serviceCategory: string;
   userId: string;
-  status: 'pending' | 'in_progress' | 'completed';
+  status: 'pending' | 'in_progress' | 'waiting_for_info' | 'completed';
   createdAt: Date;
   user?: {
     email: string;
@@ -31,6 +31,7 @@ interface ServiceRequest {
           <option value="all">All Requests</option>
           <option value="pending">Pending</option>
           <option value="in_progress">In Progress</option>
+          <option value="waiting_for_info">Waiting for Info</option>
           <option value="completed">Completed</option>
         </select>
       </div>
@@ -60,6 +61,7 @@ interface ServiceRequest {
                   <span class="badge" [ngClass]="{
                     'bg-warning': request.status === 'pending',
                     'bg-info': request.status === 'in_progress',
+                    'bg-danger': request.status === 'waiting_for_info',
                     'bg-success': request.status === 'completed'
                   }">
                     {{ request.status | titlecase }}
@@ -68,16 +70,9 @@ interface ServiceRequest {
                 <td>{{ request.createdAt | date:'medium' }}</td>
                 <td>
                   <div class="btn-group">
-                    @if (request.status === 'pending') {
-                      <button class="btn btn-sm btn-primary" (click)="startRequest(request)">
-                        Start
-                      </button>
-                    }
-                    @if (request.status === 'in_progress') {
-                      <button class="btn btn-sm btn-success" (click)="completeRequest(request)">
-                        Complete
-                      </button>
-                    }
+                    <button class="btn btn-sm btn-primary me-2" (click)="openStatusModal(request)">
+                      Change Status
+                    </button>
                     <button class="btn btn-sm btn-info" (click)="openReplyModal(request)">
                       Reply
                     </button>
@@ -89,8 +84,38 @@ interface ServiceRequest {
         </table>
       </div>
 
-      <!-- Reply Modal -->
+      <!-- Status Change Modal -->
       @if (selectedRequest) {
+        <div class="modal fade show" style="display: block;" tabindex="-1">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Change Request Status</h5>
+                <button type="button" class="btn-close" (click)="closeStatusModal()"></button>
+              </div>
+              <div class="modal-body">
+                <div class="mb-3">
+                  <label class="form-label">New Status</label>
+                  <select class="form-select" [(ngModel)]="newStatus">
+                    <option value="pending">Pending</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="waiting_for_info">Waiting for Info</option>
+                    <option value="completed">Completed</option>
+                  </select>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="closeStatusModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" (click)="updateStatus()">Update Status</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+      }
+
+      <!-- Reply Modal -->
+      @if (showReplyModal) {
         <div class="modal fade show" style="display: block;" tabindex="-1">
           <div class="modal-dialog">
             <div class="modal-content">
@@ -121,6 +146,10 @@ interface ServiceRequest {
     }
     .badge {
       padding: 0.5em 1em;
+      font-size: 0.875rem;
+    }
+    .table td {
+      vertical-align: middle;
     }
   `]
 })
@@ -129,7 +158,9 @@ export class ServiceRequestsComponent implements OnInit {
   filteredRequests: ServiceRequest[] = [];
   statusFilter: string = 'all';
   selectedRequest: ServiceRequest | null = null;
+  showReplyModal: boolean = false;
   replyMessage: string = '';
+  newStatus: string = '';
 
   constructor(private serviceService: ServiceService) {}
 
@@ -159,37 +190,40 @@ export class ServiceRequestsComponent implements OnInit {
     }
   }
 
-  startRequest(request: ServiceRequest) {
-    this.serviceService.updateServiceRequestStatus(request.id, 'in_progress').subscribe({
-      next: () => {
-        request.status = 'in_progress';
-        this.filterRequests();
-      },
-      error: (error) => {
-        console.error('Error updating request status:', error);
-      }
-    });
+  openStatusModal(request: ServiceRequest) {
+    this.selectedRequest = request;
+    this.newStatus = request.status;
   }
 
-  completeRequest(request: ServiceRequest) {
-    this.serviceService.updateServiceRequestStatus(request.id, 'completed').subscribe({
-      next: () => {
-        request.status = 'completed';
-        this.filterRequests();
-      },
-      error: (error) => {
-        console.error('Error updating request status:', error);
-      }
-    });
+  closeStatusModal() {
+    this.selectedRequest = null;
+    this.newStatus = '';
+  }
+
+  updateStatus() {
+    if (this.selectedRequest && this.newStatus) {
+      this.serviceService.updateServiceRequestStatus(this.selectedRequest.id, this.newStatus as any).subscribe({
+        next: () => {
+          this.selectedRequest!.status = this.newStatus as any;
+          this.filterRequests();
+          this.closeStatusModal();
+        },
+        error: (error) => {
+          console.error('Error updating request status:', error);
+        }
+      });
+    }
   }
 
   openReplyModal(request: ServiceRequest) {
     this.selectedRequest = request;
+    this.showReplyModal = true;
     this.replyMessage = '';
   }
 
   closeReplyModal() {
     this.selectedRequest = null;
+    this.showReplyModal = false;
     this.replyMessage = '';
   }
 
