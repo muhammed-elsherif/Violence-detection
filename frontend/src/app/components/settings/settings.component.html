@@ -1,1 +1,77 @@
-<p>settings works!</p>
+<div class="settings-container">
+  <mat-card class="settings-card">
+    <mat-card-header>
+      <mat-card-title>Application Settings</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="settings-section">
+        <mat-slide-toggle [(ngModel)]="appSettings.notificationEnabled">
+          Enable Notifications
+        </mat-slide-toggle>
+
+        <mat-slide-toggle [(ngModel)]="appSettings.darkMode">
+          Dark Mode
+        </mat-slide-toggle>
+
+        <mat-slide-toggle [(ngModel)]="appSettings.autoSave">
+          Auto Save
+        </mat-slide-toggle>
+
+        <mat-form-field>
+          <mat-label>Language</mat-label>
+          <mat-select [(ngModel)]="appSettings.language">
+            <mat-option *ngFor="let lang of languages" [value]="lang.value">
+              {{lang.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Refresh Interval (seconds)</mat-label>
+          <input matInput type="number" [(ngModel)]="appSettings.refreshInterval">
+        </mat-form-field>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="settings-card">
+    <mat-card-header>
+      <mat-card-title>Admin Settings</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="settings-section">
+        <mat-slide-toggle [(ngModel)]="adminSettings.userRegistrationEnabled">
+          Enable User Registration
+        </mat-slide-toggle>
+
+        <mat-slide-toggle [(ngModel)]="adminSettings.maintenanceMode">
+          Maintenance Mode
+        </mat-slide-toggle>
+
+        <mat-form-field>
+          <mat-label>Max Upload Size (MB)</mat-label>
+          <input matInput type="number" [(ngModel)]="adminSettings.maxUploadSize">
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Session Timeout (minutes)</mat-label>
+          <input matInput type="number" [(ngModel)]="adminSettings.sessionTimeout">
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Backup Frequency</mat-label>
+          <mat-select [(ngModel)]="adminSettings.backupFrequency">
+            <mat-option *ngFor="let freq of backupFrequencies" [value]="freq.value">
+              {{freq.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="action-buttons">
+    <button mat-raised-button color="primary" (click)="saveSettings()">Save Settings</button>
+    <button mat-button (click)="resetSettings()">Reset to Default</button>
+  </div>
+</div>

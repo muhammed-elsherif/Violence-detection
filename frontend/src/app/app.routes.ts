@@ -19,7 +19,6 @@ import { RequestServiceComponent } from "./components/request-service/request-se
 import { MyModelsComponent } from "./components/my-models/my-models.component";
 import { AddServiceComponent } from "./components/add-service/add-service.component";
 import { ServiceRequestsComponent } from "./components/admin/service-requests/service-requests.component";
-import { AuthGuard } from "@angular/fire/auth-guard";
 
 export const routes: Routes = [
   {
@@ -57,7 +56,7 @@ export const routes: Routes = [
   {
     path: "admin",
     component: AdminComponent,
-    canActivate: [AuthGuard],
+    // canActivate: [AuthGuard],
     children: [
       { path: "", redirectTo: "analytics", pathMatch: "full" },
       {
