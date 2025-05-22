@@ -11,6 +11,7 @@ export interface Model {
   status: 'active' | 'expired' | 'pending';
   downloadUrl?: string;
   price: number;
+  modelType: string;
 }
 
 export interface AboutData {
@@ -97,8 +98,8 @@ export class ServiceService {
     return this.http.get<Model[]>(`${this.apiUrl}/models/user`);
   }
 
-  downloadModel(modelId: number): Observable<Blob> {
-    return this.http.get(`${this.apiUrl}/models/${modelId}/download`, {
+  downloadModel(modelId: string): Observable<Blob> {
+    return this.http.get(`${environment.apiUrl}/download/model/${modelId}`, {
       responseType: 'blob'
     });
   }

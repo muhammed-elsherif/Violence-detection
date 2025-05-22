@@ -275,6 +275,84 @@
 			"response": []
 		},
 		{
+			"name": "service-request-reply",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vQGdtYWlsLmNvbSIsInN1YiI6IjVjNjYxMTFiLWEwMzYtNDc3My05OWI5LTg5YzA2ZTQ5MDdkNyIsImlhdCI6MTc0NzQwMDEwMiwiZXhwIjoxNzQ4MDA0OTAyfQ.yVh9V8jfQSogkuhXJ3LxyiXPlcXfRP-xt8xE2LVmekU",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"message\": \"ok\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/services/requests/704fec02-af1d-415f-89b6-244b2459ef09/reply",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"services",
+						"requests",
+						"704fec02-af1d-415f-89b6-244b2459ef09",
+						"reply"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "service-request-change-status",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vQGdtYWlsLmNvbSIsInN1YiI6IjVjNjYxMTFiLWEwMzYtNDc3My05OWI5LTg5YzA2ZTQ5MDdkNyIsImlhdCI6MTc0NzQwMDEwMiwiZXhwIjoxNzQ4MDA0OTAyfQ.yVh9V8jfQSogkuhXJ3LxyiXPlcXfRP-xt8xE2LVmekU",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"status\": \"pending\"\n}\n\n// in_progress/waiting_for_info/completed/pending",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/services/requests/a0c01dae-bb6a-4c1f-bfcc-574c46a9a951/status",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"services",
+						"requests",
+						"a0c01dae-bb6a-4c1f-bfcc-574c46a9a951",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "predict/vil-video",
 			"request": {
 				"auth": {

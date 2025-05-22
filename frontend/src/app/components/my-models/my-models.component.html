@@ -35,8 +35,14 @@
             </div>
             @if (model.status === 'active') {
               <button (click)="downloadModel(model)"
-                      class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
-                Download Model
+                      [disabled]="downloading"
+                      class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors disabled:bg-blue-400 disabled:cursor-not-allowed flex items-center justify-center">
+                @if (downloading) {
+                  <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                  Downloading...
+                } @else {
+                  Download Desktop App
+                }
               </button>
             }
           </div>

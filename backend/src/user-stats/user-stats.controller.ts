@@ -5,7 +5,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('User Statistics')
 @Controller('user-stats')
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 export class UserStatsController {
   constructor(private readonly userStatsService: UserStatsService) {}
 

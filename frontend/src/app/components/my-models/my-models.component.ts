@@ -11,6 +11,7 @@ interface Model {
   purchaseDate: Date;
   status: 'active' | 'expired' | 'pending';
   downloadUrl?: string;
+  modelType: string;
 }
 
 @Component({
@@ -24,6 +25,7 @@ export class MyModelsComponent implements OnInit {
   models: Model[] = [];
   loading = true;
   error: string | null = null;
+  downloading = false;
 
   constructor(
     private serviceService: ServiceService,
@@ -52,24 +54,61 @@ export class MyModelsComponent implements OnInit {
   }
 
   downloadModel(model: Model): void {
-    if (model.downloadUrl) {
-      this.serviceService.downloadModel(model.id).subscribe({
+    if (model.status === 'active') {
+      this.downloading = true;
+      this.error = null;
+
+      // Map model name to model ID for download
+      const modelId = model.name.toLowerCase().replace(/\s+/g, '-');
+
+      this.serviceService.downloadModel(modelId).subscribe({
         next: (response) => {
-          // Handle file download
           const blob = new Blob([response], { type: 'application/octet-stream' });
           const url = window.URL.createObjectURL(blob);
           const link = document.createElement('a');
           link.href = url;
-          link.download = `${model.name}.zip`;
+          
+          // Set appropriate file extension based on platform
+          const platform = this.getPlatform();
+          let fileExtension;
+          switch (platform) {
+            case 'windows':
+              fileExtension = '.exe';
+              break;
+            case 'mac':
+              fileExtension = '.dmg';
+              break;
+            case 'linux':
+              fileExtension = '.AppImage';
+              break;
+            default:
+              fileExtension = '.zip';
+          }
+          
+          link.download = `${model.name}-desktop${fileExtension}`;
           link.click();
           window.URL.revokeObjectURL(url);
+          this.downloading = false;
         },
         error: (error) => {
           console.error('Error downloading model:', error);
           this.error = 'Failed to download model. Please try again later.';
+          this.downloading = false;
         }
       });
     }
+  }
+
+  private getPlatform(): string {
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    if (userAgent.includes('windows')) {
+      return 'windows';
+    } else if (userAgent.includes('mac')) {
+      return 'mac';
+    } else if (userAgent.includes('linux')) {
+      return 'linux';
+    }
+    return 'unknown';
   }
 
   getStatusClass(status: string): string {

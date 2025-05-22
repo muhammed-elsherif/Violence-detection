@@ -6,11 +6,11 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 // import { Roles } from '../auth/decorators/roles.decorator';
 
 @Controller('services')
+// @UseGuards(JwtAuthGuard)
 export class ServiceController {
   constructor(private readonly serviceService: ServiceService) {}
 
   @Post('create')
-  @UseGuards(JwtAuthGuard)
   //   @Roles('ADMIN')
   async createService(@Body() createServiceDto: CreateServiceDto) {
     return this.serviceService.createService(createServiceDto);
@@ -22,21 +22,18 @@ export class ServiceController {
   }
 
   @Post('request')
-  @UseGuards(JwtAuthGuard)
   async createServiceRequest(@Request() req, @Body() createServiceRequestDto: CreateServiceRequestDto) {
     return this.serviceService.createServiceRequest(req.user.sub, createServiceRequestDto);
   }
 
   // not verified
   @Post('purchase-model')
-  @UseGuards(JwtAuthGuard)
   async purchaseModel(@Request() req, @Body('modelId') modelId: string) {
     return this.serviceService.purchaseModel(req.user.sub, modelId);
   }
   
   // not verified
   @Get('customer/:customerId/requests')
-  @UseGuards(JwtAuthGuard)
   async getCustomerServiceRequests(@Param('customerId') customerId: string) {
     return this.serviceService.getServiceRequests(customerId);
   }
@@ -53,7 +50,6 @@ export class ServiceController {
   }
 
   @Patch('requests/:requestId/status')
-  @UseGuards(JwtAuthGuard)
   async updateServiceRequestStatus(
     @Param('requestId') requestId: string,
     @Body('status') status: 'pending' | 'in_progress' | 'waiting_for_info' | 'completed'
@@ -62,7 +58,6 @@ export class ServiceController {
   }
 
   @Post('requests/:requestId/reply')
-  @UseGuards(JwtAuthGuard)
   async replyToServiceRequest(
     @Param('requestId') requestId: string,
     @Body('message') message: string
