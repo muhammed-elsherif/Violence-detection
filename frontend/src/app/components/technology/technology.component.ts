@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { UploadService } from '../../core/services/upload.service';
-
 
 @Component({
   selector: 'app-technology',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './technology.component.html',
   styleUrls: ['./technology.component.scss'],
 })
@@ -14,7 +16,6 @@ export class TechnologyComponent {
   errorMessage: string | null = null;
   resultUrl: string | null = null;
   resultType: 'video' | 'image' | null = null;
-
   selectedFiles: File[] = [];
 
   constructor(private uploadService: UploadService) {}
@@ -57,12 +58,10 @@ export class TechnologyComponent {
   upload() {
     if (!this.selectedFile) return;
 
-    // Reset progress before starting upload.
     this.uploadProgress = 0;
 
     this.uploadService.uploadFile(this.selectedFile).subscribe({
       next: (result) => {
-        // 'result' is an object: { content: Blob, metadata: any }
         this.resultUrl = URL.createObjectURL(result.content);
         this.uploadProgress = 100;
       },

@@ -1,56 +1,47 @@
 <div class="container mx-auto px-4 py-8">
-  <div class="max-w-6xl mx-auto">
-    <div class="flex justify-between items-center mb-8">
-      <h1 class="text-3xl font-bold">My Models</h1>
-      <button routerLink="/user/request-model"
-              class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-        Request New Model
-      </button>
-    </div>
+  <h1 class="text-3xl font-bold mb-8">My Models</h1>
 
-    <!-- Loading State -->
-    <div *ngIf="loading" class="flex justify-center items-center py-12">
+  @if (loading) {
+    <div class="flex justify-center items-center h-64">
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
     </div>
-
-    <!-- Models Grid -->
-    <div *ngIf="!loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div *ngFor="let model of models" 
-           class="bg-white rounded-lg shadow-md overflow-hidden">
-        <div class="p-6">
-          <div class="flex justify-between items-start mb-4">
-            <h3 class="text-xl font-semibold">{{model.name}}</h3>
-            <span [class]="'px-2 py-1 rounded-full text-sm font-medium ' + getStatusClass(model.status)">
-              {{model.status}}
-            </span>
-          </div>
-          
-          <p class="text-gray-600 mb-4">{{model.description}}</p>
-          
-          <div class="text-sm text-gray-500 mb-4">
-            Purchased on {{model.purchaseDate | date:'mediumDate'}}
-          </div>
-
-          <div class="flex justify-end">
-            <button *ngIf="model.status === 'active' && model.downloadUrl"
-                    (click)="downloadModel(model)"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-              Download
-            </button>
+  } @else if (error) {
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+      {{ error }}
+    </div>
+  } @else if (models.length === 0) {
+    <div class="text-center py-12">
+      <h2 class="text-xl font-semibold text-gray-600 mb-4">No models found</h2>
+      <p class="text-gray-500 mb-6">You haven't purchased any models yet.</p>
+      <a routerLink="/purchase-model" 
+         class="inline-block bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors">
+        Browse Available Models
+      </a>
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for (model of models; track model.id) {
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <div class="p-6">
+            <div class="flex justify-between items-start mb-4">
+              <h3 class="text-xl font-semibold text-gray-900">{{ model.name }}</h3>
+              <span [class]="'px-3 py-1 rounded-full text-sm font-medium ' + getStatusClass(model.status)">
+                {{ model.status }}
+              </span>
+            </div>
+            <p class="text-gray-600 mb-4">{{ model.description }}</p>
+            <div class="text-sm text-gray-500 mb-4">
+              Purchased on: {{ model.purchaseDate | date:'mediumDate' }}
+            </div>
+            @if (model.status === 'active') {
+              <button (click)="downloadModel(model)"
+                      class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                Download Model
+              </button>
+            }
           </div>
         </div>
-      </div>
+      }
     </div>
-
-    <!-- Empty State -->
-    <div *ngIf="!loading && models.length === 0" 
-         class="text-center py-12">
-      <h3 class="text-xl font-medium text-gray-900 mb-2">No models found</h3>
-      <p class="text-gray-500 mb-4">You haven't purchased any models yet.</p>
-      <button routerLink="/user/request-model"
-              class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-        Browse Available Models
-      </button>
-    </div>
-  </div>
+  }
 </div> 

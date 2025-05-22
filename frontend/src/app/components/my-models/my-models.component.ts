@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { NgClass } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ServiceService } from '../../core/services/service.service';
+import { Router } from '@angular/router';
 
 interface Model {
   id: number;
@@ -16,47 +17,58 @@ interface Model {
   selector: 'app-my-models',
   templateUrl: './my-models.component.html',
   styleUrls: ['./my-models.component.scss'],
-  imports: [ReactiveFormsModule, CommonModule, NgClass]
+  standalone: true,
+  imports: [ReactiveFormsModule, CommonModule]
 })
 export class MyModelsComponent implements OnInit {
   models: Model[] = [];
   loading = true;
+  error: string | null = null;
 
-  constructor() {}
+  constructor(
+    private serviceService: ServiceService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadModels();
   }
 
   loadModels(): void {
-    // TODO: Implement service call to get user's models
-    // Simulated data for now
-    this.models = [
-      {
-        id: 1,
-        name: 'Violence Detection Model',
-        description: 'Real-time violence detection in video streams',
-        purchaseDate: new Date('2024-03-15'),
-        status: 'active',
-        downloadUrl: '/api/models/download/1'
+    this.loading = true;
+    this.error = null;
+    
+    this.serviceService.getUserModels().subscribe({
+      next: (models) => {
+        this.models = models;
+        this.loading = false;
       },
-      {
-        id: 2,
-        name: 'Object Detection Model',
-        description: 'Advanced object detection and tracking',
-        purchaseDate: new Date('2024-03-10'),
-        status: 'active',
-        downloadUrl: '/api/models/download/2'
+      error: (error) => {
+        this.error = 'Failed to load models. Please try again later.';
+        this.loading = false;
+        console.error('Error loading models:', error);
       }
-    ];
-    this.loading = false;
+    });
   }
 
   downloadModel(model: Model): void {
     if (model.downloadUrl) {
-      // TODO: Implement download logic
-      console.log('Downloading model:', model.name);
-      window.open(model.downloadUrl, '_blank');
+      this.serviceService.downloadModel(model.id).subscribe({
+        next: (response) => {
+          // Handle file download
+          const blob = new Blob([response], { type: 'application/octet-stream' });
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `${model.name}.zip`;
+          link.click();
+          window.URL.revokeObjectURL(url);
+        },
+        error: (error) => {
+          console.error('Error downloading model:', error);
+          this.error = 'Failed to download model. Please try again later.';
+        }
+      });
     }
   }
 

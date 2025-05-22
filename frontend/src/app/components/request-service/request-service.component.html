@@ -1,25 +1,75 @@
 <!-- request service component -->
 <div class="container mx-auto p-4">
-  <h1 class="text-2xl font-bold mb-4">Request Service</h1>
+  <h1 class="text-2xl font-bold mb-4">Request Custom Service</h1>
   <div class="bg-white p-6 rounded-lg shadow-md">
     <form [formGroup]="requestForm" (ngSubmit)="onSubmit()">
-        <div class="mb-4">
-            <label for="serviceName" class="block text-sm font-medium text-gray-700">Service Name</label>
-            <input type="text" formControlName="serviceName" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+      <div class="mb-4">
+        <label for="serviceName" class="block text-sm font-medium text-gray-700">Service Name</label>
+        <input type="text" formControlName="serviceName" 
+               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+      </div>
+
+      <div class="mb-4">
+        <label for="serviceCategory" class="block text-sm font-medium text-gray-700">Service Category</label>
+        <select formControlName="serviceCategory" 
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+          <option value="">Select a category</option>
+          <option value="CV">Computer Vision</option>
+          <option value="NLP">Natural Language Processing</option>
+          <option value="ML">Machine Learning</option>
+        </select>
+      </div>
+
+      <div class="mb-4">
+        <label for="serviceDescription" class="block text-sm font-medium text-gray-700">Service Description</label>
+        <textarea formControlName="serviceDescription" rows="3"
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+      </div>
+
+      <div class="mb-4">
+        <label for="useCase" class="block text-sm font-medium text-gray-700">Use Case</label>
+        <textarea formControlName="useCase" rows="3"
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  placeholder="Describe how you plan to use this service"></textarea>
+      </div>
+
+      <div class="mb-4">
+        <label for="requirements" class="block text-sm font-medium text-gray-700">Specific Requirements</label>
+        <textarea formControlName="requirements" rows="3"
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  placeholder="List any specific requirements or features you need"></textarea>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label for="timeline" class="block text-sm font-medium text-gray-700">Expected Timeline</label>
+          <input type="text" formControlName="timeline"
+                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                 placeholder="e.g., 2 weeks, 1 month">
         </div>
-        <div class="mb-4">
-            <label for="serviceDescription" class="block text-sm font-medium text-gray-700">Service Description</label>
-            <textarea formControlName="serviceDescription" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+
+        <div>
+          <label for="budget" class="block text-sm font-medium text-gray-700">Budget (USD)</label>
+          <input type="number" formControlName="budget"
+                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                 placeholder="Enter your budget">
         </div>
-        <div class="mb-4">
-            <label for="serviceType" class="block text-sm font-medium text-gray-700">Service Type</label>
-            <select formControlName="serviceType" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                <option value="type1">Type 1</option>
-                <option value="type2">Type 2</option>
-                <option value="type3">Type 3</option>
-            </select>
+      </div>
+
+      @if (errorMessage) {
+        <div class="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
+          {{ errorMessage }}
         </div>
+      }
+
+      <div class="flex justify-end">
+        <button type="submit" 
+                [disabled]="!requestForm.valid || isSubmitting"
+                class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
+          <span *ngIf="!isSubmitting">Submit Request</span>
+          <span *ngIf="isSubmitting">Submitting...</span>
+        </button>
+      </div>
     </form>
-    
-    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Submit</button>
+  </div>
 </div>
