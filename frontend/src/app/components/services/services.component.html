@@ -72,10 +72,11 @@
       <p>{{ selectedModel.description }}</p>
       <div class="model-demo">
         <!-- only show this if user is logged in && if not show a message to login implement isLoggedIn in global service -->
-        @if (false) {
+        @if (isLoggedIn) {
         <app-technology></app-technology>
         } @else {
         <p>Please login to try out this service</p>
+        <button class="btn btn-primary" (click)="login()">Login</button>
         }
       </div>
     </div>
