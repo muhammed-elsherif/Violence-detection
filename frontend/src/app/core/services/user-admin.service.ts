@@ -16,7 +16,7 @@ export class UserAdminService {
 
   createUser(createUserData: any): Observable<any> {
     return this._HttpClient.post(
-      "http://localhost:4000/dashboard/users/create-user",
+      "http://localhost:4000/dashboard/users/create-developer",
       createUserData
     );
   }

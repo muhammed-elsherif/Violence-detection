@@ -17,7 +17,7 @@ import { Subscription } from "rxjs";
   templateUrl: "./create-user.component.html",
   styleUrls: ["./create-user.component.scss"], // Corrected 'styleUrl' to 'styleUrls'
 })
-export class CreateUserComponent {
+export class CreateDeveloperComponent {
   private readonly _UserAdminService = inject(UserAdminService);
 
   createUserForm: FormGroup;
@@ -25,7 +25,7 @@ export class CreateUserComponent {
 
   constructor(private formBuilder: FormBuilder) {
     this.createUserForm = this.formBuilder.group({
-      username: [
+      name: [
         null,
         [
           Validators.required,

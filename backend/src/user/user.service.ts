@@ -27,6 +27,26 @@ export class UserService {
     });
   }
 
+  async createDeveloper(
+    name: string,
+    email: string,
+    password: string,
+  ) {
+    const existingUser = await this.prisma.developer.findUnique({ where: { email } });
+    if (existingUser) {
+      throw new BadRequestException('Email already exists');
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    return this.prisma.developer.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+      },
+    });
+  }
+
   async findOneByEmail(email: string) {
     return this.prisma.user.findUnique({ where: { email } });
   }

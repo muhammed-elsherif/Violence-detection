@@ -52,9 +52,10 @@ export class ServiceController {
   @Patch('requests/:requestId/status')
   async updateServiceRequestStatus(
     @Param('requestId') requestId: string,
-    @Body('status') status: 'pending' | 'in_progress' | 'waiting_for_info' | 'completed'
+    @Body('status') status: 'pending' | 'in_progress' | 'waiting_for_info' | 'completed',
+    @Body('developerId') developerId: string
   ) {
-    return this.serviceService.updateServiceRequestStatus(requestId, status);
+    return this.serviceService.updateServiceRequestStatus(requestId, status, developerId);
   }
 
   @Post('requests/:requestId/reply')
@@ -63,5 +64,10 @@ export class ServiceController {
     @Body('message') message: string
   ) {
     return this.serviceService.replyToServiceRequest(requestId, message);
+  }
+
+  @Get('developers')
+  async getDevelopers() {
+    return this.serviceService.getDevelopers();
   }
 } 

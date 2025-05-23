@@ -41,17 +41,17 @@ enum DetectionStatus {
 }
 
 model User {
-  id             String           @id @default(uuid())
-  username       String
-  email          String           @unique
-  password       String
-  role           UserRole         @default(USER)
-  isActive       Boolean          @default(true)
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  uploadsHistory UploadsHistory[]
+  id              String           @id @default(uuid())
+  username        String
+  email           String           @unique
+  password        String
+  role            UserRole         @default(USER)
+  isActive        Boolean          @default(true)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  uploadsHistory  UploadsHistory[]
   serviceRequests ServiceRequest[]
-  uploadStats    UserStats?
+  uploadStats     UserStats?
 }
 
 model UploadsHistory {
@@ -109,37 +109,43 @@ model Alert {
 }
 
 model Service {
-  id          String   @id @default(uuid())
-  name        String
-  description String
-  category    ModelType
-  price       Float
-  features    String
-  requirements String
-  modelFile   String
-  demoVideo   String?
-  documentation String?
-  isPublic    Boolean  @default(false)
+  id                 String    @id @default(uuid())
+  name               String
+  description        String
+  category           ModelType
+  price              Float
+  features           String
+  requirements       String
+  modelFile          String
+  demoVideo          String?
+  documentation      String?
+  isPublic           Boolean   @default(false)
   supportedPlatforms Json
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 }
 
 model ServiceRequest {
-  id          String   @id @default(uuid())
-  serviceName   String
-  serviceDescription String
-  serviceCategory String
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  status      String   @default("PENDING") // PENDING, IN_PROGRESS, WAITING_FOR_INFO, COMPLETED
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                   String    @id @default(uuid())
+  serviceName          String
+  serviceDescription   String
+  serviceCategory      String
+  userId               String
+  user                 User      @relation(fields: [userId], references: [id])
+  status               String    @default("PENDING") // PENDING, IN_PROGRESS, WAITING_FOR_INFO, COMPLETED
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  developerId          String
+  developer            Developer @relation(fields: [developerId], references: [id])
+  useCase              String
+  expectedTimeline     String
+  specificRequirements String?
+  budget               Float?
 }
 
 model Customer {
-  id                 String           @id @default(uuid())
-  email              String           @unique
+  id                 String   @id @default(uuid())
+  email              String   @unique
   fullName           String
   companyName        String
   companyType        String
@@ -148,7 +154,18 @@ model Customer {
   address            String?
   industry           String?
   password           String
-  hasChangedPassword Boolean          @default(false)
-  createdAt          DateTime         @default(now())
-  updatedAt          DateTime         @updatedAt
+  hasChangedPassword Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Developer {
+  id              String           @id @default(uuid())
+  name            String
+  email           String           @unique
+  password        String
+  isActive        Boolean          @default(true)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  serviceRequests ServiceRequest[]
 }

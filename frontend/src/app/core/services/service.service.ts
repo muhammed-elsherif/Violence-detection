@@ -70,8 +70,8 @@ export class ServiceService {
     return this.http.get(`${this.apiUrl}/requests`);
   }
 
-  updateServiceRequestStatus(requestId: string, status: string): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/requests/${requestId}/status`, { status });
+  updateServiceRequestStatus(requestId: string, status: string, developerId: string): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/requests/${requestId}/status`, { status, developerId });
   }
 
   replyToServiceRequest(requestId: string, message: string): Observable<any> {
@@ -110,5 +110,13 @@ export class ServiceService {
 
   sendContactMessage(message: ContactMessage): Observable<any> {
     return this.http.post(`${this.apiUrl}/contact`, message);
+  }
+
+  getDevelopers(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/developers`);
+  }
+
+  assignServiceRequestToDeveloper(requestId: string, developerId: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/requests/${requestId}/assign`, { developerId });
   }
 } 
