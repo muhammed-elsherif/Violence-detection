@@ -201,6 +201,39 @@
 			"response": []
 		},
 		{
+			"name": "create-developer",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"mody6@gmail.com\",\n    \"name\": \"BOo\",\n    \"password\": \"111111\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4000/dashboard/users/create-developer",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"dashboard",
+						"users",
+						"create-developer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "service-create",
 			"request": {
 				"auth": {
@@ -245,7 +278,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vQGdtYWlsLmNvbSIsInN1YiI6IjVjNjYxMTFiLWEwMzYtNDc3My05OWI5LTg5YzA2ZTQ5MDdkNyIsImlhdCI6MTc0NzQwMDEwMiwiZXhwIjoxNzQ4MDA0OTAyfQ.yVh9V8jfQSogkuhXJ3LxyiXPlcXfRP-xt8xE2LVmekU",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vQGdtYWlsLmNvbSIsInN1YiI6IjVjNjYxMTFiLWEwMzYtNDc3My05OWI5LTg5YzA2ZTQ5MDdkNyIsImlhdCI6MTc0ODAwOTg5OCwiZXhwIjoxNzQ4NjE0Njk4fQ.DXIyfihH4JQiTXQbBFIz6VcoLTqT666ytSz3dQ1EmpI",
 							"type": "string"
 						}
 					]
@@ -254,7 +287,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"serviceName\": \"Sentiment Analysis\",\n  \"serviceDescription\": \"Like and dislike\",\n  \"serviceCategory\": \"NLP\"\n}",
+					"raw": "{\n  \"serviceName\": \"Sentiment Analysis\",\n  \"serviceDescription\": \"Like and dislike\",\n  \"serviceCategory\": \"NLP\",\n  \"useCase\": \"NLP\",\n  \"expectedTimeline\": \"2 weeks\",\n  \"budget\": 22\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -330,7 +363,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"status\": \"pending\"\n}\n\n// in_progress/waiting_for_info/completed/pending",
+					"raw": "{\n    \"status\": \"pending\",\n    \"developerId\": \"\"\n}\n\n// in_progress/waiting_for_info/completed/pending",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -549,7 +582,7 @@
 			"response": []
 		},
 		{
-			"name": "all-requests",
+			"name": "all-developers",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -569,6 +602,46 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\n  \"name\": \"Advanced Anomaly Detection\",\n  \"description\": \"A service to detect anomalies in time-series data using machine learning.\",\n  \"category\": \"CV\",\n  \"price\": 299.99,\n  \"features\": \"Real-time processing, Customizable thresholds, API access\",\n  \"requirements\": \"Data in CSV or JSON format, Minimum 1000 data points\",\n  \"modelFile\": \"path/to/your/model/anomaly_detection_v1.2.pkl\",\n  \"demoVideo\": \"https://example.com/videos/anomaly_detection_demo.mp4\",\n  \"documentation\": \"https://example.com/docs/anomaly_detection_api\",\n  \"isPublic\": true,\n  \"supportedPlatforms\": {\n    \"windows\": true,\n    \"macos\": false,\n    \"linux\": true\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/services/developers",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"services",
+						"developers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all-requests",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vaGFtZWQyQGdtYWlsLmNvbSIsInN1YiI6ImFiZDViZjEyLWRlMGQtNDQwYi1iZDIwLWNiNGQzOTViZjY2NCIsImlhdCI6MTc0NzMyNzIxNCwiZXhwIjoxNzQ3OTMyMDE0fQ.W10jAOWJmiwjaHawcQ_SPtBymV3mTGuoDIYkcQLq6Go",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
 					"options": {
 						"raw": {
 							"language": "json"
