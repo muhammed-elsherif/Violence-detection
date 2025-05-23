@@ -33,6 +33,9 @@ export class CreateServiceDto {
   @IsBoolean()
   isPublic: boolean;
 
+  @IsString()
+  endpoint: string;
+
   @IsObject()
   supportedPlatforms: {
     windows: boolean;

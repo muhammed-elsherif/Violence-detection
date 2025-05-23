@@ -250,7 +250,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"name\": \"Advanced Anomaly Detection\",\n  \"description\": \"A service to detect anomalies in time-series data using machine learning.\",\n  \"category\": \"CV\",\n  \"price\": 299.99,\n  \"features\": \"Real-time processing, Customizable thresholds, API access\",\n  \"requirements\": \"Data in CSV or JSON format, Minimum 1000 data points\",\n  \"modelFile\": \"path/to/your/model/anomaly_detection_v1.2.pkl\",\n  \"demoVideo\": \"https://example.com/videos/anomaly_detection_demo.mp4\",\n  \"documentation\": \"https://example.com/docs/anomaly_detection_api\",\n  \"isPublic\": true,\n  \"supportedPlatforms\": {\n    \"windows\": true,\n    \"macos\": false,\n    \"linux\": true\n  }\n}",
+					"raw": "{\n  \"name\": \"Advanced Anomaly Detection\",\n  \"description\": \"A service to detect anomalies in time-series data using machine learning.\",\n  \"category\": \"CV\",\n  \"price\": 299.99,\n  \"features\": \"Real-time processing, Customizable thresholds, API access\",\n  \"requirements\": \"Data in CSV or JSON format, Minimum 1000 data points\",\n  \"modelFile\": \"path/to/your/model/anomaly_detection_v1.2.pkl\",\n  \"demoVideo\": \"https://example.com/videos/anomaly_detection_demo.mp4\",\n  \"documentation\": \"https://example.com/docs/anomaly_detection_api\",\n  \"isPublic\": true,\n  \"endpoint\": \"predict/object-detection\",\n  \"supportedPlatforms\": {\n    \"windows\": true,\n    \"macos\": false,\n    \"linux\": true\n  }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
