@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ServiceService } from "../../core/services/service.service";
@@ -27,8 +27,8 @@ export class ServicesComponent implements OnInit {
   showOverlay: boolean = false;
   selectedModel: Service | null = null;
   categories: string[] = [];
-
-  constructor(private serviceService: ServiceService) {}
+  isLoggedIn: boolean = false;
+  constructor(private serviceService: ServiceService, private router: Router) {}
 
   ngOnInit() {
     this.loadServices();
@@ -76,5 +76,9 @@ export class ServicesComponent implements OnInit {
   closeOverlay() {
     this.showOverlay = false;
     this.selectedModel = null;
+  }
+
+  login() {
+    this.router.navigate(["/login"]);
   }
 }
