@@ -1,134 +1,103 @@
-<div class="container mx-auto px-4 py-8">
-  <div class="max-w-4xl mx-auto">
-    <h1 class="text-3xl font-bold mb-8">Add New AI Model Service</h1>
-    
-    <form 
-    [formGroup]="serviceForm" 
-    (ngSubmit)="onSubmit()" 
-    class="space-y-6">
+<div class="container py-5">
+  <div class="mx-auto" style="max-width: 720px;">
+    <h1 class="mb-4 fw-bold">Add New AI Model Service</h1>
+
+    <form [formGroup]="serviceForm" (ngSubmit)="onSubmit()">
       <!-- Basic Information -->
-      <div class="bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-xl font-semibold mb-4">Basic Information</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Model Name</label>
-            <input type="text" formControlName="name"
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Category</label>
-            <input type="text" formControlName="category"
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-          </div>
-          <div class="md:col-span-2">
-            <label class="block text-sm font-medium text-gray-700">Description</label>
-            <textarea formControlName="description" rows="3"
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+      <div class="card mb-4">
+        <div class="card-body">
+          <h2 class="h5 fw-semibold mb-3">Basic Information</h2>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Model Name</label>
+              <input type="text" formControlName="name" class="form-control" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Category</label>
+              <input type="text" formControlName="category" class="form-control" />
+            </div>
+            <div class="col-12">
+              <label class="form-label">Description</label>
+              <textarea formControlName="description" rows="3" class="form-control"></textarea>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Pricing and Features -->
-      <div class="bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-xl font-semibold mb-4">Pricing and Features</h2>
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Price ($)</label>
-            <input type="number" formControlName="price"
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h2 class="h5 fw-semibold mb-3">Pricing and Features</h2>
+          <div class="mb-3">
+            <label class="form-label">Price ($)</label>
+            <input type="number" formControlName="price" class="form-control" />
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Features</label>
-            <textarea formControlName="features" rows="3"
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                      placeholder="List key features, one per line"></textarea>
+          <div class="mb-3">
+            <label class="form-label">Features</label>
+            <textarea formControlName="features" rows="3" class="form-control"
+              placeholder="List key features, one per line"></textarea>
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Requirements</label>
-            <textarea formControlName="requirements" rows="3"
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                      placeholder="List system requirements, one per line"></textarea>
+          <div class="mb-3">
+            <label class="form-label">Requirements</label>
+            <textarea formControlName="requirements" rows="3" class="form-control"
+              placeholder="List system requirements, one per line"></textarea>
           </div>
         </div>
       </div>
 
       <!-- Files and Documentation -->
-      <div class="bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-xl font-semibold mb-4">Files and Documentation</h2>
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Model File</label>
-            <input type="file" (change)="onFileSelected($event, 'modelFile')"
-                   class="mt-1 block w-full text-sm text-gray-500
-                          file:mr-4 file:py-2 file:px-4
-                          file:rounded-md file:border-0
-                          file:text-sm file:font-semibold
-                          file:bg-blue-50 file:text-blue-700
-                          hover:file:bg-blue-100">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h2 class="h5 fw-semibold mb-3">Files and Documentation</h2>
+          <div class="mb-3">
+            <label class="form-label">Model File</label>
+            <input type="file" (change)="onFileSelected($event, 'modelFile')" class="form-control" />
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Demo Video (Optional)</label>
-            <input type="file" (change)="onFileSelected($event, 'demoVideo')"
-                   class="mt-1 block w-full text-sm text-gray-500
-                          file:mr-4 file:py-2 file:px-4
-                          file:rounded-md file:border-0
-                          file:text-sm file:font-semibold
-                          file:bg-blue-50 file:text-blue-700
-                          hover:file:bg-blue-100">
+          <div class="mb-3">
+            <label class="form-label">Demo Video (Optional)</label>
+            <input type="file" (change)="onFileSelected($event, 'demoVideo')" class="form-control" />
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Documentation (Optional)</label>
-            <input type="file" (change)="onFileSelected($event, 'documentation')"
-                   class="mt-1 block w-full text-sm text-gray-500
-                          file:mr-4 file:py-2 file:px-4
-                          file:rounded-md file:border-0
-                          file:text-sm file:font-semibold
-                          file:bg-blue-50 file:text-blue-700
-                          hover:file:bg-blue-100">
+          <div class="mb-3">
+            <label class="form-label">Documentation (Optional)</label>
+            <input type="file" (change)="onFileSelected($event, 'documentation')" class="form-control" />
           </div>
         </div>
       </div>
 
       <!-- Platform Support -->
-      <div class="bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-xl font-semibold mb-4">Platform Support</h2>
-        <div formGroupName="supportedPlatforms" class="space-y-2">
-          <div class="flex items-center">
-            <input type="checkbox" formControlName="windows"
-                   class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-            <label class="ml-2 block text-sm text-gray-700">Windows</label>
+      <div class="card mb-4">
+        <div class="card-body">
+          <h2 class="h5 fw-semibold mb-3">Platform Support</h2>
+          <div formGroupName="supportedPlatforms" class="form-check mb-2">
+            <input type="checkbox" formControlName="windows" class="form-check-input" id="windows" />
+            <label class="form-check-label" for="windows">Windows</label>
           </div>
-          <div class="flex items-center">
-            <input type="checkbox" formControlName="macos"
-                   class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-            <label class="ml-2 block text-sm text-gray-700">macOS</label>
+          <div class="form-check mb-2">
+            <input type="checkbox" formControlName="macos" class="form-check-input" id="macos" />
+            <label class="form-check-label" for="macos">macOS</label>
           </div>
-          <div class="flex items-center">
-            <input type="checkbox" formControlName="linux"
-                   class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-            <label class="ml-2 block text-sm text-gray-700">Linux</label>
+          <div class="form-check">
+            <input type="checkbox" formControlName="linux" class="form-check-input" id="linux" />
+            <label class="form-check-label" for="linux">Linux</label>
           </div>
         </div>
       </div>
 
       <!-- Visibility -->
-      <div class="bg-white p-6 rounded-lg shadow-md">
-        <div class="flex items-center">
-          <input type="checkbox" formControlName="isPublic"
-                 class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-          <label class="ml-2 block text-sm text-gray-700">Make this model publicly available</label>
+      <div class="card mb-4">
+        <div class="card-body d-flex align-items-center">
+          <input type="checkbox" formControlName="isPublic" class="form-check-input me-2" id="isPublic" />
+          <label class="form-check-label" for="isPublic">Make this model publicly available</label>
         </div>
       </div>
 
       <!-- Submit Button -->
-      <div class="flex justify-end">
-        <button type="submit" 
-                [disabled]="!serviceForm.valid || isSubmitting"
-                class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
+      <div class="text-end">
+        <button type="submit" [disabled]="!serviceForm.valid || isSubmitting" class="btn btn-primary">
           <span *ngIf="!isSubmitting">Add Service</span>
           <span *ngIf="isSubmitting">Adding...</span>
         </button>
       </div>
     </form>
   </div>
-</div> 
+</div>

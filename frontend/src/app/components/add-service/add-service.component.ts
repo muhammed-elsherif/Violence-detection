@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
   templateUrl: './add-service.component.html',
   standalone: true,
   styleUrls: ['./add-service.component.scss'],
-  imports: [ReactiveFormsModule, CommonModule, NgClass]
+  imports: [ReactiveFormsModule, CommonModule]
 })
 export class AddServiceComponent implements OnInit {
   serviceForm: FormGroup;

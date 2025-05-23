@@ -17,6 +17,7 @@ export class AdminNavComponent {
     { label: "Service Requests", icon: "fas fa-tasks", routeLink: "/admin/service-requests" },
     { label: "Settings", icon: "fas fa-cogs", routeLink: "/admin/settings" },
     { label: "Reports", icon: "fas fa-chart-bar", routeLink: "/admin/reports" },
+    { label: "Add service", icon: "fas fa-square-plus", routeLink: "/admin/add-service" },
   ];
 
   toggleCollapse(): void {
