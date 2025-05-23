@@ -1,48 +1,27 @@
 .contact-container {
-  input,
-  textarea {
-    transition: all 0.2s ease;
-
-    &:focus {
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-    }
+  .icon-box {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
   }
 
-  button {
+  .form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  }
+
+  button.btn {
     transition: all 0.2s ease;
-
-    &:not(:disabled):hover {
+    &:hover:not(:disabled) {
       transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(37, 99, 235, 0.2);
+      box-shadow: 0 0.5rem 1rem rgba(13, 110, 253, 0.2);
     }
-
     &:disabled {
       opacity: 0.6;
       cursor: not-allowed;
     }
-  }
-
-  svg {
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  .form-label {
-    font-weight: 500;
-  }
-
-  .form-control,
-  textarea {
-    border-radius: 0.375rem;
-  }
-
-  .bg-primary-subtle {
-    background-color: #e0f2ff;
-  }
-
-  .text-primary {
-    color: #2563eb;
   }
 }

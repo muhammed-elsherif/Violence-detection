@@ -1,92 +1,143 @@
-<div class="about-container">
-  @if (loading) {
-    <div class="flex justify-center items-center h-64">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+<div class="about-container container-fluid px-0">
+  <!-- Loading / Error Handling -->
+
+  <!-- @if (loading) {
+    <div class="d-flex justify-content-center align-items-center" style="height: 16rem;">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
     </div>
   } @else if (error) {
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-      {{ error }}
+    <div class="alert alert-danger">{{ error }}</div>
+  } @else if (aboutData) { -->
+
+
+  <!-- Hero Section -->
+  <section class="hero-section text-white py-5 text-center bg-primary">
+    <div class="container">
+      <h1 class="display-4 fw-bold mb-4">Empowering the Future with AI</h1>
+      <p class="lead mx-auto" style="max-width: 720px;">
+        We build intelligent systems to detect violence, crashes, and beyond — helping organizations react faster and
+        smarter.
+      </p>
     </div>
-  } @else if (aboutData) {
-    <!-- Hero Section -->
-    <section class="hero-section bg-gradient-to-r from-blue-600 to-blue-800 text-white py-20">
-      <div class="container mx-auto px-4">
-        <h1 class="text-4xl md:text-5xl font-bold mb-6">{{ aboutData.title }}</h1>
-        <p class="text-xl md:text-2xl max-w-3xl">{{ aboutData.description }}</p>
-      </div>
-    </section>
+  </section>
 
-    <!-- Mission & Vision -->
-    <section class="py-16 bg-gray-50">
-      <div class="container mx-auto px-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div class="bg-white p-8 rounded-lg shadow-md">
-            <h2 class="text-2xl font-bold mb-4 text-gray-900">Our Mission</h2>
-            <p class="text-gray-600">{{ aboutData.mission }}</p>
+  <!-- Mission & Vision -->
+  <section class="py-5 bg-light">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-md-6">
+          <div class="bg-white p-4 rounded shadow-sm h-100">
+            <h2 class="h4 fw-bold text-dark mb-3">Our Mission</h2>
+            <p class="text-muted">
+              To provide reliable, real-time AI-powered detection tools that enhance public safety and operational
+              efficiency through advanced machine learning technologies.
+            </p>
           </div>
-          <div class="bg-white p-8 rounded-lg shadow-md">
-            <h2 class="text-2xl font-bold mb-4 text-gray-900">Our Vision</h2>
-            <p class="text-gray-600">{{ aboutData.vision }}</p>
+        </div>
+        <div class="col-md-6">
+          <div class="bg-white p-4 rounded shadow-sm h-100">
+            <h2 class="h4 fw-bold text-dark mb-3">Our Vision</h2>
+            <p class="text-muted">
+              To become the global leader in specialized AI solutions for safety-critical environments across cities,
+              industries, and transportation networks.
+            </p>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Stats Section -->
-    <section class="py-16 bg-white">
-      <div class="container mx-auto px-4">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-          <div class="text-center">
-            <div class="text-4xl font-bold text-blue-600 mb-2">{{ aboutData.stats.customers }}+</div>
-            <div class="text-gray-600">Happy Customers</div>
+  <!-- Stats Section -->
+  <section class="py-5 bg-white">
+    <div class="container">
+      <div class="row text-center g-4">
+        <div class="col-6 col-md-3">
+          <h3 class="display-6 fw-bold text-primary">200+</h3>
+          <p class="text-muted">Happy Clients</p>
+        </div>
+        <div class="col-6 col-md-3">
+          <h3 class="display-6 fw-bold text-primary">15+</h3>
+          <p class="text-muted">AI Models</p>
+        </div>
+        <div class="col-6 col-md-3">
+          <h3 class="display-6 fw-bold text-primary">98%</h3>
+          <p class="text-muted">Accuracy Rate</p>
+        </div>
+        <div class="col-6 col-md-3">
+          <h3 class="display-6 fw-bold text-primary">24/7</h3>
+          <p class="text-muted">Support Availability</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Values Section -->
+  <section class="py-5 bg-light">
+    <div class="container">
+      <h2 class="text-center fw-bold mb-5 text-dark">Our Values</h2>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="bg-white p-4 rounded shadow-sm h-100">
+            <p class="text-muted">Ethical AI that prioritizes privacy, security, and transparency.</p>
           </div>
-          <div class="text-center">
-            <div class="text-4xl font-bold text-blue-600 mb-2">{{ aboutData.stats.models }}+</div>
-            <div class="text-gray-600">AI Models</div>
+        </div>
+        <div class="col-md-4">
+          <div class="bg-white p-4 rounded shadow-sm h-100">
+            <p class="text-muted">Constant innovation to stay ahead in safety-critical machine learning solutions.</p>
           </div>
-          <div class="text-center">
-            <div class="text-4xl font-bold text-blue-600 mb-2">{{ aboutData.stats.accuracy }}%</div>
-            <div class="text-gray-600">Accuracy Rate</div>
-          </div>
-          <div class="text-center">
-            <div class="text-4xl font-bold text-blue-600 mb-2">{{ aboutData.stats.support }}/7</div>
-            <div class="text-gray-600">Support Hours</div>
+        </div>
+        <div class="col-md-4">
+          <div class="bg-white p-4 rounded shadow-sm h-100">
+            <p class="text-muted">Collaboration and trust with our clients and communities.</p>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Values Section -->
-    <section class="py-16 bg-gray-50">
-      <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">Our Values</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          @for (value of aboutData.values; track value) {
-            <div class="bg-white p-6 rounded-lg shadow-md">
-              <p class="text-gray-600">{{ value }}</p>
+  <!-- Team Section -->
+  <section class="py-5 bg-white">
+    <div class="container">
+      <h2 class="text-center fw-bold mb-5 text-dark">Our Team</h2>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card team-card h-100 overflow-hidden shadow-sm">
+            <img src="https://i.pinimg.com/1200x/f8/30/9a/f8309ad7747ce749bf08a1e849f4b799.jpg" alt="John Smith" class="card-img-top team-img" />
+            <div class="card-body">
+              <h5 class="card-title fw-bold">John Smith</h5>
+              <h6 class="text-primary mb-2">CEO & Founder</h6>
+              <p class="card-text text-muted">John leads the company with over a decade of experience in AI and public
+                safety tech.</p>
             </div>
-          }
+          </div>
         </div>
-      </div>
-    </section>
-
-    <!-- Team Section -->
-    <section class="py-16 bg-white">
-      <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">Our Team</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          @for (member of aboutData.team; track member.name) {
-            <div class="bg-white rounded-lg shadow-md overflow-hidden">
-              <img [src]="member.image" [alt]="member.name" class="w-full h-64 object-cover">
-              <div class="p-6">
-                <h3 class="text-xl font-bold mb-2 text-gray-900">{{ member.name }}</h3>
-                <p class="text-blue-600 mb-4">{{ member.role }}</p>
-                <p class="text-gray-600">{{ member.bio }}</p>
-              </div>
+        <div class="col-md-4">
+          <div class="card team-card h-100 overflow-hidden shadow-sm">
+            <img src="https://i.pinimg.com/1200x/8c/9b/07/8c9b07e5f25b7776190bf9de4da60c47.jpg" alt="Sarah Lee" class="card-img-top team-img" />
+            <div class="card-body">
+              <h5 class="card-title fw-bold">Sarah Lee</h5>
+              <h6 class="text-primary mb-2">Lead Data Scientist</h6>
+              <p class="card-text text-muted">Sarah specializes in computer vision and model optimization for real-time
+                systems.</p>
             </div>
-          }
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card team-card h-100 overflow-hidden shadow-sm">
+            <img src="https://i.pinimg.com/1200x/78/65/51/7865516e79c1c57e7887466e1e7c8c4c.jpg" alt="Mike Tran" class="card-img-top team-img" />
+            <div class="card-body">
+              <h5 class="card-title fw-bold">Mike Tran</h5>
+              <h6 class="text-primary mb-2">AI Engineer</h6>
+              <p class="card-text text-muted">Mike builds scalable AI pipelines and deploys models for production
+                environments.</p>
+            </div>
+          </div>
         </div>
       </div>
-    </section>
-  }
+    </div>
+  </section>
+
+
 </div>
