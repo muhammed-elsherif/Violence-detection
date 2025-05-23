@@ -109,7 +109,7 @@ export class ServiceService {
   }
 
   sendContactMessage(message: ContactMessage): Observable<any> {
-    return this.http.post(`${this.apiUrl}/contact`, message);
+    return this.http.post(`${environment.apiUrl}/contact`, message);
   }
 
   getDevelopers(): Observable<any> {

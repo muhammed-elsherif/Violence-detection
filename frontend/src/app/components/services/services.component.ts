@@ -27,7 +27,7 @@ export class ServicesComponent implements OnInit {
   showOverlay: boolean = false;
   selectedModel: Service | null = null;
   categories: string[] = [];
-  isLoggedIn: boolean = false;
+  isLoggedIn: boolean = true;
   constructor(private serviceService: ServiceService, private router: Router) {}
 
   ngOnInit() {
