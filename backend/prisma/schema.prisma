@@ -117,6 +117,7 @@ model Service {
   features           String
   requirements       String
   modelFile          String
+  endpoint           String
   demoVideo          String?
   documentation      String?
   isPublic           Boolean   @default(false)

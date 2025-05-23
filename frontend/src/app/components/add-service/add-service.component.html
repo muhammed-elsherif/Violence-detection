@@ -61,6 +61,10 @@
             <label class="form-label">Documentation (Optional)</label>
             <input type="file" (change)="onFileSelected($event, 'documentation')" class="form-control" />
           </div>
+          <div class="mb-3">
+            <label class="form-label">Endpoint</label>
+            <input type="text" formControlName="endpoint" class="form-control" />
+          </div>
         </div>
       </div>
 
