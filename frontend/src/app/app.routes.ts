@@ -59,6 +59,7 @@ export const routes: Routes = [
     // canActivate: [AuthGuard],
     children: [
       { path: "", redirectTo: "analytics", pathMatch: "full" },
+      { path: "analytics", component: AnalyticsComponent },
       {
         path: "user-magement-nav",
         component: UserMagementNavComponent,
@@ -70,7 +71,6 @@ export const routes: Routes = [
       },
       { path: "settings", component: SettingsComponent },
       { path: "reports", component: ReportsComponent },
-      { path: "analytics", component: AnalyticsComponent },
       { path: "add-service", component: AddServiceComponent },
       { path: "service-requests", component: ServiceRequestsComponent },
     ],

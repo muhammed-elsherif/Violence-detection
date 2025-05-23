@@ -1,16 +1,15 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 import { AdminNavComponent } from "../../components/admin-nav/admin-nav.component";
-import { RouterOutlet } from '@angular/router';
-import { NotificationsComponent } from '../../components/notifications/notifications.component';
+import { RouterOutlet } from "@angular/router";
+import { NotificationsComponent } from "../../components/notifications/notifications.component";
 
 @Component({
-  selector: 'app-admin',
+  selector: "app-admin",
   standalone: true,
-  imports: [AdminNavComponent, RouterOutlet, NotificationsComponent],
+  imports: [AdminNavComponent, NotificationsComponent],
   template: `
     <app-notifications></app-notifications>
     <app-admin-nav></app-admin-nav>
-    <router-outlet></router-outlet>
-  `
+  `,
 })
 export class AdminComponent {}
