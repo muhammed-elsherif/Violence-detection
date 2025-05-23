@@ -34,4 +34,8 @@ export class AlertsGateway {
   sendServiceRequestReply(data: ServiceRequest) {
     this.server.emit('service_request_reply', data);
   }
+
+  sendContactForm(data: { name: string; email: string; phone: string; message: string; subject: string }) {
+    this.server.emit('contact_form', data);
+  }
 }

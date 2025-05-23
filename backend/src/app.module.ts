@@ -30,6 +30,8 @@ import { DownloadController } from './download/download.controller';
 import { FireDetectionModule } from './fire-detection/fire-detection.module';
 import { ServiceController } from "./service/service.controller";
 import { ServiceService } from "./service/service.service";
+import { ContactController } from './contact/contact.controller';
+import { ContactService } from './contact/contact.service';
 
 @Module({
   imports: [
@@ -46,7 +48,7 @@ import { ServiceService } from "./service/service.service";
     CustomerModule,
     FireDetectionModule,
   ],
-  controllers: [AppController, DashboardController, AlertsController, CustomerController, MailController, DownloadController, ServiceController],
+  controllers: [AppController, DashboardController, AlertsController, CustomerController, MailController, DownloadController, ServiceController, ContactController],
   providers: [
     AppService,
     AuthService,
@@ -57,7 +59,8 @@ import { ServiceService } from "./service/service.service";
     AlertsService,
     CustomerService,
     ServiceService,
-    MailService
+    MailService,
+    ContactService
   ],
 })
 export class AppModule {}

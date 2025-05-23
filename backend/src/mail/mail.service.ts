@@ -68,7 +68,16 @@ export class MailService {
       html: `<p>Hello, a new model has been purchased:</p><p><strong>Username:</strong> ${username}<br/><strong>Model Name:</strong> ${modelName}</p>`, 
     });
   }
-  
+
+  async sendContactEmail(name: string, email: string, phone: string, subject: string, message: string) {
+    await this.transporter.sendMail({
+      from: '"Admin" <noreply@videcto.com>',
+      to: process.env.SYSTEM_EMAIL!,
+      subject: subject,
+      html: `<p>Hello, a new contact form has been submitted:</p><p><strong>Name:</strong> ${name}<br/><strong>Email:</strong> ${email}<br/><strong>Phone:</strong> ${phone}<br/><strong>Message:</strong> ${message}</p>`,
+    });
+  }
+
   //   async callEmergencyService(location: { lat: number; lng: number }) {
   //     const message = `🔥 Fire detected at location ${location.lat}, ${location.lng}`;
   //     await this.twilio.calls.create({
