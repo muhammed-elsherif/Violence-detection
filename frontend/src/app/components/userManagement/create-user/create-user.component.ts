@@ -25,7 +25,7 @@ export class CreateDeveloperComponent {
 
   constructor(private formBuilder: FormBuilder) {
     this.createUserForm = this.formBuilder.group({
-      username: [
+      name: [
         null,
         [
           Validators.required,
