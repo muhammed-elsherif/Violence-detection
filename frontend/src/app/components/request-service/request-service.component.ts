@@ -6,10 +6,9 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-request-service',
-  standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './request-service.component.html',
-  styleUrls: ['./request-service.component.scss']
+  styleUrl: './request-service.component.scss'
 })
 export class RequestServiceComponent {
   requestForm: FormGroup;

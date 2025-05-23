@@ -10,6 +10,7 @@ import { ServiceService } from '../../core/services/service.service';
   templateUrl: './contact.component.html',
   styleUrls: ['./contact.component.scss']
 })
+
 export class ContactComponent {
   contactForm: FormGroup;
   isSubmitting = false;
