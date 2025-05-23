@@ -16,8 +16,34 @@ export class UserDto {
     Object.assign(this, partial);
   }
 }
+
+export class DeveloperDto {
+  id: string;
+  name: string;
+  email: string;
+  isActive: boolean;
+}
+
+export class CreateDeveloperDto {
+  @ApiProperty({ example: 'John Doe' })
+  @IsNotEmpty()
+  name: string;
+
+  @ApiProperty({ example: 'john@example.com' })
+  @IsEmail()
+  email: string;
+
+  @ApiProperty({ example: 'password123', minLength: 6 })
+  @IsNotEmpty()
+  @MinLength(6)
+  // @Matches(regex), { message: "Password too weak" })
+  password: string;
+
+  @IsOptional()
+  isActive?: boolean;
+}
 export class CreateUserDto {
-  @ApiProperty({ example: 'john_doe' })
+  @ApiProperty({ example: 'John Doe' })
   @IsNotEmpty()
   username: string;
 

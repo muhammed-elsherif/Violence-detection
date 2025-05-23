@@ -25,12 +25,12 @@ export class MailService {
     });
   }
 
-  async sendServiceRequestEmail(serviceName: string, serviceDescription: string, serviceCategory: string) {
+  async sendServiceRequestEmail(serviceName: string, serviceDescription: string, serviceCategory: string, useCase: string, specificRequirements: string, expectedTimeline: string, budget: number) {
     await this.transporter.sendMail({
       from: '"Admin" <noreply@videcto.com>',
       to: process.env.SYSTEM_EMAIL!,
       subject: "Service Request",
-      html: `<p>Hello, a new service request has been made:</p><p><strong>Service Name:</strong> ${serviceName}<br/><strong>Service Description:</strong> ${serviceDescription}<br/><strong>Service Category:</strong> ${serviceCategory}</p>`,
+      html: `<p>Hello, a new service request has been made:</p><p><strong>Service Name:</strong> ${serviceName}<br/><strong>Service Description:</strong> ${serviceDescription}<br/><strong>Service Category:</strong> ${serviceCategory}<br/><strong>Use Case:</strong> ${useCase}<br/><strong>Specific Requirements:</strong> ${specificRequirements}<br/><strong>Expected Timeline:</strong> ${expectedTimeline}<br/><strong>Budget:</strong> ${budget}</p>`,
     });
   }
 

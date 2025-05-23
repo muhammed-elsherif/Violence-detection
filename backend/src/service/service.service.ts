@@ -1,12 +1,19 @@
 import { Injectable } from "@nestjs/common";
-import { CreateServiceDto, CreateServiceRequestDto } from "./dto/create-service.dto";
+import {
+  CreateServiceDto,
+  CreateServiceRequestDto,
+} from "./dto/create-service.dto";
 import { ModelType, PrismaClient } from "@prisma/client";
 import { MailService } from "../mail/mail.service";
 import { AlertsGateway } from "../alerts/alerts.gateway";
 
 @Injectable()
 export class ServiceService {
-  constructor(private prisma: PrismaClient, private mail: MailService, private alertsGateway: AlertsGateway) {}
+  constructor(
+    private prisma: PrismaClient,
+    private mail: MailService,
+    private alertsGateway: AlertsGateway
+  ) {}
 
   async createService(createServiceDto: CreateServiceDto) {
     return this.prisma.service.create({
@@ -21,15 +28,23 @@ export class ServiceService {
     return this.prisma.service.findMany();
   }
 
-  async createServiceRequest(userId: string, createServiceRequestDto: CreateServiceRequestDto) {
+  async createServiceRequest(
+    userId: string,
+    createServiceRequestDto: CreateServiceRequestDto
+  ) {
     const admin = await this.prisma.user.findFirst({
       where: { role: "ADMIN" },
+    });
+
+    const developer = await this.prisma.developer.findFirst({
+      where: { isActive: true },
     });
 
     const serviceRequest = await this.prisma.serviceRequest.create({
       data: {
         ...createServiceRequestDto,
         userId,
+        developerId: developer?.id || "",
       },
     });
 
@@ -48,7 +63,11 @@ export class ServiceService {
       await this.mail.sendServiceRequestEmail(
         serviceRequest.serviceName,
         serviceRequest.serviceDescription,
-        serviceRequest.serviceCategory
+        serviceRequest.serviceCategory,
+        serviceRequest.useCase,
+        serviceRequest.specificRequirements || "",
+        serviceRequest.expectedTimeline,
+        serviceRequest.budget || 0
       );
     }
 
@@ -71,7 +90,7 @@ export class ServiceService {
     });
 
     if (!user || !model) {
-      throw new Error('User or model not found');
+      throw new Error("User or model not found");
     }
 
     const updatedCustomer = await this.prisma.customer.update({
@@ -86,7 +105,7 @@ export class ServiceService {
     // Emit model purchase event
     this.alertsGateway.sendModelPurchase({
       username: user.username,
-      modelName: model.name
+      modelName: model.name,
     });
 
     return updatedCustomer;
@@ -106,7 +125,9 @@ export class ServiceService {
       take: 10,
     });
 
-    const serviceIds = serviceRequests.map((sr) => sr.purchasedModels as string[]);
+    const serviceIds = serviceRequests.map(
+      (sr) => sr.purchasedModels as string[]
+    );
     const services = await this.prisma.service.findMany({
       where: {
         id: {
@@ -121,26 +142,47 @@ export class ServiceService {
   async getAllServiceRequests() {
     return this.prisma.serviceRequest.findMany({
       include: {
-        user: true,
+        developer: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        user: {
+          select: {
+            username: true,
+          },
+        },
       },
     });
   }
 
-  async updateServiceRequestStatus(requestId: string, status: 'pending' | 'in_progress' | 'waiting_for_info' | 'completed') {
+  async updateServiceRequestStatus(
+    requestId: string,
+    status: "pending" | "in_progress" | "waiting_for_info" | "completed",
+    developerId: string
+  ) {
     return this.prisma.serviceRequest.update({
       where: { id: requestId },
-      data: { status },
+      data: { status, developerId: developerId },
+    });
+  }
+
+  async getServiceRequestsByDeveloper(developerName: string) {
+    return this.prisma.developer.findMany({
+      where: { name: developerName },
+      include: { serviceRequests: true },
     });
   }
 
   async replyToServiceRequest(requestId: string, message: string) {
     const request = await this.prisma.serviceRequest.findUnique({
       where: { id: requestId },
-      include: { user: true },
+      include: { user: { select: { email: true } } },
     });
 
     if (!request) {
-      throw new Error('Service request not found');
+      throw new Error("Service request not found");
     }
 
     // Send email notification to user && make a socket notification
@@ -153,5 +195,16 @@ export class ServiceService {
 
     this.alertsGateway.sendServiceRequestReply(request);
     return request;
+  }
+
+  async getDevelopers() {
+    return this.prisma.developer.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        isActive: true,
+      },
+    });
   }
 }

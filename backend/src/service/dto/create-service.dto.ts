@@ -50,4 +50,18 @@ export class CreateServiceRequestDto {
 
   @IsString()
   serviceCategory: string;
+
+  @IsString()
+  useCase: string;
+
+  @IsString()
+  @IsOptional()
+  specificRequirements: string;
+
+  @IsString()
+  expectedTimeline: string;
+
+  @IsNumber()
+  @IsOptional()
+  budget: number;
 }
