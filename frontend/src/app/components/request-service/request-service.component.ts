@@ -25,9 +25,9 @@ export class RequestServiceComponent {
       serviceDescription: ['', Validators.required],
       serviceCategory: ['', Validators.required],
       useCase: ['', Validators.required],
-      requirements: ['', Validators.required],
-      timeline: ['', Validators.required],
-      budget: ['', [Validators.required, Validators.min(0)]]
+      expectedTimeline: ['', Validators.required],
+      specificRequirements: [''],
+      budget: ['', [Validators.min(0)]]
     });
   }
 
