@@ -7,11 +7,12 @@ export interface Model {
   id: number;
   name: string;
   description: string;
+  category: string;
   purchaseDate: Date;
   status: 'active' | 'expired' | 'pending';
   downloadUrl?: string;
   price: number;
-  modelType: string;
+  endpoint: string;
 }
 
 export interface AboutData {

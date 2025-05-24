@@ -9,6 +9,7 @@ import {
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  Res,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import {
@@ -18,7 +19,6 @@ import {
   ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
-import { PrismaClient } from "@prisma/client";
 import * as FormData from "form-data";
 import { firstValueFrom } from "rxjs";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
@@ -27,6 +27,8 @@ import {
   MulterFile,
   ViolenceVideoPredictionResponse,
 } from "../prisma-sql/prisma-sql.service";
+import { Response } from 'express';
+import { RedisService } from '../redis/redis.service';
 
 export interface VideoDetectionResult {
   overallStatus: "VIOLENCE_DETECTED" | "NON_VIOLENCE";
@@ -46,7 +48,7 @@ export class PredictController {
   constructor(
     private readonly httpService: HttpService,
     private readonly predictService: PredictService,
-    private prisma: PrismaClient
+    private readonly redisService: RedisService,
   ) {}
 
   @Post("video")
@@ -151,7 +153,19 @@ export class PredictController {
     const userId = req.user.sub;
 
     try {
-      return await this.predictService.predictVideo(file, userId);
+      const result = await this.predictService.predictVideo(file, userId);
+      
+      // Store video in Redis with 1 hour expiration
+      const videoId = result.videoUrl.split('/').pop();
+      await this.redisService.set(`video:${videoId}`, result.videoUrl, 3600); // 1 hour TTL
+
+      return {
+        videoUrl: result.videoUrl,
+        overallStatus: result.overallStatus,
+        overallConfidence: result.overallConfidence,
+        violentFrames: result.violentFrames,
+        totalFrames: result.totalFrames
+      };
     } catch (error) {
       throw new HttpException(
         error.message || "Error during prediction",
@@ -167,16 +181,16 @@ export class PredictController {
     content: { "video/mp4": { schema: { type: "string", format: "binary" } } },
   })
   @ApiResponse({ status: 404, description: "Video not found" })
-  async getAnnotatedVideo(@Param("id") id: string) {
-    const upload = await this.prisma.uploadsHistory.findUnique({
-      where: { id },
-    });
-
-    if (!upload || !upload.annotatedFilePath) {
+  async getAnnotatedVideo(@Param("id") id: string, @Res() res: Response) {
+    const videoData = await this.redisService.get(`video:${id}`);
+    
+    if (!videoData) {
       throw new HttpException("Video not found", 404);
     }
 
-    return { filePath: upload.annotatedFilePath };
+    res.setHeader('Content-Type', 'video/mp4');
+    res.setHeader('Content-Disposition', `inline; filename=${id}.mp4`);
+    res.send(Buffer.from(videoData));
   }
 
   @Post("image")

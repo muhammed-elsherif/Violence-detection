@@ -2,15 +2,8 @@ import { Component, OnInit } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-import { ServiceService } from "../../core/services/service.service";
+import { ServiceService, Model } from "../../core/services/service.service";
 import { TechnologyComponent } from "../technology/technology.component";
-
-interface Service {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-}
 
 @Component({
   selector: "app-services",
@@ -22,12 +15,12 @@ interface Service {
 export class ServicesComponent implements OnInit {
   searchQuery: string = "";
   selectedFilter: string = "";
-  models: Service[] = [];
-  filteredModels: Service[] = [];
+  models: Model[] = [];
+  filteredModels: Model[] = [];
   showOverlay: boolean = false;
-  selectedModel: Service | null = null;
+  selectedModel: Model | null = null;
   categories: string[] = [];
-  isLoggedIn: boolean = true;
+  isLoggedIn: boolean = localStorage.getItem('access_token') ? true : false;
   constructor(private serviceService: ServiceService, private router: Router) {}
 
   ngOnInit() {
@@ -36,7 +29,7 @@ export class ServicesComponent implements OnInit {
 
   loadServices() {
     this.serviceService.getAllServices().subscribe({
-      next: (services: Service[]) => {
+      next: (services: Model[]) => {
         this.models = services;
         this.filteredModels = services;
         // Extract unique categories from services
@@ -68,7 +61,7 @@ export class ServicesComponent implements OnInit {
     });
   }
 
-  openOverlay(model: Service) {
+  openOverlay(model: Model) {
     this.selectedModel = model;
     this.showOverlay = true;
   }

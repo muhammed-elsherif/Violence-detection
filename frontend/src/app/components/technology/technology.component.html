@@ -1,23 +1,33 @@
 <div class="container mt-2">
-  <div class="d-flex flex-column justify-content-center align-items-center pt-4 mb-4 mt-3">
+  <div
+    class="d-flex flex-column justify-content-center align-items-center pt-4 mb-4 mt-3"
+  >
     <!-- Header Section -->
     <div class="header-section text-center">
-      <h1 class="title">Violence & Threat Analyzer</h1>
+      <h1 class="title">{{ selectedModel.name }}</h1>
       <p class="description">
-        Upload videos or images to detect violent activity instantly. Free users can get a summary report.<br />
-        Upgrade to unlock full detailed reports, gun detection, and object detection for comprehensive safety analysis.
+        {{ selectedModel.description }}
       </p>
     </div>
 
     <!-- File Upload Section -->
+    <!-- if category is computer vision show a message to upload a video or image -->
+    @if(selectedModel.category === "computer-vision" || selectedModel.category
+    === "image-processing" || selectedModel.category === "CV" ||
+    selectedModel.category === "Computer Vision") {
+
     <div class="upload-section d-flex align-items-center gap-3 mb-3">
       <div class="file-input-wrapper">
         <input type="file" id="fileInput" (change)="onFileSelected($event)" />
         <label for="fileInput" class="file-label">Choose File</label>
       </div>
-      <button (click)="upload()" [disabled]="!selectedFile" class="upload-btn">Upload</button>
+      <button (click)="upload()" [disabled]="!selectedFile" class="upload-btn">
+        Upload
+      </button>
     </div>
-    <p class="supported-formats">Supported formats: .mp4, .avi, .jpg, .png (Max size 500 MB)</p>
+    <p class="supported-formats">
+      Supported formats: .mp4, .avi, .jpg, .MOV, .jpeg, .png (Max size 500 MB)
+    </p>
     @if(errorMessage) {
     <p class="error-message">{{ errorMessage }}</p>
     }
@@ -27,21 +37,25 @@
     <div class="my-2">
       <p>{{ file.name }}</p>
       @if (file.type.startsWith('image/')) {
-      <img [src]="getFileUrl(file)" width="500" class="uploaded-media">
-      }
-      @if (file.type.startsWith('video/')) {
-      <video [src]="getFileUrl(file)" width="500" class="uploaded-media" controls></video>
+      <img [src]="getFileUrl(file)" width="500" class="uploaded-media" />
+      } @if (file.type.startsWith('video/')) {
+      <video
+        [src]="videoUrl || getFileUrl(file)"
+        width="500"
+        class="uploaded-media"
+        controls
+      ></video>
       }
     </div>
     }
-
-    <!-- Status Section (Hardcoded for design purposes, adjust based on your logic) -->
+    <!-- Status Section after uploading files and getting the result -->
+    @if(resultUrl) {
     <div class="status-section d-flex align-items-center gap-2 mb-3">
       <span class="status-icon">✔</span>
       <div>
-        <p class="status-title">Violence Detection (Free Plan)</p>
-        <p class="status-text">Overall Status: Violence Detected</p>
-        <p class="status-text">Confidence Score: 90%</p>
+        <p class="status-title">{{ selectedModel.name }} (Free Plan)</p>
+        <p class="status-text">Overall Status: {{ resultUrl.overallStatus }}</p>
+        <p class="status-text">Confidence Score: {{ resultUrl.overallConfidence * 100 }}%</p>
       </div>
     </div>
 
@@ -50,25 +64,53 @@
       <button type="button" class="btn summary-btn">Generate Summary</button>
       <button type="button" class="btn report-btn">Generate Full Report</button>
     </div>
-    <p class="button-info">Summary is free. Full Report available with Starter or Pro Plan</p>
+    <p class="button-info">
+      Summary is free. Full Report available with Starter or Pro Plan
+    </p>
 
     <!-- Advanced Analysis Section -->
     <div class="advanced-section d-flex flex-column align-items-center mt-4">
       <div class="d-flex align-items-center gap-2 mb-2">
         <span class="flame-icon">🔥</span>
-        <h3 class="advanced-title">Advanced Analysis (Available in Pro Plans)</h3>
+        <h3 class="advanced-title">
+          Advanced Analysis (Available in Pro Plans)
+        </h3>
       </div>
       <div class="d-flex gap-3">
         <div class="feature-box">
           <span class="feature-icon">🔫</span>
-          <p class="feature-text">Gun Detection<br />(<a href="#" class="feature-link">Click to View Plans</a>)</p>
+          <p class="feature-text">
+            Gun Detection<br />(<a href="#" class="feature-link"
+              >Click to View Plans</a
+            >)
+          </p>
         </div>
         <div class="feature-box">
           <span class="feature-icon">🎯</span>
-          <p class="feature-text">Object Detection<br />(<a href="#" class="feature-link">Click to View Plans</a>)</p>
+          <p class="feature-text">
+            Object Detection<br />(<a href="#" class="feature-link"
+              >Click to View Plans</a
+            >)
+          </p>
         </div>
       </div>
       <a href="#" class="upgrade-link mt-3">Why Upgrade?</a>
     </div>
+    } }
+    @else {
+    <!-- make a text box cause this section will be for text analysis and text generation and nlp -->
+    <div class="text-box">
+      <!-- make a styled text box with a placeholder and a button -->
+      <textarea class="form-control" rows="3" placeholder="Enter your text here"></textarea>
+      <div class="d-flex justify-content-center align-items-center m-3 gap-3">
+        <!-- make a button with a loading spinner -->
+        <button class="btn mt-2" (click)="analyzeText()">
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Analyzing...
+        </button>
+        <!-- <button class="btn mt-2" (click)="generateText()">Generate</button> -->
+      </div>
+    </div>
+    }
   </div>
 </div>

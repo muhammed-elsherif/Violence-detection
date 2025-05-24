@@ -13,10 +13,10 @@ export interface MulterFile {
 
 export interface ViolenceVideoPredictionResponse {
   videoUrl: string;
-  totalFrames: number;
   overallStatus: string;
   overallConfidence: number;
-  violentFrames?: number;
+  violentFrames: number;
+  totalFrames: number;
 }
 
 export interface GunVideoPredictionResponse {

@@ -11,7 +11,7 @@ interface Model {
   purchaseDate: Date;
   status: 'active' | 'expired' | 'pending';
   downloadUrl?: string;
-  modelType: string;
+  category: string;
 }
 
 @Component({

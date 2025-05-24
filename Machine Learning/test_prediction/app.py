@@ -31,9 +31,6 @@ def predict_and_annotate_video(video_path: str, model) -> str:
 
     out = cv2.VideoWriter(output_filename, fourcc, fps, (width, height))
 
-    frames = []
-    violent_frames = 0
-
     ### predict by video
     frames = process_video(video_path) # shape: (FRAMES, H, W, 3)
     input_frames = np.expand_dims(frames, axis=0) # shape: (1, FRAMES, H, W, 3)
@@ -41,37 +38,33 @@ def predict_and_annotate_video(video_path: str, model) -> str:
     predicted_label = np.argmax(prediction)
     confidence = prediction[0][predicted_label]
     cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
-    while cap.isOpened():
-        ret, frame = cap.read()
-        if not ret:
-            break
+    ret, frame = cap.read()
+    if not ret:
+        raise HTTPException(status_code=400, detail="Invalid video file")
 
-        # confidence_scores.append(confidence)
-        if predicted_label == 1:  # Assuming label 1 = Violence
-            # violent_frames += NUM_FRAMES  # Assume entire batch is violent
-            cv2.rectangle(frame, (50, 50), (width - 50, height - 50), (0, 0, 255), 4)
-            cv2.putText(
-                frame,
-                f"Violence Detected ({confidence:.2f})",
-                (60, 70),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                1,
-                (0, 0, 255),
-                2,
-            )
-        else:
-            cv2.putText(
-                frame,
-                f"Non-Violence ({confidence:.2f})",
-                (60, 70),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                1,
-                (0, 255, 0),
-                2,
-            )
+    if predicted_label == 1:  # Assuming label 1 = Violence
+        cv2.rectangle(frame, (50, 50), (width - 50, height - 50), (0, 0, 255), 4)
+        cv2.putText(
+            frame,
+            f"Violence Detected ({confidence:.2f})",
+            (60, 70),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            1,
+            (0, 0, 255),
+            2,
+        )
+    else:
+        cv2.putText(
+            frame,
+            f"Non-Violence ({confidence:.2f})",
+            (60, 70),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            1,
+            (0, 255, 0),
+            2,
+        )
 
-        out.write(frame)
-        frames = []
+    out.write(frame)
 
     cap.release()
     out.release()
@@ -81,7 +74,7 @@ def predict_and_annotate_video(video_path: str, model) -> str:
     detection_results = {
         "overallStatus": "VIOLENCE_DETECTED" if predicted_label == 1 else "NON_VIOLENCE",
         "overallConfidence": float(avg_confidence),
-        "violentFrames": violent_frames,
+        "violentFrames": 0,
         "totalFrames": total_frames,
     }
     return output_filename, detection_results

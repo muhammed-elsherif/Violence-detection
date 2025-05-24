@@ -64,22 +64,13 @@
 @if (showOverlay && selectedModel) {
 <div class="overlay" (click)="closeOverlay()">
   <div class="overlay-content" (click)="$event.stopPropagation()">
-    <div class="overlay-header">
-      <h3>{{ selectedModel.name }}</h3>
-      <button class="btn-close" (click)="closeOverlay()">close</button>
-    </div>
-    <div class="overlay-body">
-      <p>{{ selectedModel.description }}</p>
-      <div class="model-demo">
-        <!-- only show this if user is logged in && if not show a message to login implement isLoggedIn in global service -->
-        @if (isLoggedIn) {
-        <app-technology></app-technology>
-        } @else {
-        <p>Please login to try out this service</p>
-        <button class="btn btn-primary" (click)="login()">Login</button>
-        }
-      </div>
-    </div>
+    <!-- only show this if user is logged in && if not show a message to login implement isLoggedIn in global service -->
+    @if (isLoggedIn) {
+    <app-technology [selectedModel]="selectedModel"></app-technology>
+    } @else {
+    <p>Please login to try out this service</p>
+    <button class="btn btn-primary" (click)="login()">Login</button>
+    }
   </div>
 </div>
 }

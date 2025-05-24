@@ -1,42 +1,32 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { Model } from './service.service';
 
 interface UploadResponse {
-  content: Blob;
-  metadata: {
-    uploadId: string | null;
-    detectionStatus: string | null;
-  };
+  videoUrl: string;
+  overallStatus: string;
+  overallConfidence: number;
+  violentFrames: number;
+  totalFrames: number;
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class UploadService {
-  private apiUrl = 'http://localhost:4000/gun-detection/video';
 
   constructor(private http: HttpClient) {}
 
-  uploadFile(file: File): Observable<UploadResponse> {
+  uploadFile(file: File, selectedModel: Model): Observable<UploadResponse> {
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('userId', "542073e7-325f-4dbe-bb94-e1e3408fc5ac"); // should retrieve userId dynamically
+    // send access token in the headers
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('access_token')}`);
 
-    return this.http.post(this.apiUrl, formData, {
-      responseType: 'arraybuffer',
-      observe: 'response',
-    }).pipe(
-      map((response: HttpResponse<ArrayBuffer>) => {
-        const contentType = response.headers.get('Content-Type') || 'application/octet-stream';
-        return {
-          content: new Blob([response.body ?? new ArrayBuffer(0)], { type: contentType }),
-          metadata: {
-            uploadId: response.headers.get('X-Upload-Id') ?? null,
-            detectionStatus: response.headers.get('X-Detection-Status') ?? null,
-          },
-        };
-      })
-    );
+    return this.http.post<UploadResponse>(environment.apiUrl + "/" + selectedModel.endpoint, formData, {
+      headers: headers,
+    });
   }
 }
