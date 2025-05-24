@@ -8,7 +8,7 @@ import { TechnologyComponent } from "../technology/technology.component";
 @Component({
   selector: "app-services",
   standalone: true,
-  imports: [RouterLink, CommonModule, FormsModule, TechnologyComponent],
+  imports: [CommonModule, FormsModule, TechnologyComponent],
   templateUrl: "./services.component.html",
   styleUrl: "./services.component.scss",
 })
