@@ -23,7 +23,12 @@
                     <a class="nav-link" routerLink="contact" routerLinkActive="active">Contact</a>
                 </li>
             </ul>
-            <a class="btn btn-success fw-medium px-4" (click)="onSubmit()">Logout</a>
+            @if(isLoggedIn) {
+                <a class="btn btn-danger fw-medium px-4" (click)="onLogout()">Logout</a>
+            }
+            @else {
+                <a class="btn btn-primary fw-medium px-4" (click)="onLogin()">Log In</a>
+            }
         </div>
     </div>
 </nav>
