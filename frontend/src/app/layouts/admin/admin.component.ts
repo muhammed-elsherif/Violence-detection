@@ -1,6 +1,6 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { AdminNavComponent } from "../../components/admin-nav/admin-nav.component";
-import { RouterOutlet } from "@angular/router";
+import { Router } from "@angular/router";
 import { NotificationsComponent } from "../../components/notifications/notifications.component";
 
 @Component({
@@ -12,4 +12,13 @@ import { NotificationsComponent } from "../../components/notifications/notificat
     <app-admin-nav></app-admin-nav>
   `,
 })
-export class AdminComponent {}
+export class AdminComponent {
+  private readonly Router = inject(Router);
+
+  isLoggedIn: boolean = localStorage.getItem("access_token") ? true : false;
+  constructor() {
+    if (!this.isLoggedIn) {
+      this.Router.navigate(["/login"]);
+    }
+  }
+}

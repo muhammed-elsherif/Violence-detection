@@ -25,6 +25,13 @@ export class SignupComponent {
   passwordMatch: boolean = true;
   isSubmitting: boolean = false;
 
+  isLoggedIn: boolean = localStorage.getItem("access_token") ? true : false;
+  constructor() {
+    if (this.isLoggedIn) {
+      this.Router.navigate(["/"]);
+    }
+  }
+
   signupForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
     surname: new FormControl('', [Validators.required, Validators.minLength(3)]),
