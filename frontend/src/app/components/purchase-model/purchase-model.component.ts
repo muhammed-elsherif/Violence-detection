@@ -1,15 +1,22 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ServiceService, Model } from '../../core/services/service.service';
-import { Router } from '@angular/router';
+import { Component, OnInit } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+  FormControl,
+} from "@angular/forms";
+import { ServiceService, Model } from "../../core/services/service.service";
+import { Router } from "@angular/router";
 
 @Component({
-  selector: 'app-purchase-model',
+  selector: "app-purchase-model",
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
-  templateUrl: './purchase-model.component.html',
-  styleUrls: ['./purchase-model.component.scss'],
+  templateUrl: "./purchase-model.component.html",
+  styleUrls: ["./purchase-model.component.scss"],
 })
 export class PurchaseModelComponent implements OnInit {
   purchaseForm: FormGroup;
@@ -18,6 +25,7 @@ export class PurchaseModelComponent implements OnInit {
   isProcessing = false;
   error: string | null = null;
   loading = true;
+  recommendedModelResponse: any;
 
   constructor(
     private fb: FormBuilder,
@@ -25,21 +33,26 @@ export class PurchaseModelComponent implements OnInit {
     private router: Router
   ) {
     this.purchaseForm = this.fb.group({
-      companyName: ['', Validators.required],
-      industry: ['', Validators.required],
-      contactName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      phone: ['', Validators.required],
-      street: ['', Validators.required],
-      building: [''],
-      floor: [''],
-      apartment: [''],
-      city: ['', Validators.required],
-      state: ['', Validators.required],
-      country: ['', Validators.required],
-      postalCode: ['', Validators.required]
+      companyName: ["", Validators.required],
+      industry: ["", Validators.required],
+      contactName: ["", Validators.required],
+      email: ["", [Validators.required, Validators.email]],
+      phone: ["", Validators.required],
+      street: ["", Validators.required],
+      building: [""],
+      floor: [""],
+      apartment: [""],
+      city: ["", Validators.required],
+      state: ["", Validators.required],
+      country: ["", Validators.required],
+      postalCode: ["", Validators.required],
     });
   }
+
+  askAiForm: FormGroup = new FormGroup({
+    company_name: new FormControl( null),
+    use_case : new FormControl(null)
+  });
 
   ngOnInit() {
     this.loadAvailableModels();
@@ -55,10 +68,10 @@ export class PurchaseModelComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        this.error = 'Failed to load available models. Please try again later.';
+        this.error = "Failed to load available models. Please try again later.";
         this.loading = false;
-        console.error('Error loading models:', error);
-      }
+        console.error("Error loading models:", error);
+      },
     });
   }
 
@@ -73,7 +86,7 @@ export class PurchaseModelComponent implements OnInit {
 
   calculateTotal(): number {
     return this.selectedModels.reduce((total, modelId) => {
-      const model = this.availableModels.find(m => m.id === modelId);
+      const model = this.availableModels.find((m) => m.id === modelId);
       return total + (model?.price || 0);
     }, 0);
   }
@@ -82,23 +95,62 @@ export class PurchaseModelComponent implements OnInit {
     if (this.purchaseForm.valid && this.selectedModels.length > 0) {
       this.isProcessing = true;
       this.error = null;
-      
+
       const purchaseData = {
         ...this.purchaseForm.value,
-        modelIds: this.selectedModels
+        modelIds: this.selectedModels,
       };
 
       this.serviceService.purchaseModel(purchaseData).subscribe({
         next: () => {
           this.isProcessing = false;
-          this.router.navigate(['/my-models']);
+          this.router.navigate(["/my-models"]);
         },
         error: (error) => {
           this.isProcessing = false;
-          this.error = error.error.message || 'Failed to process purchase. Please try again later.';
-          console.error('Error purchasing models:', error);
-        }
+          this.error =
+            error.error.message ||
+            "Failed to process purchase. Please try again later.";
+          console.error("Error purchasing models:", error);
+        },
       });
     }
   }
-} 
+
+  showAskAi() {
+    console.log("Ask AI clicked");
+    const overlay = document.getElementById("ai-overlay");
+    overlay?.classList.remove("d-none");
+    overlay?.classList.add("d-block");
+  }
+
+  closeAskAi() {
+    console.log("Close Ask AI clicked");
+    const overlay = document.getElementById("ai-overlay");
+    overlay?.classList.remove("d-block");
+    overlay?.classList.add("d-none");
+  }
+
+  askAiSubmit() {
+    if (this.askAiForm.valid) {
+      const formData = this.askAiForm.value;
+      console.log("Ask AI Form Data:", formData);
+      this.serviceService.getRecommendedModel(formData).subscribe({
+        next: (response) => {
+          console.log("Recommended Model Response:", response);
+          this.recommendedModelResponse = response;
+        },
+        error: (error) => {
+          console.error("Error getting recommended model:", error);
+          this.error =
+            error.error.message ||
+            "Failed to get recommended model. Please try again later.";
+        },
+      });
+      this.closeAskAi();
+    } else {
+      console.error("Ask AI form is invalid");
+    }
+  }
+
+}
