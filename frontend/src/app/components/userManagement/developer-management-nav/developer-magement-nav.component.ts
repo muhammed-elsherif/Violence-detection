@@ -1,10 +1,10 @@
 import { Component, inject } from "@angular/core";
 import { User } from "../../../core/interfaces/iall-users";
-import { UserAdminService } from "../../../core/services/user-admin.service";
 import { Subscription } from "rxjs";
 import { FormsModule } from "@angular/forms";
 import { ServiceService } from "../../../core/services/service.service";
 import { NgClass } from "@angular/common";
+import { DeveloperAdminService } from "../../../core/services/developer-admin.service";
 
 @Component({
   selector: "app-developer-magement-nav",
@@ -13,13 +13,13 @@ import { NgClass } from "@angular/common";
   styleUrl: "./developer-magement-nav.component.scss",
 })
 export class DeveloperMagementNavComponent {
-  developers: User[] = []; 
+  developers: User[] = [];
 
   searchTerm: string = "";
 
   private subscription = new Subscription();
 
-  private readonly userAdminService = inject(UserAdminService);
+  private readonly developerAdminService = inject(DeveloperAdminService);
 
   get filteredUsers(): User[] {
     if (!this.searchTerm.trim()) return this.developers;
@@ -29,84 +29,51 @@ export class DeveloperMagementNavComponent {
   }
 
   deactivateUser(userId: string) {
-    console.log("User deactivated successfully.");
-    const sub = this.userAdminService.deactivateUser(userId).subscribe({
-      next: (res) => {
-        console.log(
-          "%c[User Stats] Successfully deactivated user:",
-          "color: green; font-weight: bold;",
-          res
-        );
-        this.uploadUserStats();
-      },
-      error: (err) => {
-        console.error(
-          "%c[User Stats] Failed to deactivate user:",
-          "color: red; font-weight: bold;",
-          err
-        );
-      },
-    });
+    const sub = this.developerAdminService
+      .deactivateDeveloper(userId)
+      .subscribe({
+        next: (res) => {
+          console.log(res);
+          this.getDevelopers();
+        },
+        error: (err) => {
+          console.error(err);
+        },
+      });
     this.subscription.add(sub);
   }
 
   deleteUser(userId: string) {
-    console.log("User deleted successfully.");
-
-    const sub = this.userAdminService.deleteUser(userId).subscribe({
+    const sub = this.developerAdminService.deleteDeveloper(userId).subscribe({
       next: (res) => {
-        this.uploadUserStats();
+        this.getDevelopers();
       },
       error: (err) => {
-        console.error(
-          "%c[User Stats] Failed to delete user:",
-          "color: red; font-weight: bold;",
-          err
-        );
+        console.error(err);
       },
     });
     this.subscription.add(sub);
   }
 
   activateUser(userId: string) {
-    console.log(userId);
-
-    const sub = this.userAdminService.activateUser(userId).subscribe({
+    const sub = this.developerAdminService.activateDeveloper(userId).subscribe({
       next: (res) => {
-        console.log(
-          "%c[User Stats] Successfully activated user:",
-          "color: green; font-weight: bold;",
-          res
-        );
-        this.uploadUserStats();
+        console.log(res);
+        this.getDevelopers();
       },
-      error: (err) =>
-        console.error(
-          "%c[User Stats] Failed to activate user:",
-          "color: red; font-weight: bold;",
-          err
-        ),
+      error: (err) => console.error(err),
     });
 
     this.subscription.add(sub);
   }
 
-  uploadUserStats(): void {
+  getDevelopers(): void {
     const sub = this.serviceService.getDevelopers().subscribe({
       next: (res) => {
-        console.log(
-          "%c[User Stats] Successfully fetched user stats:",
-          "color: green; font-weight: bold;",
-          res
-        );
+        console.log(res);
         this.developers = res;
       },
-      error: (err) =>
-        console.error(
-          "%c[User Stats] Failed to fetch user stats:",
-          "color: red; font-weight: bold;",
-          err
-        ),
+      error: (err) => console.error(err),
     });
 
     this.subscription.add(sub);
@@ -114,13 +81,9 @@ export class DeveloperMagementNavComponent {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
-    console.log(
-      "%c[User Stats] 🔄 Component destroyed — subscriptions cleaned up.",
-      "color: orange; font-style: italic;"
-    );
   }
 
   constructor(private serviceService: ServiceService) {
-    this.uploadUserStats();
+    this.getDevelopers();
   }
 }

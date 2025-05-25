@@ -1,77 +1,188 @@
-<section class="vh-100" class="cool-bg">
-    <div class="container py-5 h-100 vh-100">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-                <div class="card shadow" style="border-radius: 1rem;">
-                    <form class="card-body p-5 text-center" [formGroup]="signupForm" (ngSubmit)="onSubmit()">
-
-                        <h3 class="mb-5">Register</h3>
-
-                        <div class="form-floating mb-4">
-                            <select class="form-select no-border" id="floatingSelect" formControlName="role">
-                                <option value="Admin">Admin</option>
-                                <option value="User">User</option>
-                            </select>
-                            <label for="floatingSelect">Role</label>
-                        </div>
-
-                        <div class="form-floating mb-4">
-                            <input type="text" class="form-control no-border" id="floatingInput" placeholder="username"
-                                formControlName="username" />
-                            <label for="floatingInput">username</label>
-                            @if(signupForm.get('username')?.errors && signupForm.get('username')?.touched) {
-                            <div class="w-75 text-start text-danger ms-1 mt-1">
-                                @if(signupForm.get('username')?.getError('required') ) {
-                                <p class="m-0">username is required</p>
-                                }
-                                @else if(signupForm.get('username')?.getError('minlength') ) {
-                                <p class="m-0">username should be more than 3 characters</p>
-                                }
-                            </div>
-                            }
-                        </div>
-
-                        <div class="form-floating mb-4">
-                            <input type="text" class="form-control no-border" id="floatingInput" placeholder="email"
-                                formControlName="email" />
-                            <label for="floatingInput">email</label>
-                            @if(signupForm.get('email')?.errors && signupForm.get('email')?.touched) {
-                            <div class="w-75 text-start text-danger ms-1 mt-1">
-                                @if(signupForm.get('email')?.getError('required') ) {
-                                <p class="m-0">email is required</p>
-                                }
-                                @else if(signupForm.get('email')?.getError('email') ) {
-                                <p class="m-0">email format isn't right </p>
-                                }
-                            </div>
-                            }
-                        </div>
-
-                        <div class="form-floating mb-4">
-                            <input type="password" class="form-control no-border" id="floatingPassword"
-                                placeholder="Password" formControlName="password" />
-                            <label for="floatingPassword">Password</label>
-                            @if(signupForm.get('password')?.errors && signupForm.get('password')?.touched) {
-                            <div class="w-75 text-start text-danger ms-1 mt-1">
-                                @if(signupForm.get('password')?.getError('required') ) {
-                                <p class="m-0">password is required</p>
-                                }
-                                @else if(signupForm.get('password')?.getError('pattern') ) {
-                                <p class="m-0">password should be more than 6 characters</p>
-                                }
-
-                            </div>
-                            }
-                        </div>
-
-                        <button [disabled]="signupForm.invalid" class="btn btn-primary btn-lg mt-1 w-100"
-                            type="submit">Register</button>
-
-                        <p class="pt-4">Already have an account? <a routerLink="/login">Login</a> </p>
-
-                    </form>
-                </div>
+<section class="vh-100 cool-bg">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-12 col-md-15 col-lg-15">
+        <div class="card shadow-lg" style="border-radius: 1rem; border: none;">
+          <div class="row g-0">
+            <div class="col-lg-6 d-none d-lg-flex flex-column align-items-center justify-content-center text-white p-5" style="
+              background-image: url('assets/images/Register-Background.png');
+              background-size: cover;
+              background-position: center;
+              border-radius: 1rem 0 0 1rem;
+            ">
+              <h1 class="text-white display-4 mb-3">Welcome</h1>
+              <p class="fs-5">
+                to our AI provider website
+                <a href="#" class="text-white text-decoration-none">
+                  Learn more
+                </a>
+              </p>
             </div>
+            <div class="col-lg-6">
+              <div class="card-body p-4 p-md-5">
+                <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="text-center">
+                  <h3 class="fw-bold text-primary">Create Account</h3>
+                  <p class="mb-4">
+                    Create your account. It's free and only takes a minute
+                  </p>
+
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <div class="form-floating">
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="floatingInput"
+                          placeholder="First name"
+                          formControlName="name"
+                        />
+                        <label for="floatingInput">First Name</label>
+                        @if(signupForm.get('name')?.errors && signupForm.get('name')?.touched) {
+                        <div class="text-start text-danger small mt-1">
+                          @if(signupForm.get('name')?.getError('required')) {
+                          <p class="m-0">First name is required</p>
+                          } @else if(signupForm.get('name')?.getError('minlength')) {
+                          <p class="m-0">First name should be more than 3 characters</p>
+                          }
+                        </div>
+                        }
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-floating">
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="floatingInput"
+                          placeholder="surname"
+                          formControlName="surname"
+                        />
+                        <label for="floatingInput">Last Name</label>
+                        @if(signupForm.get('surname')?.errors && signupForm.get('surname')?.touched) {
+                        <div class="text-start text-danger small mt-1">
+                          @if(signupForm.get('surname')?.getError('required')) {
+                          <p class="m-0">Last name is required</p>
+                          } @else if(signupForm.get('surname')?.getError('minlength')) {
+                          <p class="m-0">Last name should be more than 3 characters</p>
+                          }
+                        </div>
+                        }
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-floating mt-3">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="floatingInput"
+                      placeholder="email"
+                      formControlName="email"
+                    />
+                    <label for="floatingInput">Email</label>
+                    @if(signupForm.get('email')?.errors && signupForm.get('email')?.touched) {
+                    <div class="text-start text-danger small mt-1">
+                      @if(signupForm.get('email')?.getError('required')) {
+                      <p class="m-0">Email is required</p>
+                      } @else if(signupForm.get('email')?.getError('email')) {
+                      <p class="m-0">Please enter a valid email address</p>
+                      }
+                    </div>
+                    }
+                  </div>
+
+                  <div class="form-floating mt-3">
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="floatingPassword"
+                      placeholder="Password"
+                      formControlName="password"
+                    />
+                    <label for="floatingPassword">Password</label>
+                    @if(signupForm.get('password')?.errors && signupForm.get('password')?.touched) {
+                    <div class="text-start text-danger small mt-1">
+                      @if(signupForm.get('password')?.getError('required')) {
+                      <p class="m-0">Password is required</p>
+                      } @else if(signupForm.get('password')?.getError('pattern')) {
+                      <p class="m-0">Password should be at least 6 characters</p>
+                      }
+                    </div>
+                    }
+                  </div>
+
+                  <div class="form-floating mt-3">
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="floatingConfirmPassword"
+                      placeholder="Confirm Password"
+                      formControlName="confirmPassword"
+                    />
+                    <label for="floatingConfirmPassword">Confirm Password</label>
+                    @if(signupForm.get('confirmPassword')?.errors && signupForm.get('confirmPassword')?.touched) {
+                    <div class="text-start text-danger small mt-1">
+                      @if(signupForm.get('confirmPassword')?.getError('required')) {
+                      <p class="m-0">Please confirm your password</p>
+                      } @else if(signupForm.get('confirmPassword')?.getError('pattern')) {
+                      <p class="m-0">Password should be at least 6 characters</p>
+                      }
+                    </div>
+                    }
+                  </div>
+
+                  <div class="form-check mt-4 text-start">
+                    <input
+                      type="checkbox"
+                      class="form-check-input"
+                      id="terms"
+                      formControlName="terms"
+                      required
+                    />
+                    <label class="form-check-label" for="terms">
+                      I accept the
+                      <a href="#" class="text-primary fw-semibold">Terms of Use</a>
+                      &
+                      <a href="#" class="text-primary fw-semibold">Privacy Policy</a>
+                    </label>
+                    @if(signupForm.get('terms')?.errors && signupForm.get('terms')?.touched) {
+                    <div class="text-danger small mt-1">
+                      <p class="m-0">You must accept the terms and conditions</p>
+                    </div>
+                    }
+                  </div>
+
+                  @if(error) {
+                  <div class="alert alert-danger mt-3" role="alert">
+                    {{ error }}
+                  </div>
+                  }
+
+                  <button
+                    [disabled]="signupForm.invalid || isSubmitting"
+                    class="btn btn-primary btn-lg w-100 mt-4"
+                    type="submit"
+                  >
+                    {{ isSubmitting ? 'Creating Account...' : 'Create Account' }}
+                  </button>
+
+                  <p class="mt-4 mb-0">
+                    Already have an account? 
+                    <a routerLink="/login" class="text-primary fw-semibold">Login</a>
+                  </p>
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
+  <div class="position-fixed bottom-0 start-0 w-100 py-3" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="container">
+      <p class="text-center text-white mb-0">
+        &copy; 2025 AI provider Website. All rights reserved.
+      </p>
+    </div>
+  </div>
 </section>

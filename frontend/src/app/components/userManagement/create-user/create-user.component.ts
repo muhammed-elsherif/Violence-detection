@@ -42,8 +42,6 @@ export class CreateDeveloperComponent {
 
   createUserSubmit() {
     if (this.createUserForm.valid) {
-      console.log("Form Submitted", this.createUserForm.value);
-
       this.createUserSub = this._UserAdminService
         .createUser(this.createUserForm.value)
         .subscribe({
@@ -56,7 +54,6 @@ export class CreateDeveloperComponent {
           },
         });
     } else {
-      console.log("Form is invalid");
       this.createUserForm.markAllAsTouched(); // Mark all controls as touched to show validation errors
     }
   }

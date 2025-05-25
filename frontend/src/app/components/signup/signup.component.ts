@@ -7,45 +7,63 @@ import {
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-signup',
-  imports: [ReactiveFormsModule, RouterLink],
+  standalone: true,
+  imports: [ReactiveFormsModule, RouterLink, CommonModule, FormsModule],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss',
 })
 export class SignupComponent {
   private readonly _AuthService = inject(AuthService);
   private readonly Router = inject(Router);
+  error: string = '';
+  username: string = '';
+  passwordMatch: boolean = true;
+  isSubmitting: boolean = false;
 
   signupForm: FormGroup = new FormGroup({
-    role: new FormControl('Admin'),
-    username: new FormControl('', [
-      Validators.required,
-      Validators.minLength(3),
-    ]),
+    name: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    surname: new FormControl('', [Validators.required, Validators.minLength(3)]),
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [
       Validators.required,
       Validators.pattern(/^\w{6,}$/),
     ]),
+    confirmPassword: new FormControl('', [Validators.required]),
+    terms: new FormControl(false, [Validators.requiredTrue]),
   });
 
   onSubmit(): void {
+    this.passwordMatch = true;
+    
     if (this.signupForm.valid) {
-      this._AuthService.setSignupForm(this.signupForm.value).subscribe({
+      this.isSubmitting = true;
+      const { name, surname, email, password, confirmPassword } = this.signupForm.value;
+
+      if (password !== confirmPassword) {
+        this.passwordMatch = false;
+        this.error = 'Passwords do not match.';
+        this.isSubmitting = false;
+        return;
+      }
+
+      this.username = name + " " + surname;
+      this._AuthService.setSignupForm({ username: this.username, email, password }).subscribe({
         next: (res) => {
-          const { role } = this.signupForm.value;
-          if (role === 'User') {
-            this.Router.navigate(['/user']);
-          } else if (role === 'Admin') {
-            this.Router.navigate(['/admin']);
-          }
+          this.isSubmitting = false;
+          this.Router.navigate(['/']);
         },
         error: (err) => {
-          console.error('Signup failed:', err);
+          this.isSubmitting = false;
+          this.error = err.error?.message || 'An error occurred during registration.';
         },
       });
+    } else {
+      this.error = 'Please fill in all required fields correctly.';
     }
   }
 }

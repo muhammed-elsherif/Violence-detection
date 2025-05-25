@@ -18,8 +18,10 @@ export class LoginComponent {
   private readonly _AuthService = inject(AuthService);
   private readonly Router = inject(Router);
 
+  error: string = '';
+  isSubmitting: boolean = false;
+
   loginForm: FormGroup = new FormGroup({
-    role: new FormControl('Admin'),
     email: new FormControl('', [
       Validators.required,
       Validators.email,
@@ -34,18 +36,11 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       this._AuthService.setLoginForm(this.loginForm.value).subscribe({
         next: (response) => {
-          console.log('Signup successful:', response);
-          const { role } = this.loginForm.value;
-          
-          if (role === 'User') {
-            this.Router.navigate(['/user']);
-          } else if (role === 'Admin') {
-            this.Router.navigate(['/admin']);
-          }
+            this.Router.navigate(['/']);
         },
-        error: (error) => {
-          console.error('Signup failed:', error);
-          // Handle error (show error message to user)
+        error: (err) => {
+          this.isSubmitting = false;
+          this.error = err.error?.message || 'An error occurred during registration.';
         }
       });
     }
