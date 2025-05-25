@@ -1,32 +1,35 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject } from "@angular/core";
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
-} from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../core/services/auth.service';
+} from "@angular/forms";
+import { Router, RouterLink } from "@angular/router";
+import { AuthService } from "../../core/services/auth.service";
 
 @Component({
-  selector: 'app-login',
+  selector: "app-login",
   imports: [ReactiveFormsModule, RouterLink],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.scss',
+  templateUrl: "./login.component.html",
+  styleUrl: "./login.component.scss",
 })
 export class LoginComponent {
   private readonly _AuthService = inject(AuthService);
   private readonly Router = inject(Router);
 
-  error: string = '';
+  error: string = "";
   isSubmitting: boolean = false;
+  isLoggedIn: boolean = localStorage.getItem("access_token") ? true : false;
+  constructor() {
+    if (this.isLoggedIn) {
+      this.Router.navigate(["/"]);
+    }
+  }
 
   loginForm: FormGroup = new FormGroup({
-    email: new FormControl('', [
-      Validators.required,
-      Validators.email,
-    ]),
-    password: new FormControl('', [
+    email: new FormControl("", [Validators.required, Validators.email]),
+    password: new FormControl("", [
       Validators.required,
       Validators.pattern(/^\w{6,}$/),
     ]),
@@ -36,12 +39,13 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       this._AuthService.setLoginForm(this.loginForm.value).subscribe({
         next: (response) => {
-            this.Router.navigate(['/']);
+          this.Router.navigate(["/"]);
         },
         error: (err) => {
           this.isSubmitting = false;
-          this.error = err.error?.message || 'An error occurred during registration.';
-        }
+          this.error =
+            err.error?.message || "An error occurred during registration.";
+        },
       });
     }
   }
