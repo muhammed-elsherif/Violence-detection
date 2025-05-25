@@ -9,6 +9,9 @@ from fastapi.responses import FileResponse
 from object_detection.yolo import yolo_detect, LABELS as LABELS_YOLO
 from model_parameters import selected_model, process_video
 from config import CONFIDENCE_THRESHOLD, VIDEO_OUTPUT_DIR, FRAME_SIZE, NUM_FRAMES
+# from recommended_model import RecommendationRequest, fetch_recommendation
+# from together.error import RateLimitError
+# from model_recommender import ModelRecommender
 
 app = FastAPI()
 
@@ -16,6 +19,9 @@ app = FastAPI()
 model = selected_model()
 gun_model = selected_model(True)
 fire_model = selected_model(fire_detection=True)
+
+# Initialize the model recommender
+# model_recommender = ModelRecommender(TOGETHER_API_KEY)
 
 def predict_and_annotate_video(video_path: str, model) -> str:
     cap = cv2.VideoCapture(video_path)
@@ -387,4 +393,19 @@ async def predict_video(file: UploadFile = File(...)):
         return response
     except Exception as e:
         os.remove(temp_video_path)
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@app.post("/recommend_model")
+async def recommend_model(req: RecommendationRequest):
+    try:
+        recommendation = await model_recommender.get_recommendation(
+            company_name=req.company_name,
+            use_case=req.use_case
+        )
+        
+        return {
+            "recommended_model": recommendation["chosen"],
+            "alternative_models": recommendation["models"]
+        }
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
