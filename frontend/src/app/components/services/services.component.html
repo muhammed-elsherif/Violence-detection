@@ -7,11 +7,7 @@
   </div>
 
   <div class="d-flex justify-content-between align-items-center mb-3 pt-4">
-    <select
-      class="form-select w-25"
-      [(ngModel)]="selectedFilter"
-      (change)="onFilterChange($event)"
-    >
+    <select class="form-select w-25" [(ngModel)]="selectedFilter" (change)="onFilterChange($event)">
       <option value="">All Categories</option>
       @for (category of categories; track category) {
       <option [value]="category">{{ category }}</option>
@@ -22,13 +18,8 @@
       <span class="input-group-text bg-white border-end-0">
         <i class="fas fa-search"></i>
       </span>
-      <input
-        type="text"
-        class="form-control border-start-0"
-        placeholder="Search"
-        [(ngModel)]="searchQuery"
-        (input)="onSearchChange($event)"
-      />
+      <input type="text" class="form-control border-start-0" placeholder="Search" [(ngModel)]="searchQuery"
+        (input)="onSearchChange($event)" />
     </div>
   </div>
 
@@ -37,9 +28,7 @@
     <div class="card shadow-sm p-3" style="width: 250px">
       <div class="card-body">
         <!-- Icon and Title -->
-        <h5
-          class="card-title d-flex align-items-center gap-2 mb-2 justify-content-center"
-        >
+        <h5 class="card-title d-flex align-items-center gap-2 mb-2 justify-content-center">
           <i class="fas fa-crosshairs"></i> {{ model.name }}
         </h5>
 
@@ -48,10 +37,8 @@
         </p>
 
         <!-- Button -->
-        <button
-          (click)="openOverlay(model)"
-          class="btn btn-primary d-flex align-items-center justify-content-center gap-2 w-100"
-        >
+        <button (click)="openOverlay(model)"
+          class="btn btn-primary d-flex align-items-center justify-content-center gap-2 w-100">
           <i class="fas fa-rocket"></i> TRY IT OUT
         </button>
       </div>
@@ -68,8 +55,12 @@
     @if (isLoggedIn) {
     <app-technology [selectedModel]="selectedModel"></app-technology>
     } @else {
-    <p>Please login to try out this service</p>
-    <button class="btn btn-primary" (click)="login()">Login</button>
+    <div class="container mt-2 bg-white rounded-3 p-3 w-25">
+      <p class="text-center">Please login to try out this service</p>
+      <div class="d-flex justify-content-center">
+        <button class="btn btn-primary" (click)="login()">Login</button>
+      </div>
+    </div>
     }
   </div>
 </div>
