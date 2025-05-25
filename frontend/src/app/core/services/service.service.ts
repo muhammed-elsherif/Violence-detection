@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { environment } from "../../../environments/environment";
 
 export interface Model {
   id: number;
@@ -9,7 +9,7 @@ export interface Model {
   description: string;
   category: string;
   purchaseDate: Date;
-  status: 'active' | 'expired' | 'pending';
+  status: "active" | "expired" | "pending";
   downloadUrl?: string;
   price: number;
   endpoint: string;
@@ -44,7 +44,7 @@ export interface ContactMessage {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class ServiceService {
   private apiUrl = `${environment.apiUrl}`;
@@ -71,12 +71,21 @@ export class ServiceService {
     return this.http.get(`${this.apiUrl}/requests`);
   }
 
-  updateServiceRequestStatus(requestId: string, status: string, developerId: string): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/requests/${requestId}/status`, { status, developerId });
+  updateServiceRequestStatus(
+    requestId: string,
+    status: string,
+    developerId: string
+  ): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/requests/${requestId}/status`, {
+      status,
+      developerId,
+    });
   }
 
   replyToServiceRequest(requestId: string, message: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/requests/${requestId}/reply`, { message });
+    return this.http.post(`${this.apiUrl}/requests/${requestId}/reply`, {
+      message,
+    });
   }
 
   getMostUsedModels(): Observable<any> {
@@ -101,7 +110,7 @@ export class ServiceService {
 
   downloadModel(modelId: string): Observable<Blob> {
     return this.http.get(`${environment.apiUrl}/download/model/${modelId}`, {
-      responseType: 'blob'
+      responseType: "blob",
     });
   }
 
@@ -117,7 +126,16 @@ export class ServiceService {
     return this.http.get(`${this.apiUrl}/services/developers`);
   }
 
-  assignServiceRequestToDeveloper(requestId: string, developerId: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/requests/${requestId}/assign`, { developerId });
+  assignServiceRequestToDeveloper(
+    requestId: string,
+    developerId: string
+  ): Observable<any> {
+    return this.http.post(`${this.apiUrl}/requests/${requestId}/assign`, {
+      developerId,
+    });
   }
-} 
+
+  getRecommendedModel(askAiFormData: any): Observable<any> {
+    return this.http.get(`${this.apiUrl}/recommended-model`, askAiFormData);
+  }
+}
