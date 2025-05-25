@@ -47,7 +47,7 @@ export interface ContactMessage {
   providedIn: "root",
 })
 export class ServiceService {
-  private apiUrl = `${environment.apiUrl}/services`;
+  private apiUrl = `${environment.apiUrl}`;
 
   constructor(private http: HttpClient) {}
 
@@ -123,7 +123,7 @@ export class ServiceService {
   }
 
   getDevelopers(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/developers`);
+    return this.http.get(`${this.apiUrl}/services/developers`);
   }
 
   assignServiceRequestToDeveloper(
