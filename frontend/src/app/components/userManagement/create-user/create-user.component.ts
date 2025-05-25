@@ -7,7 +7,7 @@ import {
   FormGroup,
   ReactiveFormsModule,
   Validators,
-} from "@angular/forms";
+} from "@angular/forms"; 
 import { Subscription } from "rxjs";
 
 @Component({
