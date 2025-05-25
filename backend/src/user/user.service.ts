@@ -28,7 +28,7 @@ export class UserService {
   }
 
   async createDeveloper(
-    name: string,
+    username: string,
     email: string,
     password: string,
   ) {
@@ -40,7 +40,7 @@ export class UserService {
     const hashedPassword = await bcrypt.hash(password, 10);
     return this.prisma.developer.create({
       data: {
-        name,
+        username,
         email,
         password: hashedPassword,
       },

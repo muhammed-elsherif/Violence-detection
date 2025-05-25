@@ -19,7 +19,7 @@ export class UserDto {
 
 export class DeveloperDto {
   id: string;
-  name: string;
+  username: string;
   email: string;
   isActive: boolean;
 }
@@ -27,7 +27,7 @@ export class DeveloperDto {
 export class CreateDeveloperDto {
   @ApiProperty({ example: 'John Doe' })
   @IsNotEmpty()
-  name: string;
+  username: string;
 
   @ApiProperty({ example: 'john@example.com' })
   @IsEmail()

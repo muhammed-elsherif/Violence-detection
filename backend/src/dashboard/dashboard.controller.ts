@@ -43,7 +43,7 @@ export class DashboardController {
   @ApiResponse({ status: 201 })
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async createUser(@Body() dto: CreateDeveloperDto): Promise<DeveloperDto> {
-      const user = await this.userService.createDeveloper(dto.name, dto.email, dto.password); 
+      const user = await this.userService.createDeveloper(dto.username, dto.email, dto.password); 
       return user;
   }
 

@@ -12,7 +12,8 @@ export interface IUser {
 }
 
 export interface User {
+  id?: string;
   username: string;
   email:    string;
-  isActive: true;
+  isActive: boolean;
 }

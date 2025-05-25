@@ -1,0 +1,65 @@
+<div class="h-100 p-4">
+  <!-- Check if userStats is not empty -->
+  @if (developers.length > 0) {
+  <h1>Developers</h1>
+  <p>Here you can find the list of developers and their statistics.</p>
+  <input
+    type="text"
+    placeholder="Search by username or email"
+    class="form-control w-50 mb-3" 
+    [(ngModel)]="searchTerm"
+  />
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Activation</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of filteredUsers; track user.id) {
+        <tr>
+          <td>{{ user.username }}</td>
+          <td>{{ user.email }}</td>
+
+          <!-- Conditional: isActive -->
+          @if (user.isActive) {
+          <td>
+            <button
+              class="action-btn deactivate-btn"
+              (click)="deactivateUser(user.id!)"
+            >
+              Deactivate
+            </button>
+          </td>
+          } @else {
+          <td>
+            <button class="action-btn activate-btn" (click)="activateUser(user.id!)">
+              Activate
+            </button>
+          </td>
+          }
+
+          <!-- Always show Delete -->
+          <td>
+            <button class="action-btn delete-btn" (click)="deleteUser(user.id!)">
+              Delete <i class="fas fa-trash-alt delete-icon"></i>
+            </button>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  } @else {
+  <div class="d-flex justify-content-center align-items-center">
+    <p class="w-100 alert alert-danger">
+      No developers found.<i class="fas fa-exclamation-circle text-danger"></i>
+    </p>
+  </div>
+  }
+</div>

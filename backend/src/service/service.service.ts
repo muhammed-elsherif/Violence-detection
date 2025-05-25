@@ -145,7 +145,7 @@ export class ServiceService {
         developer: {
           select: {
             id: true,
-            name: true,
+            username: true,
           },
         },
         user: {
@@ -170,7 +170,7 @@ export class ServiceService {
 
   async getServiceRequestsByDeveloper(developerName: string) {
     return this.prisma.developer.findMany({
-      where: { name: developerName },
+      where: { username: developerName },
       include: { serviceRequests: true },
     });
   }
@@ -201,7 +201,7 @@ export class ServiceService {
     return this.prisma.developer.findMany({
       select: {
         id: true,
-        name: true,
+        username: true,
         email: true,
         isActive: true,
       },

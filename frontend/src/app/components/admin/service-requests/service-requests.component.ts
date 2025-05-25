@@ -27,7 +27,7 @@ interface ServiceRequest {
 
 interface Developer {
   id: string;
-  name: string;
+  username: string;
 }
 
 @Component({
@@ -132,7 +132,7 @@ interface Developer {
                 <select class="form-select" [(ngModel)]="selectedDeveloperId">
                   @for (developer of developers; track developer.id) {
                   <option value="{{ developer.id }}">
-                    {{ developer.name }}
+                    {{ developer.username }}
                   </option>
                   }
                 </select>

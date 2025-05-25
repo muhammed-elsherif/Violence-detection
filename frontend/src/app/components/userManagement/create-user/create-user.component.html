@@ -22,14 +22,14 @@
                     type="text"
                     class="form-control"
                     placeholder="Enter your name"
-                    formControlName="name"
+                    formControlName="username"
                     [ngClass]="{
                       'is-invalid':
-                        createUserForm.get('name')?.invalid &&
-                        createUserForm.get('name')?.touched,
+                        createUserForm.get('username')?.invalid &&
+                        createUserForm.get('username')?.touched,
                       'is-valid':
-                        createUserForm.get('name')?.valid &&
-                        createUserForm.get('name')?.touched
+                        createUserForm.get('username')?.valid &&
+                        createUserForm.get('username')?.touched
                     }"
                   />
                 </div>
@@ -99,11 +99,11 @@
                 <i class="fas fa-user-tag fa-lg me-3 fa-fw"></i>
                 <div class="form-outline flex-fill mb-0">
                   <select class="form-select" formControlName="role">
-                    <option value="" disabled selected hidden>
+                    <option value="" disabled selected hidden default="developer">
                       Select your role
                     </option>
                     <option value="admin">ADMIN</option>
-                    <option value="user">USER</option>
+                    <option value="developer">DEVELOPER</option>
                   </select>
                 </div>
               </div>

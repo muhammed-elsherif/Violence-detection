@@ -19,6 +19,7 @@ import { RequestServiceComponent } from "./components/request-service/request-se
 import { MyModelsComponent } from "./components/my-models/my-models.component";
 import { AddServiceComponent } from "./components/add-service/add-service.component";
 import { ServiceRequestsComponent } from "./components/admin/service-requests/service-requests.component";
+import { DeveloperMagementNavComponent } from "./components/userManagement/developer-management-nav/developer-magement-nav.component";
 
 export const routes: Routes = [
   {
@@ -66,6 +67,7 @@ export const routes: Routes = [
         children: [
           { path: "", redirectTo: "users", pathMatch: "full" },
           { path: "users", component: UsersComponent },
+          { path: "developers", component: DeveloperMagementNavComponent },
           { path: "create-user", component: CreateDeveloperComponent },
         ],
       },
