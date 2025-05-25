@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {
   Controller,
   HttpException,
@@ -21,7 +20,7 @@ export class RecomendedModelsController {
   constructor(private readonly recomendedService: RecomendedModelsService) {}
 
   @Post()
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: "Recommend a model based on use case and company name" })
   @ApiResponse({
     status: 200,

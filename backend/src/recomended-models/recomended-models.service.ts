@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { HttpService } from "@nestjs/axios";
 import { Injectable, HttpException } from "@nestjs/common";
 import { firstValueFrom } from "rxjs";

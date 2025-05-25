@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Module } from "@nestjs/common";
 import { HttpModule } from "@nestjs/axios";
 import { RecomendedModelsController } from "./recomended-models.controller";
