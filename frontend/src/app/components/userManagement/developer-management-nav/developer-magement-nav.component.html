@@ -1,18 +1,14 @@
-<div class="h-100 p-4">
-  <!-- Check if userStats is not empty -->
+<div class="container py-4">
+  <!-- Check if developers array has users -->
   @if (developers.length > 0) {
-  <h1>Developers</h1>
-  <p>Here you can find the list of developers and their statistics.</p>
-  <input
-    type="text"
-    placeholder="Search by username or email"
-    class="form-control w-50 mb-3" 
-    [(ngModel)]="searchTerm"
-  />
+  <h1 class="mb-2 fw-bold">Developers</h1>
+  <p class="text-muted mb-3">Here you can find the list of developers and their statistics.</p>
+  <input type="text" placeholder="Search by username or email" class="form-control mb-4" style="max-width: 400px"
+    [(ngModel)]="searchTerm" />
 
-  <div class="table-wrapper">
-    <table>
-      <thead>
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+      <thead class="table-light">
         <tr>
           <th>Username</th>
           <th>Email</th>
@@ -25,29 +21,15 @@
         <tr>
           <td>{{ user.username }}</td>
           <td>{{ user.email }}</td>
-
-          <!-- Conditional: isActive -->
-          @if (user.isActive) {
           <td>
-            <button
-              class="action-btn deactivate-btn"
-              (click)="deactivateUser(user.id!)"
-            >
-              Deactivate
+            <button class="btn btn-sm" [ngClass]="user.isActive ? 'btn-warning' : 'btn-success'"
+              (click)="user.isActive ? deactivateUser(user.id!) : activateUser(user.id!)">
+              {{ user.isActive ? 'Deactivate' : 'Activate' }}
             </button>
           </td>
-          } @else {
           <td>
-            <button class="action-btn activate-btn" (click)="activateUser(user.id!)">
-              Activate
-            </button>
-          </td>
-          }
-
-          <!-- Always show Delete -->
-          <td>
-            <button class="action-btn delete-btn" (click)="deleteUser(user.id!)">
-              Delete <i class="fas fa-trash-alt delete-icon"></i>
+            <button class="btn btn-sm btn-danger" (click)="deleteUser(user.id!)">
+              Delete <i class="fas fa-trash-alt ms-1"></i>
             </button>
           </td>
         </tr>
@@ -56,9 +38,9 @@
     </table>
   </div>
   } @else {
-  <div class="d-flex justify-content-center align-items-center">
-    <p class="w-100 alert alert-danger">
-      No developers found.<i class="fas fa-exclamation-circle text-danger"></i>
+  <div class="d-flex justify-content-center align-items-center py-5">
+    <p class="alert alert-danger w-100 text-center mb-0">
+      No developers found. <i class="fas fa-exclamation-circle text-danger ms-2"></i>
     </p>
   </div>
   }

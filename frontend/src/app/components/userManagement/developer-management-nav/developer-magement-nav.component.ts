@@ -1,14 +1,14 @@
 import { Component, inject } from "@angular/core";
-import { RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
 import { User } from "../../../core/interfaces/iall-users";
 import { UserAdminService } from "../../../core/services/user-admin.service";
 import { Subscription } from "rxjs";
 import { FormsModule } from "@angular/forms";
 import { ServiceService } from "../../../core/services/service.service";
+import { NgClass } from "@angular/common";
 
 @Component({
   selector: "app-developer-magement-nav",
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, FormsModule],
+  imports: [FormsModule, NgClass],
   templateUrl: "./developer-magement-nav.component.html",
   styleUrl: "./developer-magement-nav.component.scss",
 })
