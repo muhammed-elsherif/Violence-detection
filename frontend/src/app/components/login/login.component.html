@@ -1,103 +1,80 @@
 <section class="vh-100 cool-bg">
-    <div class="container py-5 h-100">
-      <div class="row d-flex justify-content-center align-items-center h-100">
-        <div class="col-12 col-md-15 col-lg-15">
-          <div class="card shadow-lg" style="border-radius: 1rem; border: none;">
-            <div class="row g-0">
-              <div class="col-lg-6 d-none d-lg-flex flex-column align-items-center justify-content-center text-white p-5" style="
-                background-image: url('assets/images/Register-Background.png');
-                background-size: cover;
-                background-position: center;
-                border-radius: 1rem 0 0 1rem;
-              ">
-                <h1 class="text-white display-4 mb-3">Welcome</h1>
-                <p class="fs-5">
-                  to our AI provider website
-                  <a href="#" class="text-white text-decoration-none">
-                    Learn more
-                  </a>
-                </p>
-              </div>
-              <div class="col-lg-6">
-                <div class="card-body p-4 p-md-5">
-                  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="text-center">
-                    <h3 class="fw-bold text-primary">Login</h3>
-                    <p class="mb-4">
-                      Welcome Back
-                    </p>
-  
-                    <div class="form-floating mt-3">
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="floatingInput"
-                        placeholder="email"
-                        formControlName="email"
-                      />
-                      <label for="floatingInput">Email</label>
-                      @if(loginForm.get('email')?.errors && loginForm.get('email')?.touched) {
-                      <div class="text-start text-danger small mt-1">
-                        @if(loginForm.get('email')?.getError('required')) {
-                        <p class="m-0">Email is required</p>
-                        } @else if(loginForm.get('email')?.getError('email')) {
-                        <p class="m-0">Please enter a valid email address</p>
-                        }
-                      </div>
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-12 col-md-15 col-lg-15">
+        <div class="card shadow-lg" style="border-radius: 1rem; border: none;">
+          <div class="row g-0">
+            <div class="col-lg-6 d-none d-lg-flex align-items-center justify-content-center"
+              style="border-radius: 1rem 0 0 1rem; overflow: hidden;">
+              <video src="./assets/violence.mp4" autoplay loop muted playsinline class="w-75"
+                style="aspect-ratio: 1 / 1; object-fit: cover;"></video>
+            </div>
+            <div class="col-lg-6">
+              <div class="card-body p-4 p-md-5">
+                <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="text-center">
+                  <h3 class="fw-bold text-primary">Login</h3>
+                  <p class="mb-4">
+                    Welcome Back
+                  </p>
+
+                  <div class="form-floating mt-3">
+                    <input type="text" class="form-control" id="floatingInput" placeholder="email"
+                      formControlName="email" />
+                    <label for="floatingInput">Email</label>
+                    @if(loginForm.get('email')?.errors && loginForm.get('email')?.touched) {
+                    <div class="text-start text-danger small mt-1">
+                      @if(loginForm.get('email')?.getError('required')) {
+                      <p class="m-0">Email is required</p>
+                      } @else if(loginForm.get('email')?.getError('email')) {
+                      <p class="m-0">Please enter a valid email address</p>
                       }
-                    </div>
-  
-                    <div class="form-floating mt-3">
-                      <input
-                        type="password"
-                        class="form-control"
-                        id="floatingPassword"
-                        placeholder="Password"
-                        formControlName="password"
-                      />
-                      <label for="floatingPassword">Password</label>
-                      @if(loginForm.get('password')?.errors && loginForm.get('password')?.touched) {
-                      <div class="text-start text-danger small mt-1">
-                        @if(loginForm.get('password')?.getError('required')) {
-                        <p class="m-0">Password is required</p>
-                        } @else if(loginForm.get('password')?.getError('pattern')) {
-                        <p class="m-0">Password should be at least 6 characters</p>
-                        }
-                      </div>
-                      }
-                    </div>
-  
-                    @if(error) {
-                    <div class="alert alert-danger mt-3" role="alert">
-                      {{ error }}
                     </div>
                     }
-  
-                    <button
-                      [disabled]="loginForm.invalid || isSubmitting"
-                      class="btn btn-primary btn-lg w-100 mt-4"
-                      type="submit"
-                    >
-                      {{ isSubmitting ? 'Logging...' : 'Login' }}
-                    </button>
-  
-                    <p class="mt-4 mb-0">
-                    Don't have an account? 
-                      <a routerLink="/signup" class="text-primary fw-semibold">Sign up</a>
-                    </p>
-                  </form>
-                </div>
+                  </div>
+
+                  <div class="form-floating mt-3">
+                    <input type="password" class="form-control" id="floatingPassword" placeholder="Password"
+                      formControlName="password" />
+                    <label for="floatingPassword">Password</label>
+                    @if(loginForm.get('password')?.errors && loginForm.get('password')?.touched) {
+                    <div class="text-start text-danger small mt-1">
+                      @if(loginForm.get('password')?.getError('required')) {
+                      <p class="m-0">Password is required</p>
+                      } @else if(loginForm.get('password')?.getError('pattern')) {
+                      <p class="m-0">Password should be at least 6 characters</p>
+                      }
+                    </div>
+                    }
+                  </div>
+
+                  @if(error) {
+                  <div class="alert alert-danger mt-3" role="alert">
+                    {{ error }}
+                  </div>
+                  }
+
+                  <button [disabled]="loginForm.invalid || isSubmitting" class="btn btn-primary btn-lg w-100 mt-4"
+                    type="submit">
+                    {{ isSubmitting ? 'Logging...' : 'Login' }}
+                  </button>
+
+                  <p class="mt-4 mb-0">
+                    Don't have an account?
+                    <a routerLink="/signup" class="text-primary fw-semibold">Sign up</a>
+                  </p>
+                </form>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="position-fixed bottom-0 start-0 w-100 py-3" style="background-color: rgba(0, 0, 0, 0.5);">
-      <div class="container">
-        <p class="text-center text-white mb-0">
-          &copy; 2025 AI provider Website. All rights reserved.
-        </p>
-      </div>
+  </div>
+  <div class="position-fixed bottom-0 start-0 w-100 py-3" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="container">
+      <p class="text-center text-white mb-0">
+        &copy; 2025 AI provider Website. All rights reserved.
+      </p>
     </div>
-  </section>
-  
+  </div>
+</section>
