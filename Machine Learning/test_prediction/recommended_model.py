@@ -78,3 +78,4 @@ Respond with exactly one word (no explanation): the best model.
 
 # To run this service:
 # uvicorn recommended_model:app --reload --host 0.0.0.0 --port 8000
+# pip install together 
