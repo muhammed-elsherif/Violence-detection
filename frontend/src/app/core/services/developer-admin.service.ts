@@ -9,7 +9,7 @@ import { environment } from "../../../environments/environment";
 export class DeveloperAdminService {
   constructor(private _HttpClient: HttpClient) {}
 
-  private apiUrl = `${environment.apiUrl}/developers`;
+  private apiUrl = `${environment.apiUrl}/services/developers`;
 
   createDeveloper(createUserData: any): Observable<any> {
     return this._HttpClient.post(

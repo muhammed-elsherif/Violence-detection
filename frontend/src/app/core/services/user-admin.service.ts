@@ -1,43 +1,39 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
+import { environment } from "../../../environments/environment";
 
 @Injectable({
   providedIn: "root",
 })
 export class UserAdminService {
+  private apiUrl = `${environment.apiUrl}`;
+  
   constructor(private _HttpClient: HttpClient) {}
 
   getUserStats(): Observable<any> {
     return this._HttpClient.get(
-      "http://localhost:4000/user-stats/upload-stats"
-    );
-  }
-
-  createUser(createUserData: any): Observable<any> {
-    return this._HttpClient.post(
-      "http://localhost:4000/dashboard/users/create-developer",
-      createUserData
+      `${this.apiUrl}/user-stats/upload-stats`
     );
   }
 
   activateUser(userId: string): Observable<any> {
     return this._HttpClient.patch(
-      `http://localhost:4000/dashboard/users/${userId}/activate`,
+      `${this.apiUrl}/dashboard/users/${userId}/activate`,
       {}
     );
   }
 
   deactivateUser(userId: string): Observable<any> {
     return this._HttpClient.patch(
-      `http://localhost:4000/dashboard/users/${userId}/deactivate`,
+      `${this.apiUrl}/dashboard/users/${userId}/deactivate`,
       {}
     );
   }
   
   deleteUser(userId: string): Observable<any> {
     return this._HttpClient.delete(
-      `http://localhost:4000/dashboard/users/${userId}`
+      `${this.apiUrl}/dashboard/users/${userId}`
     );
   }
 }

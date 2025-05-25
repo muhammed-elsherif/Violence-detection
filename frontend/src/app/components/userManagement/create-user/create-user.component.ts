@@ -1,4 +1,4 @@
-import { UserAdminService } from "./../../../core/services/user-admin.service";
+import { DeveloperAdminService } from "./../../../core/services/developer-admin.service";
 import { Component, inject } from "@angular/core";
 import { CommonModule, NgClass } from "@angular/common";
 import { Router } from "@angular/router";
@@ -18,7 +18,7 @@ import { Subscription } from "rxjs";
   styleUrls: ["./create-user.component.scss"], // Corrected 'styleUrl' to 'styleUrls'
 })
 export class CreateDeveloperComponent {
-  private readonly _UserAdminService = inject(UserAdminService);
+  private readonly _UserAdminService = inject(DeveloperAdminService);
 
   createUserForm: FormGroup;
   createUserSub!: Subscription;
@@ -43,7 +43,7 @@ export class CreateDeveloperComponent {
   createUserSubmit() {
     if (this.createUserForm.valid) {
       this.createUserSub = this._UserAdminService
-        .createUser(this.createUserForm.value)
+        .createDeveloper(this.createUserForm.value)
         .subscribe({
           next: (res) => {
             console.log("User created successfully", res);

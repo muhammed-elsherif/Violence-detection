@@ -1,17 +1,15 @@
-import { Controller, Get, Post, Body, Delete, Param, Patch, UsePipes, ValidationPipe, HttpCode, UseGuards } from '@nestjs/common';
-import { UserDto, CreateUserDto, CreateDeveloperDto, DeveloperDto } from '../user/user.dto';
+import { Controller, Get, Delete, Param, Patch, HttpCode, UseGuards } from '@nestjs/common';
+import { UserDto } from '../user/user.dto';
 import { DashboardService } from './dashboard.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { UserService } from '../user/user.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('User Statistics')
 @Controller('dashboard')
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 export class DashboardController {
   constructor(
     private readonly dashboardService: DashboardService, 
-    private userService: UserService
   ) {}
 
   @Get('users')
@@ -37,14 +35,6 @@ export class DashboardController {
   async getLoggedInUsersCount() {
     const count = await this.dashboardService.getLoggedInUsersCount();
     return { count };
-  }
-
-  @Post('users/create-developer')
-  @ApiResponse({ status: 201 })
-  @UsePipes(new ValidationPipe({ whitelist: true }))
-  async createUser(@Body() dto: CreateDeveloperDto): Promise<DeveloperDto> {
-      const user = await this.userService.createDeveloper(dto.username, dto.email, dto.password); 
-      return user;
   }
 
   @Delete('users/:id')
