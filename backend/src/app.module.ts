@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
@@ -32,11 +33,15 @@ import { ServiceController } from "./service/service.controller";
 import { ServiceService } from "./service/service.service";
 import { ContactController } from './contact/contact.controller';
 import { ContactService } from './contact/contact.service';
+import { RecomendedModelsModule } from "./recomended-models/recomended-models.module";
+import { RecomendedModelsController } from "./recomended-models/recomended-models.controller";
+import { RecomendedModelsService } from "./recomended-models/recomended-models.service";
 // import { RedisModule } from './redis/redis.module';
+
 
 @Module({
   imports: [
-    AuthModule,
+  AuthModule,
     UserModule,
     PredictModule,
     UserStatsModule,
@@ -48,6 +53,7 @@ import { ContactService } from './contact/contact.service';
     AlertsModule,
     CustomerModule,
     FireDetectionModule,
+    RecomendedModelsModule, 
     // RedisModule,
   ],
   controllers: [AppController, DashboardController, AlertsController, CustomerController, MailController, DownloadController, ServiceController, ContactController],
@@ -62,7 +68,7 @@ import { ContactService } from './contact/contact.service';
     CustomerService,
     ServiceService,
     MailService,
-    ContactService
+    ContactService,
   ],
 })
 export class AppModule {}
