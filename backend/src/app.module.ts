@@ -32,7 +32,7 @@ import { ServiceController } from "./service/service.controller";
 import { ServiceService } from "./service/service.service";
 import { ContactController } from './contact/contact.controller';
 import { ContactService } from './contact/contact.service';
-import { RedisModule } from './redis/redis.module';
+// import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -48,7 +48,7 @@ import { RedisModule } from './redis/redis.module';
     AlertsModule,
     CustomerModule,
     FireDetectionModule,
-    RedisModule,
+    // RedisModule,
   ],
   controllers: [AppController, DashboardController, AlertsController, CustomerController, MailController, DownloadController, ServiceController, ContactController],
   providers: [

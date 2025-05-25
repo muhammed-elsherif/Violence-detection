@@ -28,7 +28,7 @@ import {
   ViolenceVideoPredictionResponse,
 } from "../prisma-sql/prisma-sql.service";
 import { Response } from 'express';
-import { RedisService } from '../redis/redis.service';
+// import { RedisService } from '../redis/redis.service';
 
 export interface VideoDetectionResult {
   overallStatus: "VIOLENCE_DETECTED" | "NON_VIOLENCE";
@@ -48,7 +48,7 @@ export class PredictController {
   constructor(
     private readonly httpService: HttpService,
     private readonly predictService: PredictService,
-    private readonly redisService: RedisService,
+    // private readonly redisService: RedisService,
   ) {}
 
   @Post("video")
@@ -157,7 +157,7 @@ export class PredictController {
       
       // Store video in Redis with 1 hour expiration
       const videoId = result.videoUrl.split('/').pop();
-      await this.redisService.set(`video:${videoId}`, result.videoUrl, 3600); // 1 hour TTL
+      // await this.redisService.set(`video:${videoId}`, result.videoUrl, 3600); // 1 hour TTL
 
       return {
         videoUrl: result.videoUrl,
@@ -182,15 +182,15 @@ export class PredictController {
   })
   @ApiResponse({ status: 404, description: "Video not found" })
   async getAnnotatedVideo(@Param("id") id: string, @Res() res: Response) {
-    const videoData = await this.redisService.get(`video:${id}`);
+    // const videoData = await this.redisService.get(`video:${id}`);
     
-    if (!videoData) {
-      throw new HttpException("Video not found", 404);
-    }
+    // if (!videoData) {
+    //   throw new HttpException("Video not found", 404);
+    // }
 
     res.setHeader('Content-Type', 'video/mp4');
     res.setHeader('Content-Disposition', `inline; filename=${id}.mp4`);
-    res.send(Buffer.from(videoData));
+    // res.send(Buffer.from(videoData));
   }
 
   @Post("image")
