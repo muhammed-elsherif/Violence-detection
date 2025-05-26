@@ -12,19 +12,10 @@ Input Format:
 Company Name: {company_name}
 Use Case: {use_case}
 
-Output Format:
-<models>
-[List the top 3 most suitable models with brief explanations]
-</models>
-
-<chosen>
-[The single best model for this use case]
-</chosen>
-
 Guidelines:
 1. Consider the company name and industry context
 2. Analyze the specific use case requirements
 3. Match technical capabilities with business needs
 4. Consider scalability and deployment requirements
 5. Prioritize models that best fit the use case
-6. Provide only the model name in the <chosen> tags, no explanations 
+6. Provide only the model name no explanations 

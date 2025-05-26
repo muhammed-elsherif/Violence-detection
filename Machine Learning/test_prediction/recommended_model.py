@@ -32,20 +32,20 @@ async def fetch_recommendation(messages, max_retries: int = 5):
 
 @app.post("/recommend_model")
 async def recommend_model(req: RecommendationRequest):
-    system_prompt = (
-        """
-We are an AI provider.  
-You’ll receive a form with two fields where our user describes:
-1) Company name  
-2) Use case (what they need in their company)  
 
-After that, you’ll pick the single best model from our inventory:
-models = [Object detection, gun, fire, face recognition, violence detection, crash detection]
+    with open("prompts/model_recommendation.txt", "r") as f:
+            prompt_template = f.read()
+            
+# Output Format:
+# <models>
+# [List the top 3 most suitable models with brief explanations]
+# </models>
 
-Focus primarily on the company name, but analyze the use case carefully.  
-Respond with exactly one word (no explanation): the best model.
-"""
-    )
+# <chosen>
+# [The single best model for this use case]
+# </chosen>
+
+    system_prompt = (prompt_template)
 
     user_message = (
         f"Company Name : {req.company_name}\n"
