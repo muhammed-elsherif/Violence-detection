@@ -16,7 +16,6 @@ export class RecomendedModelsService {
       );
       return response.data;
     } catch (e) {
-      console.error("Recommendation service error:", e);
       throw new HttpException(
         e.response?.data?.detail || e.message || "Error contacting recommendation service",
         e.response?.status || 500

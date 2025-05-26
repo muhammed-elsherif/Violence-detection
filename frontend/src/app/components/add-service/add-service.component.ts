@@ -1,14 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { NgClass } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ServiceService } from '../../services/service.service';
+import { ServiceService } from '../../core/services/service.service';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-service',
   templateUrl: './add-service.component.html',
-  standalone: true,
   styleUrls: ['./add-service.component.scss'],
   imports: [ReactiveFormsModule, CommonModule]
 })
@@ -29,10 +27,10 @@ export class AddServiceComponent implements OnInit {
       price: ['', [Validators.required, Validators.min(0)]],
       features: ['', Validators.required],
       requirements: ['', Validators.required],
-      modelFile: [null, Validators.required],
       endpoint: ['', Validators.required],
-      demoVideo: [null],
-      documentation: [null],
+      modelFile: [''],
+      demoVideo: [''],
+      documentation: [''],
       isPublic: [false],
       supportedPlatforms: this.fb.group({
         windows: [false],
@@ -58,19 +56,15 @@ export class AddServiceComponent implements OnInit {
       this.isSubmitting = true;
       this.errorMessage = '';
 
-      const formData = new FormData();
       const formValue = this.serviceForm.value;
+      
+      // Convert price to number
+      const serviceData = {
+        ...formValue,
+        price: Number(formValue.price)
+      };
 
-      // Append all form fields to FormData
-      Object.keys(formValue).forEach(key => {
-        if (key === 'supportedPlatforms') {
-          formData.append(key, JSON.stringify(formValue[key]));
-        } else {
-          formData.append(key, formValue[key]);
-        }
-      });
-
-      this.serviceService.createService(formData).subscribe({
+      this.serviceService.createService(serviceData).subscribe({
         next: (response) => {
           this.isSubmitting = false;
           this.serviceForm.reset();

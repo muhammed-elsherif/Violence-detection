@@ -20,6 +20,7 @@ export class CreateServiceDto {
   requirements: string;
 
   @IsString()
+  @IsOptional()
   modelFile: string;
 
   @IsString()

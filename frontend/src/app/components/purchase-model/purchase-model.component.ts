@@ -134,22 +134,17 @@ export class PurchaseModelComponent implements OnInit {
   askAiSubmit() {
     if (this.askAiForm.valid) {
       const formData = this.askAiForm.value;
-      console.log("Ask AI Form Data:", formData);
       this.serviceService.getRecommendedModel(formData).subscribe({
         next: (response) => {
           console.log("Recommended Model Response:", response);
-          this.recommendedModelResponse = response;
+          this.recommendedModelResponse = response.recommended_model;
         },
         error: (error) => {
-          console.error("Error getting recommended model:", error);
           this.error =
             error.error.message ||
             "Failed to get recommended model. Please try again later.";
         },
       });
-      this.closeAskAi();
-    } else {
-      console.error("Ask AI form is invalid");
     }
   }
 

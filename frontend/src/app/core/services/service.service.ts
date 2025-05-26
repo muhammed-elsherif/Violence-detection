@@ -51,16 +51,16 @@ export class ServiceService {
 
   constructor(private http: HttpClient) {}
 
-  createService(serviceData: FormData): Observable<any> {
-    return this.http.post(this.apiUrl, serviceData);
+  createService(serviceData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/services/create`, serviceData);
   }
 
   getAllServices(): Observable<any> {
-    return this.http.get(this.apiUrl);
+    return this.http.get(`${this.apiUrl}/services`);
   }
 
   createServiceRequest(requestData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/request`, requestData);
+    return this.http.post(`${this.apiUrl}/services/request`, requestData);
   }
 
   getCustomerServiceRequests(customerId: string): Observable<any> {
@@ -68,7 +68,7 @@ export class ServiceService {
   }
 
   getAllServiceRequests(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/requests`);
+    return this.http.get(`${this.apiUrl}/services/requests`);
   }
 
   updateServiceRequestStatus(
@@ -76,20 +76,20 @@ export class ServiceService {
     status: string,
     developerId: string
   ): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/requests/${requestId}/status`, {
+    return this.http.patch(`${this.apiUrl}/services/requests/${requestId}/status`, {
       status,
       developerId,
     });
   }
 
   replyToServiceRequest(requestId: string, message: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/requests/${requestId}/reply`, {
+    return this.http.post(`${this.apiUrl}/services/requests/${requestId}/reply`, {
       message,
     });
   }
 
   getMostUsedModels(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/most-used`);
+    return this.http.get(`${this.apiUrl}/services/most-used`);
   }
 
   getAllCustomers(): Observable<any> {
@@ -130,12 +130,12 @@ export class ServiceService {
     requestId: string,
     developerId: string
   ): Observable<any> {
-    return this.http.post(`${this.apiUrl}/requests/${requestId}/assign`, {
+    return this.http.post(`${this.apiUrl}/services/requests/${requestId}/assign`, {
       developerId,
     });
   }
 
   getRecommendedModel(askAiFormData: any): Observable<any> {
-    return this.http.get(`${this.apiUrl}/recommended-model`, askAiFormData);
+    return this.http.post(`${this.apiUrl}/model-recommendation`, askAiFormData);
   }
 }

@@ -19,7 +19,7 @@ import { RecommendationDto } from "./recommendation.dto";
 export class RecomendedModelsController {
   constructor(private readonly recomendedService: RecomendedModelsService) {}
 
-  @Post()
+  @Post('/')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: "Recommend a model based on use case and company name" })
   @ApiResponse({
