@@ -8,7 +8,7 @@ export class RecomendedModelsService {
   constructor(private readonly httpService: HttpService) {}
 
   async fetchRecommendedModel(body: RecommendationDto): Promise<{ recommended_model: string }> {
-    const apiUrl = process.env.RECOMMENDED_MODEL_API as string; // e.g. http://localhost:8000/recommend_model
+    const apiUrl = process.env.RECOMMENDED_MODEL_API as string;
 
     try {
       const response = await firstValueFrom(
