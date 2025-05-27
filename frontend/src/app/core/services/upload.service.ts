@@ -12,6 +12,10 @@ interface UploadResponse {
   totalFrames: number;
 }
 
+interface AnalyzeResponse {
+  analyzedText: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -22,11 +26,11 @@ export class UploadService {
   uploadFile(file: File, selectedModel: Model): Observable<UploadResponse> {
     const formData = new FormData();
     formData.append('file', file);
-    // send access token in the headers
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('access_token')}`);
+    
+    return this.http.post<UploadResponse>(environment.apiUrl + "/" + selectedModel.endpoint, formData);
+  }
 
-    return this.http.post<UploadResponse>(environment.apiUrl + "/" + selectedModel.endpoint, formData, {
-      headers: headers,
-    });
+  analyzeText(text: String, selectedModel: Model): Observable<AnalyzeResponse> {
+    return this.http.post<AnalyzeResponse>(environment.apiUrl + "/" + selectedModel.endpoint, text);
   }
 }
