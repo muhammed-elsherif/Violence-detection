@@ -67,6 +67,35 @@
 			"response": []
 		},
 		{
+			"name": "contact",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"User\",\n    \"email\": \"mo@gmail.com\",\n    \"subject\": \"1111111\",\n    \"phone\": \"1111111\",\n    \"message\": \"dwd\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/contact",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"contact"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "forgot-password",
 			"request": {
 				"auth": {
@@ -210,7 +239,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\": \"mody6@gmail.com\",\n    \"name\": \"BOo\",\n    \"password\": \"111111\"\n}",
+					"raw": "{\n    \"email\": \"mody6@gmail.com\",\n    \"username\": \"BOo\",\n    \"password\": \"111111\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -241,7 +270,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vaGFtZWQyQGdtYWlsLmNvbSIsInN1YiI6ImFiZDViZjEyLWRlMGQtNDQwYi1iZDIwLWNiNGQzOTViZjY2NCIsImlhdCI6MTc0NzMyNzIxNCwiZXhwIjoxNzQ3OTMyMDE0fQ.W10jAOWJmiwjaHawcQ_SPtBymV3mTGuoDIYkcQLq6Go",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vQGdtYWlsLmNvbSIsInN1YiI6IjVjNjYxMTFiLWEwMzYtNDc3My05OWI5LTg5YzA2ZTQ5MDdkNyIsImlhdCI6MTc0ODAwOTg5OCwiZXhwIjoxNzQ4NjE0Njk4fQ.DXIyfihH4JQiTXQbBFIz6VcoLTqT666ytSz3dQ1EmpI",
 							"type": "string"
 						}
 					]
@@ -537,6 +566,37 @@
 					"path": [
 						"object-detection",
 						"video"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "recommend_model",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"company_name\": \"Salah for Transportation\",\n    \"use_case\": \"We store flammable materials\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/recommend_model",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"recommend_model"
 					]
 				}
 			},
