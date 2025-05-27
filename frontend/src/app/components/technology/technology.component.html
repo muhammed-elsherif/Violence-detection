@@ -99,24 +99,23 @@
       <a href="#" class="upgrade-link mt-3">Why Upgrade?</a>
     </div>
     } } @else {
-    <!-- make a text box cause this section will be for text analysis and text generation and nlp -->
-    <!-- <div class="text-box"> -->
-    <div class="upload-section d-flex align-items-center gap-3 mb-3">
-      <!-- make a styled text box with a placeholder and a button -->
-      <textarea
-        class="form-control"
-        rows="3"
-        placeholder="Enter your text here"
-      ></textarea>
-      <div class="d-flex justify-content-center align-items-center m-3 gap-3">
-        <!-- make a button with a loading spinner -->
-        <button class="btn mt-2" (click)="analyzeText()">
+    <div class="text-analysis-section">
+      <!-- Input Section -->
+      <div class="upload-section d-flex flex-column gap-3 mb-4">
+        <textarea
+          class="form-control"
+          rows="4"
+          cols="150"
+          [(ngModel)]="inputText"
+          placeholder="Enter your text here"
+        ></textarea>
+
+        <div class="d-flex justify-content-start align-items-center gap-3">
           @if(!isAnalyzing) {
           <button
             class="upload-btn"
-            role="status"
-            aria-hidden="true"
-            [disabled]="!isTextExist"
+            (click)="analyzeText()"
+            [disabled]="!inputText || isAnalyzing"
           >
             Analyze
           </button>
@@ -127,8 +126,16 @@
             aria-hidden="true"
           ></span>
           Analyzing... }
-        </button>
-        <!-- <button class="btn mt-2" (click)="generateText()">Generate</button> -->
+        </div>
+      </div>
+
+      <!-- Output Section -->
+      <div
+        *ngIf="analysisResult"
+        class="output-box p-3 bg-light border rounded"
+      >
+        <h5 class="mb-2">Analysis Result:</h5>
+        <p class="mb-0 text-muted">{{ analysisResult }}</p>
       </div>
     </div>
     }

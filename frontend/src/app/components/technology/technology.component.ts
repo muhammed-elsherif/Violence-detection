@@ -75,7 +75,8 @@ export class TechnologyComponent implements OnDestroy {
     const file: File = event.target.files[0];
 
     if (!this.validateFile(file)) {
-      this.errorMessage = "Invalid file type! Only images and videos are allowed.";
+      this.errorMessage =
+        "Invalid file type! Only images and videos are allowed.";
       this.selectedFile = null;
       return;
     }
@@ -141,16 +142,23 @@ export class TechnologyComponent implements OnDestroy {
       });
   }
 
+  inputText: string = "";
+  analysisResult: string = "";
+
   analyzeText() {
+    if (!this.inputText) return; // Ensure there's input to analyze
+
     this.isAnalyzing = true;
-    this.uploadService.analyzeText(this.text, this.selectedModel).subscribe({
+    this.uploadService.analyzeText(this.inputText, this.selectedModel).subscribe({
       next: (result) => {
         this.resultText = {
           analyzedText: result.analyzedText,
         };
+        this.analysisResult = result.analyzedText; // Display the actual analyzed text
+        this.isAnalyzing = false;
       },
       error: (err) => {
-        this.errorMessage = "Upload failed. Please try again.";
+        this.errorMessage = "Analysis failed. Please try again.";
         this.isAnalyzing = false;
       },
     });
