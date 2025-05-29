@@ -8,7 +8,7 @@ import { TechnologyComponent } from "../technology/technology.component";
 @Component({
   selector: "app-services",
   standalone: true,
-  imports: [CommonModule, FormsModule, TechnologyComponent],
+  imports: [CommonModule, FormsModule, TechnologyComponent, RouterLink],
   templateUrl: "./services.component.html",
   styleUrl: "./services.component.scss",
 })
@@ -20,7 +20,7 @@ export class ServicesComponent implements OnInit {
   showOverlay: boolean = false;
   selectedModel: Model | null = null;
   categories: string[] = [];
-  isLoggedIn: boolean = localStorage.getItem('access_token') ? true : false;
+  isLoggedIn: boolean = localStorage.getItem("access_token") ? true : false;
   constructor(private serviceService: ServiceService, private router: Router) {}
 
   ngOnInit() {
@@ -33,11 +33,13 @@ export class ServicesComponent implements OnInit {
         this.models = services;
         this.filteredModels = services;
         // Extract unique categories from services
-        this.categories = [...new Set(services.map(service => service.category))];
+        this.categories = [
+          ...new Set(services.map((service) => service.category)),
+        ];
       },
       error: (error) => {
-        console.error('Error loading services:', error);
-      }
+        console.error("Error loading services:", error);
+      },
     });
   }
 
@@ -52,11 +54,15 @@ export class ServicesComponent implements OnInit {
   }
 
   applyFilters() {
-    this.filteredModels = this.models.filter(model => {
-      const matchesFilter = !this.selectedFilter || model.category === this.selectedFilter;
-      const matchesSearch = !this.searchQuery || 
+    this.filteredModels = this.models.filter((model) => {
+      const matchesFilter =
+        !this.selectedFilter || model.category === this.selectedFilter;
+      const matchesSearch =
+        !this.searchQuery ||
         model.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        model.description.toLowerCase().includes(this.searchQuery.toLowerCase());
+        model.description
+          .toLowerCase()
+          .includes(this.searchQuery.toLowerCase());
       return matchesFilter && matchesSearch;
     });
   }
@@ -73,5 +79,9 @@ export class ServicesComponent implements OnInit {
 
   login() {
     this.router.navigate(["/login"]);
+  }
+
+  customizeService() {
+    this.router.navigate(["/request-custom-service"]);
   }
 }

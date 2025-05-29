@@ -1,3 +1,17 @@
 <app-navbar />
 <router-outlet />
+<div class="cart-wrapper position-fixed m-3 end-0 bottom-0 p-4">
+  <!-- Tooltip -->
+  <div class="buy-tooltip bg-dark text-white px-3 py-1 rounded shadow-sm">
+    Purchase Model
+  </div>
+
+  <!-- Cart Button -->
+  <div
+    class="cart-button rounded-circle bg-info d-flex justify-content-center align-items-center shadow-lg"
+    (click)="openCart()"
+  >
+    <i class="fa fa-shopping-cart text-white fs-2"></i>
+  </div>
+</div>
 <app-footer />
