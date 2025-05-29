@@ -1,0 +1,20 @@
+.buy-tooltip {
+  position: absolute;
+  right: 80%;
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.cart-wrapper:hover .buy-tooltip {
+  opacity: 1;
+}
+
+.cart-button {
+  width: 55px;
+  height: 55px;
+  cursor: pointer;
+}
