@@ -1,84 +1,47 @@
 import { HttpService } from "@nestjs/axios";
-import { HttpException, Injectable } from "@nestjs/common";
-import { FileType, PrismaClient } from "@prisma/client";
-import * as FormData from "form-data";
-import { firstValueFrom } from "rxjs";
+import { Injectable } from "@nestjs/common";
+import { PrismaClient, DetectionStatus } from "@prisma/client";
 import {
   MulterFile,
-  PrismaSqlService,
   GunVideoPredictionResponse,
-} from "src/prisma-sql/prisma-sql.service";
+} from "src/interface/video.interface";
+import { BasePredictionService } from "../violence-detection/base-prediction.service";
 
 interface GunDetectionResult {
-  overallStatus: "GUN_DETECTED" | "NO_GUN";
+  overallStatus: DetectionStatus;
   overallConfidence: number;
   numberOfGuns: number;
   totalFrames: number;
 }
 
 @Injectable()
-export class GunDetectionService {
+export class GunDetectionService extends BasePredictionService {
   constructor(
-    private readonly httpService: HttpService,
-    private readonly prismaSqlService: PrismaSqlService,
-    private prisma: PrismaClient
-  ) {}
+    protected readonly httpService: HttpService,
+    protected readonly prisma: PrismaClient
+  ) {
+    super(httpService, prisma);
+  }
 
   async predictVideo(
     file: MulterFile,
     userId: string
   ): Promise<GunVideoPredictionResponse> {
-    const uploadRecord = await this.prismaSqlService.createUploadRecord(
-      userId,
+    const result = await this.uploadToMLApi(
       file,
-      "VIDEO"
+      userId,
+      process.env.PREDICT_GUN_API as string,
+      "gun"
     );
 
-    try {
-      const formData = new FormData();
-      const apiUrl = process.env.PREDICT_GUN_API as string;
+    const detectionData = result as unknown as GunDetectionResult;
 
-      formData.append("file", file.buffer, {
-        filename: file.originalname,
-        contentType: file.mimetype,
-      });
-
-      const response = await firstValueFrom(
-        this.httpService.post(apiUrl, formData, {
-          headers: {
-            ...formData.getHeaders(),
-          },
-          responseType: "arraybuffer",
-        })
-      );
-
-      const detectionData: GunDetectionResult = JSON.parse(
-        response.headers["x-detection-results"] as string
-      ) as GunDetectionResult;
-
-      const updatedUpload = await this.prismaSqlService.handleDetectionResults(
-        uploadRecord.id,
-        detectionData
-      );
-
-      return {
-        videoUrl: `/gun-detection/video/${updatedUpload.id}`,
-        overallStatus: detectionData.overallStatus,
-        overallConfidence: detectionData.overallConfidence ?? 0,
-        numberOfGuns: detectionData.numberOfGuns ?? 0,
-        totalFrames: detectionData.totalFrames ?? 0,
-      };
-    } catch (e) {
-      await this.prisma.uploadsHistory.update({
-        where: { id: uploadRecord.id },
-        data: { processingStatus: "FAILED" },
-      });
-
-      console.error("Prediction error:", e);
-      throw new HttpException(
-        e.message || "Error during prediction",
-        e.status || 500
-      );
-    }
+    return {
+      videoUrl: result.videoUrl,
+      overallStatus: detectionData.overallStatus as "GUN_DETECTED" | "NO_GUN",
+      overallConfidence: detectionData.overallConfidence,
+      numberOfGuns: detectionData.numberOfGuns,
+      totalFrames: detectionData.totalFrames,
+    };
   }
 }

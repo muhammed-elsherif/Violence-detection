@@ -25,7 +25,7 @@ import { Response } from "express";
 import {
   MulterFile,
   ObjectVideoPredictionResponse,
-} from "../prisma-sql/prisma-sql.service";
+} from "../interface/video.interface";
 
 interface ImagePredictionResponse {
   contentType: string;
@@ -138,10 +138,7 @@ export class ObjectDetectionController {
     const userId = req.user.sub;
 
     try {
-      return await this.objectDetectionService.detectObjectsInVideo(
-        file,
-        userId
-      );
+      return await this.objectDetectionService.predictVideo(file, userId);
     } catch (error) {
       throw new HttpException(
         error.message || "Object detection failed",

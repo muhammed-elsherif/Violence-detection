@@ -1,4 +1,3 @@
-import { HttpService } from "@nestjs/axios";
 import {
   Controller,
   Get,
@@ -19,15 +18,21 @@ import {
   ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
-import * as FormData from "form-data";
-import { firstValueFrom } from "rxjs";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { PredictService } from "./predict.service";
 import {
+  GunVideoPredictionResponse,
   MulterFile,
   ViolenceVideoPredictionResponse,
-} from "../prisma-sql/prisma-sql.service";
-import { Response } from 'express';
+  FireVideoPredictionResponse,
+  CrashVideoPredictionResponse,
+  ObjectVideoPredictionResponse,
+} from "../interface/video.interface";
+import { Response } from "express";
+import { GunDetectionService } from "src/gun-detection/gun-detection.service";
+import { FireDetectionService } from "src/fire-detection/fire-detection.service";
+import { CrashDetectionService } from "src/crash-detection/crash-detection.service";
+import { ObjectDetectionService } from "src/object-detection/object-detection.service";
 // import { RedisService } from '../redis/redis.service';
 
 export interface VideoDetectionResult {
@@ -44,17 +49,20 @@ interface ImagePredictionResponse {
 
 @ApiTags("Prediction")
 @Controller("predict")
+@UseGuards(JwtAuthGuard)
 export class PredictController {
   constructor(
-    private readonly httpService: HttpService,
     private readonly predictService: PredictService,
+    private readonly gunDetectionService: GunDetectionService,
+    private readonly fireDetectionService: FireDetectionService,
+    private readonly crashDetectionService: CrashDetectionService,
+    private readonly objectDetectionService: ObjectDetectionService
     // private readonly redisService: RedisService,
   ) {}
 
-  @Post("video")
+  @Post("violence-video")
   @UseInterceptors(FileInterceptor("file"))
   @ApiConsumes("multipart/form-data")
-  @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: "Upload and analyze video for violence detection",
     description:
@@ -154,9 +162,9 @@ export class PredictController {
 
     try {
       const result = await this.predictService.predictVideo(file, userId);
-      
+
       // Store video in Redis with 1 hour expiration
-      const videoId = result.videoUrl.split('/').pop();
+      const videoId = result.videoUrl.split("/").pop();
       // await this.redisService.set(`video:${videoId}`, result.videoUrl, 3600); // 1 hour TTL
 
       return {
@@ -164,7 +172,7 @@ export class PredictController {
         overallStatus: result.overallStatus,
         overallConfidence: result.overallConfidence,
         violentFrames: result.violentFrames,
-        totalFrames: result.totalFrames
+        totalFrames: result.totalFrames,
       };
     } catch (error) {
       throw new HttpException(
@@ -174,7 +182,127 @@ export class PredictController {
     }
   }
 
+  @Post("gun-video")
+  @UseInterceptors(FileInterceptor("file"))
+  @ApiConsumes("multipart/form-data")
+  @ApiOperation({
+    summary: "Upload and analyze video for gun detection",
+    description:
+      "Upload a video file to detect guns. The video will be processed and analyzed for gun presence.",
+  })
+  async predictGunVideo(
+    @UploadedFile() file: MulterFile,
+    @Request() req: { user: { sub: string } }
+  ): Promise<GunVideoPredictionResponse> {
+    const userId = req.user.sub;
+
+    try {
+      return await this.gunDetectionService.predictVideo(file, userId);
+    } catch (error) {
+      throw new HttpException(
+        error.message || "Error during prediction",
+        error.status || 500
+      );
+    }
+  }
+
+  @Post("fire-video")
+  @UseInterceptors(FileInterceptor("file"))
+  @ApiConsumes("multipart/form-data")
+  @ApiOperation({
+    summary: "Upload and analyze video for fire detection",
+    description:
+      "Upload a video file to detect fire. The video will be processed and analyzed for fire presence.",
+  })
+  async predictFireVideo(
+    @UploadedFile() file: MulterFile,
+    @Request() req: { user: { sub: string } }
+  ): Promise<FireVideoPredictionResponse> {
+    const userId = req.user.sub;
+    try {
+      return await this.fireDetectionService.predictVideo(file, userId);
+    } catch (error) {
+      throw new HttpException(
+        error.message || "Error during fire detection",
+        error.status || 500
+      );
+    }
+  }
+
+  @Post("crash-video")
+  @UseInterceptors(FileInterceptor("file"))
+  @ApiConsumes("multipart/form-data")
+  @ApiOperation({
+    summary: "Upload and analyze video for crash detection",
+    description:
+      "Upload a video file to detect car crashes. The video will be processed and analyzed for crash events.",
+  })
+  async predictCrashVideo(
+    @UploadedFile() file: MulterFile,
+    @Request() req: { user: { sub: string } }
+  ): Promise<CrashVideoPredictionResponse> {
+    const userId = req.user.sub;
+    try {
+      return await this.crashDetectionService.predictVideo(file, userId);
+    } catch (error) {
+      throw new HttpException(
+        error.message || "Error during crash detection",
+        error.status || 500
+      );
+    }
+  }
+
+  @Post("object-video")
+  @UseInterceptors(FileInterceptor("file"))
+  @ApiConsumes("multipart/form-data")
+  @ApiOperation({
+    summary: "Upload and analyze video for object detection",
+    description:
+      "Upload a video file to detect objects. The video will be processed and analyzed for various objects.",
+  })
+  async predictObjects(
+    @UploadedFile() file: MulterFile,
+    @Request() req: { user: { sub: string } }
+  ): Promise<ObjectVideoPredictionResponse> {
+    const userId = req.user.sub;
+    try {
+      return await this.objectDetectionService.predictVideo(file, userId);
+    } catch (error) {
+      throw new HttpException(
+        error.message || "Error during object detection",
+        error.status || 500
+      );
+    }
+  }
+
+  @Post("image")
+  @UseInterceptors(FileInterceptor("file"))
+  @ApiConsumes("multipart/form-data")
+  @ApiOperation({
+    summary: "Upload and analyze image",
+    description:
+      "Upload an image file for analysis. The image will be processed based on the selected model.",
+  })
+  async predictImage(
+    @UploadedFile() file: MulterFile,
+    @Request() req: { user: { sub: string } }
+  ) {
+    const userId = req.user.sub;
+    try {
+      return await this.predictService.predictImage(file, userId);
+    } catch (error) {
+      throw new HttpException(
+        error.message || "Error during image prediction",
+        error.status || 500
+      );
+    }
+  }
+
   @Get("video/:id")
+  @ApiOperation({
+    summary: "Get processed video by ID",
+    description: "Retrieve a processed video by its ID.",
+  })
   @ApiResponse({
     status: 200,
     description: "Fetch the annotated video",
@@ -182,43 +310,16 @@ export class PredictController {
   })
   @ApiResponse({ status: 404, description: "Video not found" })
   async getAnnotatedVideo(@Param("id") id: string, @Res() res: Response) {
-    // const videoData = await this.redisService.get(`video:${id}`);
-    
-    // if (!videoData) {
-    //   throw new HttpException("Video not found", 404);
-    // }
-
-    res.setHeader('Content-Type', 'video/mp4');
-    res.setHeader('Content-Disposition', `inline; filename=${id}.mp4`);
-    // res.send(Buffer.from(videoData));
-  }
-
-  @Post("image")
-  @UseInterceptors(FileInterceptor("file"))
-  async predictImage(
-    @UploadedFile() file: MulterFile
-  ): Promise<ImagePredictionResponse> {
-    const formData = new FormData();
-    const apiUrl = process.env.PREDICT_IMAGE_API as string;
-    formData.append("file", file.buffer, file.originalname);
-
     try {
-      const response = await firstValueFrom(
-        this.httpService.post(apiUrl, formData, {
-          headers: formData.getHeaders(),
-          responseType: "arraybuffer",
-        })
+      const videoStream = await this.predictService.getVideoStream(id);
+      res.setHeader("Content-Type", "video/mp4");
+      res.setHeader("Content-Disposition", `inline; filename=${id}.mp4`);
+      videoStream.pipe(res);
+    } catch (error) {
+      throw new HttpException(
+        error.message || "Error retrieving video",
+        error.status || 500
       );
-
-      return {
-        contentType: response.headers["content-type"] as string,
-        contentDisposition:
-          (response.headers["content-disposition"] as string) ||
-          `attachment; filename=annotated_${file.originalname}`,
-        data: response.data,
-      };
-    } catch {
-      throw new HttpException("Error during prediction", 500);
     }
   }
 }

@@ -23,7 +23,7 @@ import { GunDetectionService } from "./gun-detection.service";
 import {
   MulterFile,
   GunVideoPredictionResponse,
-} from "../prisma-sql/prisma-sql.service";
+} from "../interface/video.interface";
 
 @ApiTags("Gun Detection")
 @Controller("gun-detection")
