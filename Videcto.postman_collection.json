@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "431caf90-3e46-4d30-98e6-e534596b14f8",
+		"_postman_id": "7884c028-70e5-4d31-9af9-cba991ef61eb",
 		"name": "Videcto",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "29902493"
+		"_exporter_id": "45501046",
+		"_collection_link": "https://mohamed-4728885.postman.co/workspace/Mohamed's-Workspace~f0788fea-719f-49ae-8377-c992e9f3054e/collection/45501046-7884c028-70e5-4d31-9af9-cba991ef61eb?action=share&source=collection_link&creator=45501046"
 	},
 	"item": [
 		{
@@ -422,7 +423,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vQGdtYWlsLmNvbSIsInN1YiI6IjVjNjYxMTFiLWEwMzYtNDc3My05OWI5LTg5YzA2ZTQ5MDdkNyIsImlhdCI6MTc0NzM1MTg2MywiZXhwIjoxNzQ3OTU2NjYzfQ.O1llXys8yCZ1dg6hDGj22jfVAmEXkrjWlwqjXrLDASk",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vQGdtYWlsLmNvbSIsInN1YiI6IjVjNjYxMTFiLWEwMzYtNDc3My05OWI5LTg5YzA2ZTQ5MDdkNyIsImlhdCI6MTc0ODcwODc3OSwiZXhwIjoxNzQ5MzEzNTc5fQ.TMfKaNVeTuGmuQ1Aa1M_N9Mci5fybzDhXYRfKsKGJa4",
 							"type": "string"
 						}
 					]
@@ -436,22 +437,17 @@
 							"key": "file",
 							"type": "file",
 							"src": "/Users/mohamedelsherif/Documents/GitHub/Violence-detection/Machine Learning/test_prediction/test_samples/violent/office_fight.mp4"
-						},
-						{
-							"key": "sub",
-							"value": "8434eb11-5639-40de-a26c-879fb2296597",
-							"type": "text"
 						}
 					]
 				},
 				"url": {
-					"raw": "{{base_url}}/predict/video",
+					"raw": "{{base_url}}/predict/violence-video",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
 						"predict",
-						"video"
+						"violence-video"
 					]
 				}
 			},
@@ -465,7 +461,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vQGdtYWlsLmNvbSIsInN1YiI6IjVjNjYxMTFiLWEwMzYtNDc3My05OWI5LTg5YzA2ZTQ5MDdkNyIsImlhdCI6MTc0NzM1MTg2MywiZXhwIjoxNzQ3OTU2NjYzfQ.O1llXys8yCZ1dg6hDGj22jfVAmEXkrjWlwqjXrLDASk",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vQGdtYWlsLmNvbSIsInN1YiI6IjVjNjYxMTFiLWEwMzYtNDc3My05OWI5LTg5YzA2ZTQ5MDdkNyIsImlhdCI6MTc0ODcwODc3OSwiZXhwIjoxNzQ5MzEzNTc5fQ.TMfKaNVeTuGmuQ1Aa1M_N9Mci5fybzDhXYRfKsKGJa4",
 							"type": "string"
 						}
 					]
@@ -483,13 +479,13 @@
 					]
 				},
 				"url": {
-					"raw": "{{base_url}}/fire-detection/video",
+					"raw": "{{base_url}}/predict/fire-video",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
-						"fire-detection",
-						"video"
+						"predict",
+						"fire-video"
 					]
 				}
 			},
@@ -503,7 +499,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vQGdtYWlsLmNvbSIsInN1YiI6IjVjNjYxMTFiLWEwMzYtNDc3My05OWI5LTg5YzA2ZTQ5MDdkNyIsImlhdCI6MTc0NzM1MTg2MywiZXhwIjoxNzQ3OTU2NjYzfQ.O1llXys8yCZ1dg6hDGj22jfVAmEXkrjWlwqjXrLDASk",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vQGdtYWlsLmNvbSIsInN1YiI6IjVjNjYxMTFiLWEwMzYtNDc3My05OWI5LTg5YzA2ZTQ5MDdkNyIsImlhdCI6MTc0ODcwODc3OSwiZXhwIjoxNzQ5MzEzNTc5fQ.TMfKaNVeTuGmuQ1Aa1M_N9Mci5fybzDhXYRfKsKGJa4",
 							"type": "string"
 						}
 					]
@@ -521,13 +517,13 @@
 					]
 				},
 				"url": {
-					"raw": "{{base_url}}/gun-detection/video",
+					"raw": "{{base_url}}/predict/gun-video",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
-						"gun-detection",
-						"video"
+						"predict",
+						"gun-video"
 					]
 				}
 			},
@@ -541,7 +537,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vQGdtYWlsLmNvbSIsInN1YiI6IjVjNjYxMTFiLWEwMzYtNDc3My05OWI5LTg5YzA2ZTQ5MDdkNyIsImlhdCI6MTc0NzM1MTg2MywiZXhwIjoxNzQ3OTU2NjYzfQ.O1llXys8yCZ1dg6hDGj22jfVAmEXkrjWlwqjXrLDASk",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vQGdtYWlsLmNvbSIsInN1YiI6IjVjNjYxMTFiLWEwMzYtNDc3My05OWI5LTg5YzA2ZTQ5MDdkNyIsImlhdCI6MTc0ODcwODc3OSwiZXhwIjoxNzQ5MzEzNTc5fQ.TMfKaNVeTuGmuQ1Aa1M_N9Mci5fybzDhXYRfKsKGJa4",
 							"type": "string"
 						}
 					]
@@ -559,13 +555,51 @@
 					]
 				},
 				"url": {
-					"raw": "{{base_url}}/object-detection/video",
+					"raw": "{{base_url}}/predict/object-video",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
-						"object-detection",
-						"video"
+						"predict",
+						"object-video"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "predict/crash-video",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vQGdtYWlsLmNvbSIsInN1YiI6IjVjNjYxMTFiLWEwMzYtNDc3My05OWI5LTg5YzA2ZTQ5MDdkNyIsImlhdCI6MTc0ODcwODc3OSwiZXhwIjoxNzQ5MzEzNTc5fQ.TMfKaNVeTuGmuQ1Aa1M_N9Mci5fybzDhXYRfKsKGJa4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Users/mohamedelsherif/Documents/GitHub/Violence-detection/Machine Learning/test_prediction/test_samples/violent/office_fight.mp4"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/predict/crash-video",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"predict",
+						"crash-video"
 					]
 				}
 			},
@@ -575,7 +609,14 @@
 			"name": "recommend_model",
 			"request": {
 				"auth": {
-					"type": "noauth"
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vQGdtYWlsLmNvbSIsInN1YiI6IjVjNjYxMTFiLWEwMzYtNDc3My05OWI5LTg5YzA2ZTQ5MDdkNyIsImlhdCI6MTc0ODcwODc3OSwiZXhwIjoxNzQ5MzEzNTc5fQ.TMfKaNVeTuGmuQ1Aa1M_N9Mci5fybzDhXYRfKsKGJa4",
+							"type": "string"
+						}
+					]
 				},
 				"method": "POST",
 				"header": [],

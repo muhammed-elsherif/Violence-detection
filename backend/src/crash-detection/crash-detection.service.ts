@@ -1,14 +1,14 @@
 import { Injectable } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
-import { PrismaClient, DetectionStatus } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import {
   MulterFile,
-  FireVideoPredictionResponse,
+  CrashVideoPredictionResponse,
 } from "../interface/video.interface";
 import { BasePredictionService } from "../violence-detection/base-prediction.service";
 
 @Injectable()
-export class FireDetectionService extends BasePredictionService {
+export class CrashDetectionService extends BasePredictionService {
   constructor(
     protected readonly httpService: HttpService,
     protected readonly prisma: PrismaClient
@@ -19,17 +19,17 @@ export class FireDetectionService extends BasePredictionService {
   async predictVideo(
     file: MulterFile,
     userId: string
-  ): Promise<FireVideoPredictionResponse> {
+  ): Promise<CrashVideoPredictionResponse> {
     const result = await this.uploadToMLApi(
       file,
       userId,
-      process.env.PREDICT_FIRE_API as string,
-      "fire"
+      process.env.CRASH_DETECTION_API as string,
+      "crash"
     );
 
     return {
       videoUrl: result.videoUrl,
-      overallStatus: result.overallStatus as "FIRE_DETECTED" | "NO_FIRE",
+      overallStatus: result.overallStatus as "CRASH_DETECTED" | "NO_CRASH",
       overallConfidence: result.overallConfidence,
       totalFrames: result.totalFrames,
     };

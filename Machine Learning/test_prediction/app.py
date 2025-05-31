@@ -1,16 +1,18 @@
-import json
 import os
-import uuid
-import shutil
 import cv2
+import json
+import uuid
+import asyncio
+import shutil
 import numpy as np
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.responses import FileResponse
 from object_detection.yolo import yolo_detect, LABELS as LABELS_YOLO
 from model_parameters import selected_model, process_video
-from config import CONFIDENCE_THRESHOLD, VIDEO_OUTPUT_DIR, FRAME_SIZE, NUM_FRAMES
-# from recommended_model import RecommendationRequest, fetch_recommendation
-# from together.error import RateLimitError
+from crash_detection import CarAccidentDetectionProcessor
+from config import CONFIDENCE_THRESHOLD, VIDEO_OUTPUT_DIR, FRAME_SIZE, NUM_FRAMES, client
+from pydantic import BaseModel
+from together.error import RateLimitError
 # from model_recommender import ModelRecommender
 
 app = FastAPI()
@@ -23,9 +25,9 @@ fire_model = selected_model(fire_detection=True)
 # Initialize the model recommender
 # model_recommender = ModelRecommender(TOGETHER_API_KEY)
 
-def predict_and_annotate_video(video_path: str, model) -> str:
+def predict_and_annotate_violence_video(video_path: str, model) -> str:
     cap = cv2.VideoCapture(video_path)
-    fps = int(cap.get(cv2.CAP_PROP_FPS))
+    fps = int(cap.get(cv2.CAP_PROP_FPS)) or 30
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -33,7 +35,7 @@ def predict_and_annotate_video(video_path: str, model) -> str:
 
     # Ensure the output folder exists
     os.makedirs(VIDEO_OUTPUT_DIR, exist_ok=True)
-    output_filename = os.path.join(VIDEO_OUTPUT_DIR, f"{model}_{uuid.uuid4().hex}.mp4")
+    output_filename = os.path.join(VIDEO_OUTPUT_DIR, f"{uuid.uuid4().hex}.mp4")
 
     out = cv2.VideoWriter(output_filename, fourcc, fps, (width, height))
 
@@ -77,6 +79,7 @@ def predict_and_annotate_video(video_path: str, model) -> str:
 
     # avg_confidence = np.mean(confidence_scores) if confidence_scores else 0.0
     avg_confidence = confidence
+    os.system(f"open {output_filename}")
     detection_results = {
         "overallStatus": "VIOLENCE_DETECTED" if predicted_label == 1 else "NON_VIOLENCE",
         "overallConfidence": float(avg_confidence),
@@ -96,7 +99,7 @@ def predict_and_annotate_video_object(video_path: str) -> str:
 
     # Ensure the output folder exists
     os.makedirs(VIDEO_OUTPUT_DIR, exist_ok=True)
-    output_filename = os.path.join(VIDEO_OUTPUT_DIR, "yolo_", f"{uuid.uuid4().hex}.mp4")
+    output_filename = os.path.join(VIDEO_OUTPUT_DIR, f"{uuid.uuid4().hex}.mp4")
 
     out = cv2.VideoWriter(output_filename, fourcc, fps, (width, height))
 
@@ -113,8 +116,9 @@ def predict_and_annotate_video_object(video_path: str) -> str:
     cap.release()
     out.release()
 
+    os.system(f"open {output_filename}")
     detection_results = {
-        "uniqueObjects": set(LABELS_YOLO[class_ids[i]] for i in indices.flatten()),
+        "uniqueObjects": list(set(LABELS_YOLO[class_ids[i]] for i in indices.flatten())),
         "totalFrames": total_frames,
     }
     return output_filename, detection_results
@@ -158,8 +162,9 @@ def predict_and_annotate_video_gun(video_path: str) -> str:
     cap.release()
     out.release()
 
-    avg_confidence = (total_confidence / gun_detections) if gun_detections > 0 else 0.0
+    avg_confidence = (total_confidence / gun_detections) if gun_detections > 0 else 100.0
 
+    os.system(f"open {output_filename}")
     detection_results = {
         "overallStatus": "GUN_DETECTED" if predicted_label == 1 else "NO_GUN",
         "overallConfidence": round(avg_confidence, 3),
@@ -184,20 +189,62 @@ def predict_and_annotate_video_fire(video_path: str) -> str:
 
     predicted_label = 0
     total_confidence = 0.0
-    gun_detections = 0
+    fire_detections = 0
 
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
             break
 
-        results = fire_model.predict(frame, conf=CONFIDENCE_THRESHOLD) # TODO: Add draw=True
+        results = fire_model.predict(frame, conf=CONFIDENCE_THRESHOLD)
         out.write(results[0].plot())
+
+        for box in results[0].boxes:
+            class_id = int(box.cls[0])
+            conf = float(box.conf[0])
+            # Assuming 'fire' has class ID 0; update this if needed
+            if class_id == 0 and conf > 0.7:
+                predicted_label = 1
+                fire_detections += 1
+                total_confidence += conf
 
     cap.release()
     out.release()
 
-    avg_confidence = (total_confidence / gun_detections) if gun_detections > 0 else 0.0
+    avg_confidence = (total_confidence / fire_detections) if fire_detections > 0 else 100.0
+    
+    os.system(f"open {output_filename}")
+    detection_results = {
+        "overallStatus": "FIRE_DETECTED" if predicted_label == 1 else "NO_FIRE",
+        "overallConfidence": round(avg_confidence, 3),
+        "totalFrames": total_frames,
+    }
+    return output_filename, detection_results
+
+def predict_and_annotate_video_crash(video_path: str) -> str:
+    cap = cv2.VideoCapture(video_path)
+    fps = int(cap.get(cv2.CAP_PROP_FPS))
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+
+    # Ensure the output folder exists
+    os.makedirs(VIDEO_OUTPUT_DIR, exist_ok=True)
+    output_filename = os.path.join(VIDEO_OUTPUT_DIR, f"{uuid.uuid4().hex}.mp4")
+
+    processor = CarAccidentDetectionProcessor(video_path, output_video_file=output_filename)  # Create processor instance
+    processor.start_processing()
+    out = cv2.VideoWriter(output_filename, fourcc, fps, (width, height))
+
+    predicted_label = 0
+    total_confidence = 0.0
+    fire_detections = 0
+
+    cap.release()
+    out.release()
+
+    avg_confidence = (total_confidence / fire_detections) if fire_detections > 0 else 100.0
 
     detection_results = {
         "overallStatus": "FIRE_DETECTED" if predicted_label == 1 else "NO_FIRE",
@@ -246,7 +293,7 @@ def predict_and_annotate_image(image_path: str, model) -> str:
     cv2.imwrite(output_filename, img)
     return output_filename, detection_results
 
-@app.post("/predict_video")
+@app.post("/violence_detection")
 async def predict_video(file: UploadFile = File(...)):
     if not file.filename.lower().endswith(('.mp4', '.avi', '.mov')):
         raise HTTPException(status_code=400, detail="Unsupported video format")
@@ -257,7 +304,7 @@ async def predict_video(file: UploadFile = File(...)):
         shutil.copyfileobj(file.file, buffer)
 
     try:
-        output_video, detection_results = predict_and_annotate_video(temp_video_path, model)
+        output_video, detection_results = predict_and_annotate_violence_video(temp_video_path, model)
         response = FileResponse(
             output_video,
             media_type="video/mp4",
@@ -368,9 +415,9 @@ async def predict_object(file: UploadFile = File(...)):
     except Exception as e:
         os.remove(temp_video_path)
         raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/predict_stream")
-async def predict_video(file: UploadFile = File(...)):
+    
+@app.post("/crash_detection")
+async def predict_object(file: UploadFile = File(...)):
     if not file.filename.lower().endswith(('.mp4', '.avi', '.mov')):
         raise HTTPException(status_code=400, detail="Unsupported video format")
 
@@ -380,7 +427,7 @@ async def predict_video(file: UploadFile = File(...)):
         shutil.copyfileobj(file.file, buffer)
 
     try:
-        output_video, detection_results = predict_and_annotate_video(temp_video_path, model)
+        output_video, detection_results = predict_and_annotate_video_fire(temp_video_path)
         response = FileResponse(
             output_video,
             media_type="video/mp4",
@@ -394,18 +441,98 @@ async def predict_video(file: UploadFile = File(...)):
     except Exception as e:
         os.remove(temp_video_path)
         raise HTTPException(status_code=500, detail=str(e))
-    
+
+@app.post("/predict_stream")
+async def predict_video(file: UploadFile = File(...)):
+    if not file.filename.lower().endswith(('.mp4', '.avi', '.mov')):
+        raise HTTPException(status_code=400, detail="Unsupported video format")
+
+    # Save the uploaded video temporarily
+    temp_video_path = f"temp_{uuid.uuid4().hex}_{file.filename}"
+    with open(temp_video_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    try:
+        output_video, detection_results = predict_and_annotate_violence_video(temp_video_path, model)
+        response = FileResponse(
+            output_video,
+            media_type="video/mp4",
+            filename=os.path.basename(output_video),
+            headers={
+                "X-Detection-Results": json.dumps(detection_results)
+            }
+        )
+        os.remove(temp_video_path)
+        return response
+    except Exception as e:
+        os.remove(temp_video_path)
+        raise HTTPException(status_code=500, detail=str(e))
+
+class RecommendationRequest(BaseModel):
+    company_name: str
+    use_case: str
+
+async def fetch_recommendation(messages, max_retries: int = 5):
+    """
+    Attempt to fetch a recommendation stream with exponential backoff on rate limits.
+    """
+    delay = 1
+    for attempt in range(max_retries):
+        try:
+            return client.chat.completions.create(
+                model="meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
+                messages=messages,
+                stream=True
+            )
+        except RateLimitError:
+            if attempt < max_retries - 1:
+                await asyncio.sleep(delay)
+                delay *= 2
+            else:
+                raise
+
 @app.post("/recommend_model")
 async def recommend_model(req: RecommendationRequest):
+
+    with open("prompts/model_recommendation.txt", "r") as f:
+            prompt_template = f.read()
+            
+# Output Format:
+# <models>
+# [List the top 3 most suitable models with brief explanations]
+# </models>
+
+# <chosen>
+# [The single best model for this use case]
+# </chosen>
+
+    system_prompt = (prompt_template)
+
+    user_message = (
+        f"Company Name : {req.company_name}\n"
+        f"Use Case : {req.use_case}"
+    )
+
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_message},
+    ]
+
     try:
-        recommendation = await model_recommender.get_recommendation(
-            company_name=req.company_name,
-            use_case=req.use_case
-        )
-        
-        return {
-            "recommended_model": recommendation["chosen"],
-            "alternative_models": recommendation["models"]
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        response_stream = await fetch_recommendation(messages)
+    except RateLimitError:
+        raise HTTPException(status_code=429, detail="Rate limit exceeded, please try again later.")
+
+    # collect the streamed tokens into one string
+    result = []
+    for token in response_stream:
+        if hasattr(token, "choices") and token.choices:
+            delta = token.choices[0].delta.content
+            if delta:
+                result.append(delta)
+
+    model_choice = "".join(result).strip()
+    if not model_choice:
+        raise HTTPException(status_code=500, detail="Failed to retrieve a model recommendation.")
+
+    return {"recommended_model": model_choice}
