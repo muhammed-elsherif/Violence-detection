@@ -8,3 +8,11 @@ violence detection.yolov8
 accident_data*
 output
 migrations
+build
+*.pyc
+*.csv
+*.exe
+*.txt
+*.spec
+*.json
+.gitignore
