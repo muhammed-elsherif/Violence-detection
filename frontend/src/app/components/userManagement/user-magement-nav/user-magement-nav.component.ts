@@ -8,7 +8,4 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
   styleUrl: './user-magement-nav.component.scss'
 })
 export class UserMagementNavComponent {
-
-
-
 }

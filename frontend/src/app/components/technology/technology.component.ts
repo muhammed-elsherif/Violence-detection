@@ -120,23 +120,16 @@ export class TechnologyComponent implements OnDestroy {
             totalFrames: result.totalFrames,
           };
 
-          // Create a safe URL for the video
-          const videoId = result.videoUrl.split("/").pop();
-          const videoStreamUrl = `${environment.apiUrl}/predict/video/${videoId}`;
-          this.videoUrl = this.sanitizer.bypassSecurityTrustUrl(videoStreamUrl);
-
-          // Schedule cleanup after 1 hour
-          if (this.videoCleanupTimeout) {
-            clearTimeout(this.videoCleanupTimeout);
-          }
-          this.videoCleanupTimeout = setTimeout(() => {
-            this.cleanupVideo();
-          }, 3600000); // 1 hour
+          this.videoUrl = `${result.videoUrl}`; // full URL to video
 
           this.uploadProgress = 100;
         },
         error: (err) => {
-          this.errorMessage = "Upload failed. Please try again.";
+          console.error("Upload error:", err);
+          this.errorMessage =
+            err.error?.message ||
+            err.message ||
+            "Upload failed. Please try again.";
           this.uploadProgress = null;
         },
       });
@@ -149,18 +142,20 @@ export class TechnologyComponent implements OnDestroy {
     if (!this.inputText) return; // Ensure there's input to analyze
 
     this.isAnalyzing = true;
-    this.uploadService.analyzeText(this.inputText, this.selectedModel).subscribe({
-      next: (result) => {
-        this.resultText = {
-          analyzedText: result.analyzedText,
-        };
-        this.analysisResult = result.analyzedText; // Display the actual analyzed text
-        this.isAnalyzing = false;
-      },
-      error: (err) => {
-        this.errorMessage = "Analysis failed. Please try again.";
-        this.isAnalyzing = false;
-      },
-    });
+    this.uploadService
+      .analyzeText(this.inputText, this.selectedModel)
+      .subscribe({
+        next: (result) => {
+          this.resultText = {
+            analyzedText: result.analyzedText,
+          };
+          this.analysisResult = result.analyzedText; // Display the actual analyzed text
+          this.isAnalyzing = false;
+        },
+        error: (err) => {
+          this.errorMessage = "Analysis failed. Please try again.";
+          this.isAnalyzing = false;
+        },
+      });
   }
 }

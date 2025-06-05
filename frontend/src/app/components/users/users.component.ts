@@ -2,7 +2,7 @@ import { Component, inject, OnDestroy, OnInit } from "@angular/core";
 import { UserAdminService } from "../../core/services/user-admin.service";
 import { DatePipe } from "@angular/common";
 import { Subscription } from "rxjs";
-import { IUser } from "../../core/interfaces/iall-users";
+import { IUser, User } from "../../core/interfaces/iall-users";
 import { FormsModule } from "@angular/forms";
 
 @Component({
@@ -12,84 +12,83 @@ import { FormsModule } from "@angular/forms";
   templateUrl: "./users.component.html",
   styleUrl: "./users.component.scss",
 })
-export class UsersComponent {
+export class UsersComponent implements OnInit, OnDestroy {
   userStats: IUser[] = [];
+  allUsers: User[] = [];
   searchTerm: string = "";
+  loading = true;
+  error: string | null = null;
 
   get filteredUsers(): IUser[] {
     if (!this.searchTerm.trim()) return this.userStats;
-    return this.userStats.filter((user) =>
-      user.user.username.toLowerCase().includes(this.searchTerm.toLowerCase())
+    return this.userStats.filter(
+      (user) =>
+        user.user.username
+          .toLowerCase()
+          .includes(this.searchTerm.toLowerCase()) ||
+        user.user.email.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
   }
 
   private subscription = new Subscription();
-
   private readonly userAdminService = inject(UserAdminService);
 
   ngOnInit(): void {
-    this.uploadUserStats();
+    this.loadData();
+  }
 
-    // this.userStats = [
-    //   {
-    //     id: "b2c9c230-bb45-4e1a-8049-90ea2e6bdc84",
-    //     username: "youssef",
-    //     email: "youssef@example.com",
-    //     role: "USER",
-    //     isActive: true,
-    //     createdAt: new Date("2025-04-25T23:20:50.52Z"),
-    //     updatedAt: new Date("2025-04-25T23:20:50.52Z"),
-    //   },
-    //   {
-    //     id: "b2c9c230-bb45-4e1a-8049-90ea2e6bdc84",
-    //     username: "youssef",
-    //     email: "youssef@example.com",
-    //     role: "USER",
-    //     isActive: false,
-    //     createdAt: new Date("2025-04-25T23:20:50.52Z"),
-    //     updatedAt: new Date("2025-04-25T23:20:50.52Z"),
-    //   },
-    //   {
-    //     id: "b2c9c230-bb45-4e1a-8049-90ea2e6bdc84",
-    //     username: "youssef",
-    //     email: "youssef@example.com",
-    //     role: "USER",
-    //     isActive: false,
-    //     createdAt: new Date("2025-04-25T23:20:50.52Z"),
-    //     updatedAt: new Date("2025-04-25T23:20:50.52Z"),
-    //   },
-    //   {
-    //     id: "b2c9c230-bb45-4e1a-8049-90ea2e6bdc84",
-    //     username: "youssef",
-    //     email: "youssef@example.com",
-    //     role: "USER",
-    //     isActive: false,
-    //     createdAt: new Date("2025-04-25T23:20:50.52Z"),
-    //     updatedAt: new Date("2025-04-25T23:20:50.52Z"),
-    //   },
-    //   {
-    //     id: "b2c9c230-bb45-4e1a-8049-90ea2e6bdc84",
-    //     username: "NASSER",
-    //     email: "youssef@example.com",
-    //     role: "USER",
-    //     isActive: false,
-    //     createdAt: new Date("2025-04-25T23:20:50.52Z"),
-    //     updatedAt: new Date("2025-04-25T23:20:50.52Z"),
-    //   },
-    //   {
-    //     id: "b2c9c230-bb45-4e1a-8049-90ea2e6bdc84",
-    //     username: "youssef",
-    //     email: "youssef@example.com",
-    //     role: "USER",
-    //     isActive: false,
-    //     createdAt: new Date("2025-04-25T23:20:50.52Z"),
-    //     updatedAt: new Date("2025-04-25T23:20:50.52Z"),
-    //   },
-    // ];
+  loadData(): void {
+    this.loading = true;
+    this.error = null;
+
+    // Load user stats
+    const statsSub = this.userAdminService.getUserStats().subscribe({
+      next: (res) => {
+        console.log(
+          "%c[User Stats] Successfully fetched user stats:",
+          "color: green; font-weight: bold;",
+          res
+        );
+        this.userStats = res;
+      },
+      error: (err) => {
+        console.error(
+          "%c[User Stats] Failed to fetch user stats:",
+          "color: red; font-weight: bold;",
+          err
+        );
+        this.error = "Failed to load user statistics";
+      },
+    });
+
+    // Load all users
+    const usersSub = this.userAdminService.getAllUsers().subscribe({
+      next: (res) => {
+        console.log(
+          "%c[Users] Successfully fetched all users:",
+          "color: green; font-weight: bold;",
+          res
+        );
+        this.allUsers = res;
+      },
+      error: (err) => {
+        console.error(
+          "%c[Users] Failed to fetch all users:",
+          "color: red; font-weight: bold;",
+          err
+        );
+        this.error = "Failed to load users";
+      },
+      complete: () => {
+        this.loading = false;
+      },
+    });
+
+    this.subscription.add(statsSub);
+    this.subscription.add(usersSub);
   }
 
   deactivateUser(userId: string) {
-    console.log("User deactivated successfully.");
     const sub = this.userAdminService.deactivateUser(userId).subscribe({
       next: (res) => {
         console.log(
@@ -97,7 +96,7 @@ export class UsersComponent {
           "color: green; font-weight: bold;",
           res
         );
-        this.uploadUserStats();
+        this.loadData();
       },
       error: (err) => {
         console.error(
@@ -111,11 +110,9 @@ export class UsersComponent {
   }
 
   deleteUser(userId: string) {
-    console.log("User deleted successfully.");
-
     const sub = this.userAdminService.deleteUser(userId).subscribe({
       next: (res) => {
-        this.uploadUserStats();
+        this.loadData();
       },
       error: (err) => {
         console.error(
@@ -129,8 +126,6 @@ export class UsersComponent {
   }
 
   activateUser(userId: string) {
-    console.log(userId);
-
     const sub = this.userAdminService.activateUser(userId).subscribe({
       next: (res) => {
         console.log(
@@ -138,32 +133,11 @@ export class UsersComponent {
           "color: green; font-weight: bold;",
           res
         );
-        this.uploadUserStats();
+        this.loadData();
       },
       error: (err) =>
         console.error(
           "%c[User Stats] Failed to activate user:",
-          "color: red; font-weight: bold;",
-          err
-        ),
-    });
-
-    this.subscription.add(sub);
-  }
-
-  uploadUserStats(): void {
-    const sub = this.userAdminService.getUserStats().subscribe({
-      next: (res) => {
-        console.log(
-          "%c[User Stats] Successfully fetched user stats:",
-          "color: green; font-weight: bold;",
-          res
-        );
-        this.userStats = res;
-      },
-      error: (err) =>
-        console.error(
-          "%c[User Stats] Failed to fetch user stats:",
           "color: red; font-weight: bold;",
           err
         ),

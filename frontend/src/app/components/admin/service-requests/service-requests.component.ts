@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ServiceService } from "../../../core/services/service.service";
+import { DeveloperAdminService } from "../../../core/services/developer-admin.service";
 
 interface ServiceRequest {
   id: string;
@@ -9,7 +10,7 @@ interface ServiceRequest {
   serviceDescription: string;
   serviceCategory: string;
   userId: string;
-  status: "pending" | "in_progress" | "waiting_for_info" | "completed";
+  status: "PENDING" | "IN_PROGRESS" | "WAITING_FOR_INFO" | "COMPLETED";
   developer: {
     name: string;
     id: string;
@@ -46,10 +47,10 @@ interface Developer {
           (change)="filterRequests()"
         >
           <option value="all">All Requests</option>
-          <option value="pending">Pending</option>
-          <option value="in_progress">In Progress</option>
-          <option value="waiting_for_info">Waiting for Info</option>
-          <option value="completed">Completed</option>
+          <option value="PENDING">Pending</option>
+          <option value="IN_PROGRESS">In Progress</option>
+          <option value="WAITING_FOR_INFO">Waiting for Info</option>
+          <option value="COMPLETED">Completed</option>
         </select>
       </div>
 
@@ -78,10 +79,10 @@ interface Developer {
                 <span
                   class="badge"
                   [ngClass]="{
-                    'bg-warning': request.status === 'pending',
-                    'bg-info': request.status === 'in_progress',
-                    'bg-danger': request.status === 'waiting_for_info',
-                    'bg-success': request.status === 'completed'
+                    'bg-warning': request.status === 'PENDING',
+                    'bg-info': request.status === 'IN_PROGRESS',
+                    'bg-danger': request.status === 'WAITING_FOR_INFO',
+                    'bg-success': request.status === 'COMPLETED'
                   }"
                 >
                   {{ request.status | titlecase }}
@@ -121,10 +122,10 @@ interface Developer {
               <div class="mb-3">
                 <label class="form-label">New Status</label>
                 <select class="form-select" [(ngModel)]="newStatus">
-                  <option value="pending">Pending</option>
-                  <option value="in_progress">In Progress</option>
-                  <option value="waiting_for_info">Waiting for Info</option>
-                  <option value="completed">Completed</option>
+                  <option value="PENDING">Pending</option>
+                  <option value="IN_PROGRESS">In Progress</option>
+                  <option value="WAITING_FOR_INFO">Waiting for Info</option>
+                  <option value="COMPLETED">Completed</option>
                 </select>
               </div>
               <div class="mb-3">
@@ -304,7 +305,10 @@ export class ServiceRequestsComponent implements OnInit {
   selectedDeveloperId: string = "";
   developers: Developer[] = [];
   showRequestDetailsModal: boolean = false;
-  constructor(private serviceService: ServiceService) {}
+  constructor(
+    private serviceService: ServiceService,
+    private developerAdminService: DeveloperAdminService
+  ) {}
 
   ngOnInit() {
     // cache developers
@@ -326,7 +330,7 @@ export class ServiceRequestsComponent implements OnInit {
   }
 
   loadDevelopers() {
-    this.serviceService.getDevelopers().subscribe({
+    this.developerAdminService.getDevelopers().subscribe({
       next: (developers) => {
         this.developers = developers;
         localStorage.setItem("developers", JSON.stringify(developers));

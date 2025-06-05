@@ -8,13 +8,15 @@ import { environment } from "../../../environments/environment";
 })
 export class UserAdminService {
   private apiUrl = `${environment.apiUrl}`;
-  
+
   constructor(private _HttpClient: HttpClient) {}
 
   getUserStats(): Observable<any> {
-    return this._HttpClient.get(
-      `${this.apiUrl}/user-stats/upload-stats`
-    );
+    return this._HttpClient.get(`${this.apiUrl}/user-stats/upload-stats`);
+  }
+
+  getAllUsers(): Observable<any> {
+    return this._HttpClient.get(`${this.apiUrl}/dashboard/users`);
   }
 
   activateUser(userId: string): Observable<any> {
@@ -30,10 +32,8 @@ export class UserAdminService {
       {}
     );
   }
-  
+
   deleteUser(userId: string): Observable<any> {
-    return this._HttpClient.delete(
-      `${this.apiUrl}/dashboard/users/${userId}`
-    );
+    return this._HttpClient.delete(`${this.apiUrl}/dashboard/users/${userId}`);
   }
 }

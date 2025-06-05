@@ -7,7 +7,7 @@ import {
   FormGroup,
   ReactiveFormsModule,
   Validators,
-} from "@angular/forms"; 
+} from "@angular/forms";
 import { Subscription } from "rxjs";
 
 @Component({
@@ -22,8 +22,8 @@ export class CreateDeveloperComponent {
 
   createUserForm: FormGroup;
   createUserSub!: Subscription;
-
-  constructor(private formBuilder: FormBuilder) {
+  error: string | null = null;
+  constructor(private formBuilder: FormBuilder, private router: Router) {
     this.createUserForm = this.formBuilder.group({
       username: [
         null,
@@ -36,7 +36,6 @@ export class CreateDeveloperComponent {
       email: [null, [Validators.required, Validators.email]],
       password: [null, [Validators.required, Validators.pattern(/^\w{6,}$/)]],
       confirmPassword: [null, [Validators.required]],
-      role: [null, [Validators.required]],
     });
   }
 
@@ -46,11 +45,12 @@ export class CreateDeveloperComponent {
         .createDeveloper(this.createUserForm.value)
         .subscribe({
           next: (res) => {
-            console.log("User created successfully", res);
             this.createUserForm.reset();
+            this.error = null;
+            this.router.navigate(["/admin/user-magement-nav/developers"]);
           },
           error: (err) => {
-            console.error("Error creating user", err);
+            this.error = err.error.message;
           },
         });
     } else {

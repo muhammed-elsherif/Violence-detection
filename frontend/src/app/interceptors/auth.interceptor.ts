@@ -6,7 +6,7 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
   if (token) {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
+      // 'Content-Type': 'application/json'
     });
 
     const cloned = request.clone({

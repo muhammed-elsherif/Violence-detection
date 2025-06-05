@@ -2,7 +2,6 @@ import { Component, inject } from "@angular/core";
 import { User } from "../../../core/interfaces/iall-users";
 import { Subscription } from "rxjs";
 import { FormsModule } from "@angular/forms";
-import { ServiceService } from "../../../core/services/service.service";
 import { NgClass } from "@angular/common";
 import { DeveloperAdminService } from "../../../core/services/developer-admin.service";
 
@@ -68,7 +67,7 @@ export class DeveloperMagementNavComponent {
   }
 
   getDevelopers(): void {
-    const sub = this.serviceService.getDevelopers().subscribe({
+    const sub = this.developerAdminService.getDevelopers().subscribe({
       next: (res) => {
         console.log(res);
         this.developers = res;
@@ -83,7 +82,7 @@ export class DeveloperMagementNavComponent {
     this.subscription.unsubscribe();
   }
 
-  constructor(private serviceService: ServiceService) {
+  constructor() {
     this.getDevelopers();
   }
 }

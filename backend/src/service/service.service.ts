@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import {
   CreateServiceDto,
   CreateServiceRequestDto,
@@ -6,8 +6,6 @@ import {
 import { ModelType, PrismaClient } from "@prisma/client";
 import { MailService } from "../mail/mail.service";
 import { AlertsGateway } from "../alerts/alerts.gateway";
-import { UserDto } from "src/user/user.dto";
-import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class ServiceService {
@@ -197,62 +195,5 @@ export class ServiceService {
 
     this.alertsGateway.sendServiceRequestReply(request);
     return request;
-  }
-
-  async getDevelopers() {
-    return this.prisma.developer.findMany({
-      select: {
-        id: true,
-        username: true,
-        email: true,
-        isActive: true,
-      },
-    });
-  }
-
-  async createDeveloper(
-    username: string,
-    email: string,
-    password: string,
-  ) {
-    const existingUser = await this.prisma.developer.findUnique({ where: { email } });
-    if (existingUser) {
-      throw new BadRequestException('Email already exists');
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    return this.prisma.developer.create({
-      data: {
-        username,
-        email,
-        password: hashedPassword,
-      },
-    });
-  }
-
-  async deleteDeveloper(id: string): Promise<void> {
-    const existing = await this.prisma.developer.findUnique({ where: { id } });
-    if (!existing) throw new NotFoundException(`User ${id} not found`);
-    await this.prisma.developer.delete({ where: { id } });
-  }
-
-  async activateDeveloper(id: string): Promise<UserDto> {
-    const user = await this.prisma.developer.update({
-      where: { id },
-      data: { isActive: true },
-      select: { id: true, username: true, email: true, isActive: true, createdAt: true, updatedAt: true },
-    });
-    if (!user) throw new NotFoundException(`User ${id} not found`);
-    return new UserDto(user);
-  }
-
-  async deactivateDeveloper(id: string): Promise<UserDto> {
-    const user = await this.prisma.developer.update({
-      where: { id },
-      data: { isActive: false },
-      select: { id: true, username: true, email: true, isActive: true, createdAt: true, updatedAt: true },
-    });
-    if (!user) throw new NotFoundException(`User ${id} not found`);
-    return new UserDto(user);
   }
 }

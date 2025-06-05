@@ -73,19 +73,25 @@ export class ServiceService {
 
   updateServiceRequestStatus(
     requestId: string,
-    status: string,
+    status: "PENDING" | "IN_PROGRESS" | "WAITING_FOR_INFO" | "COMPLETED",
     developerId: string
   ): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/services/requests/${requestId}/status`, {
-      status,
-      developerId,
-    });
+    return this.http.patch(
+      `${this.apiUrl}/services/requests/${requestId}/status`,
+      {
+        status,
+        developerId,
+      }
+    );
   }
 
   replyToServiceRequest(requestId: string, message: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/services/requests/${requestId}/reply`, {
-      message,
-    });
+    return this.http.post(
+      `${this.apiUrl}/services/requests/${requestId}/reply`,
+      {
+        message,
+      }
+    );
   }
 
   getMostUsedModels(): Observable<any> {
@@ -122,17 +128,16 @@ export class ServiceService {
     return this.http.post(`${environment.apiUrl}/contact`, message);
   }
 
-  getDevelopers(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/services/developers`);
-  }
-
   assignServiceRequestToDeveloper(
     requestId: string,
     developerId: string
   ): Observable<any> {
-    return this.http.post(`${this.apiUrl}/services/requests/${requestId}/assign`, {
-      developerId,
-    });
+    return this.http.post(
+      `${this.apiUrl}/services/requests/${requestId}/assign`,
+      {
+        developerId,
+      }
+    );
   }
 
   getRecommendedModel(askAiFormData: any): Observable<any> {

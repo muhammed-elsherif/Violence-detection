@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
+import { Component, OnInit } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { MatCardModule } from "@angular/material/card";
+import { MatIconModule } from "@angular/material/icon";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatTableModule } from "@angular/material/table";
+import { MatButtonModule } from "@angular/material/button";
+import { DashboardService } from "../../core/services/dashboard.service";
+import { User } from "../../core/interfaces/iall-users";
 
 interface AnalyticsData {
   totalUsers: number;
@@ -21,7 +23,7 @@ interface AnalyticsData {
 }
 
 @Component({
-  selector: 'app-analytics',
+  selector: "app-analytics",
   standalone: true,
   imports: [
     CommonModule,
@@ -29,10 +31,10 @@ interface AnalyticsData {
     MatIconModule,
     MatProgressBarModule,
     MatTableModule,
-    MatButtonModule
+    MatButtonModule,
   ],
-  templateUrl: './analytics.component.html',
-  styleUrl: './analytics.component.scss'
+  templateUrl: "./analytics.component.html",
+  styleUrl: "./analytics.component.scss",
 })
 export class AnalyticsComponent implements OnInit {
   analyticsData: AnalyticsData = {
@@ -42,60 +44,67 @@ export class AnalyticsComponent implements OnInit {
     averageSessionDuration: 0,
     systemLoad: 0,
     storageUsage: 0,
-    recentActivity: []
+    recentActivity: [],
   };
 
-  displayedColumns: string[] = ['timestamp', 'action', 'user'];
+  displayedColumns: string[] = ["timestamp", "action", "user"];
+  users: User[] = [];
 
-  constructor() {}
+  constructor(private dashboardService: DashboardService) {}
 
   ngOnInit(): void {
+    this.loadAllData();
+  }
+
+  loadAllData(): void {
+    this.loadUsersCount();
+    this.loadUsers();
     this.loadAnalyticsData();
+  }
+
+  loadUsersCount(): void {
+    this.dashboardService.getUsersCount().subscribe((response) => {
+      this.analyticsData.totalUsers = response.count;
+    });
+  }
+
+  loadUsers(): void {
+    this.dashboardService.getAllUsers().subscribe((users: User[]) => {
+      this.users = users;
+      this.analyticsData.activeUsers = users.filter(
+        (user) => user.isActive
+      ).length;
+    });
   }
 
   loadAnalyticsData(): void {
-    // TODO: Implement API call to load analytics data
-    // For now, using mock data
-    this.analyticsData = {
-      totalUsers: 150,
-      activeUsers: 45,
-      totalVisits: 1250,
-      averageSessionDuration: 25,
-      systemLoad: 65,
-      storageUsage: 75,
-      recentActivity: [
-        {
-          timestamp: new Date(),
-          action: 'User Login',
-          user: 'john.doe@example.com'
-        },
-        {
-          timestamp: new Date(Date.now() - 3600000),
-          action: 'File Upload',
-          user: 'jane.smith@example.com'
-        },
-        {
-          timestamp: new Date(Date.now() - 7200000),
-          action: 'Settings Update',
-          user: 'admin@example.com'
-        }
-      ]
-    };
+    this.dashboardService
+      .getAnalyticsData()
+      .subscribe((data: AnalyticsData) => {
+        this.analyticsData = {
+          ...this.analyticsData,
+          totalVisits: data.totalVisits,
+          averageSessionDuration: data.averageSessionDuration,
+          systemLoad: data.systemLoad,
+          storageUsage: data.storageUsage,
+          recentActivity: data.recentActivity,
+        };
+      });
   }
 
   refreshData(): void {
-    this.loadAnalyticsData();
+    this.loadAllData();
   }
 
   getSystemLoadColor(): string {
-    if (this.analyticsData.systemLoad > 80) return 'warn';
-    if (this.analyticsData.systemLoad > 60) return 'accent';
-    return 'primary';
+    if (this.analyticsData.systemLoad > 80) return "warn";
+    if (this.analyticsData.systemLoad > 60) return "accent";
+    return "primary";
   }
 
   getStorageUsageColor(): string {
-    if (this.analyticsData.storageUsage > 80) return 'warn';
-    if (this.analyticsData.storageUsage > 60) return 'accent';
-    return 'primary';
+    if (this.analyticsData.storageUsage > 80) return "warn";
+    if (this.analyticsData.storageUsage > 60) return "accent";
+    return "primary";
   }
 }

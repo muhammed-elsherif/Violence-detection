@@ -61,10 +61,9 @@ button:disabled {
 
 .inner {
   width: inherit;
-
 }
 
-label { 
+.back-label { 
   font-size: .8em; 
   line-height: 4em;
   text-transform: uppercase;
@@ -82,7 +81,6 @@ label {
   background: #608efa;
   left: 0;
   transition: all .3s ease-in;
-  
 }
 
 .inner:before {
@@ -95,7 +93,7 @@ label {
   transform: rotate(-45deg);  
 }
 
-.outer:hover label {
+.outer:hover .back-label {
   opacity: 1;
 }
 

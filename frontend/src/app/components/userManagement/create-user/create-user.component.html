@@ -21,7 +21,7 @@
                   <input
                     type="text"
                     class="form-control"
-                    placeholder="Enter your name"
+                    placeholder="Enter developer name"
                     formControlName="username"
                     [ngClass]="{
                       'is-invalid':
@@ -41,7 +41,7 @@
                   <input
                     type="email"
                     class="form-control"
-                    placeholder="Enter your email"
+                    placeholder="Enter developer email"
                     formControlName="email"
                     [ngClass]="{
                       'is-invalid':
@@ -61,7 +61,7 @@
                   <input
                     type="password"
                     class="form-control"
-                    placeholder="Enter your password"
+                    placeholder="Enter developer password"
                     formControlName="password"
                     [ngClass]="{
                       'is-invalid':
@@ -81,7 +81,7 @@
                   <input
                     type="password"
                     class="form-control"
-                    placeholder="Confirm your password"
+                    placeholder="Confirm developer password"
                     formControlName="confirmPassword"
                     [ngClass]="{
                       'is-invalid':
@@ -92,19 +92,6 @@
                         createUserForm.get('confirmPassword')?.touched
                     }"
                   />
-                </div>
-              </div>
-
-              <div class="d-flex flex-row align-items-center mb-4">
-                <i class="fas fa-user-tag fa-lg me-3 fa-fw"></i>
-                <div class="form-outline flex-fill mb-0">
-                  <select class="form-select" formControlName="role">
-                    <option value="" disabled selected hidden default="developer">
-                      Select your role
-                    </option>
-                    <option value="admin">ADMIN</option>
-                    <option value="developer">DEVELOPER</option>
-                  </select>
                 </div>
               </div>
 

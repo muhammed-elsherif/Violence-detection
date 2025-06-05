@@ -12,7 +12,6 @@ import { UserStatsModule } from "./user-stats/user-stats.module";
 import { PrismaModule } from "../prisma/prisma.module";
 
 import { DashboardController } from "./dashboard/dashboard.controller";
-import { DashboardService } from "./dashboard/dashboard.service";
 import { LiveViolenceModule } from "./live-violence/live-violence.module";
 import { GunDetectionModule } from "./gun-detection/gun-detection.module";
 import { ObjectDetectionModule } from "./object-detection/object-detection.module";
@@ -43,6 +42,8 @@ import { FireDetectionService } from "./fire-detection/fire-detection.service";
 import { CrashDetectionService } from "./crash-detection/crash-detection.service";
 import { ObjectDetectionService } from "./object-detection/object-detection.service";
 // import { RedisModule } from './redis/redis.module';
+import { DeveloperController } from './developer/developer.controller';
+import { DeveloperService } from './developer/developer.service';
 
 @Module({
   imports: [
@@ -72,14 +73,14 @@ import { ObjectDetectionService } from "./object-detection/object-detection.serv
     ServiceController,
     ContactController,
     PredictController,
-    RecomendedModelsController
+    RecomendedModelsController,
+    DeveloperController
   ],
   providers: [
     AppService,
     AuthService,
     UserService,
     PrismaClient,
-    DashboardService,
     AlertsGateway,
     AlertsService,
     CustomerService,
@@ -91,7 +92,8 @@ import { ObjectDetectionService } from "./object-detection/object-detection.serv
     FireDetectionService,
     CrashDetectionService,
     ObjectDetectionService,
-    RecomendedModelsService
+    RecomendedModelsService,
+    DeveloperService
   ],
 })
 export class AppModule {}

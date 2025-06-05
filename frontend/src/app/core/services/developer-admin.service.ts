@@ -9,7 +9,11 @@ import { environment } from "../../../environments/environment";
 export class DeveloperAdminService {
   constructor(private _HttpClient: HttpClient) {}
 
-  private apiUrl = `${environment.apiUrl}/services/developers`;
+  private apiUrl = `${environment.apiUrl}/developers`;
+
+  getDevelopers(): Observable<any> {
+    return this._HttpClient.get(`${this.apiUrl}/`);
+  } 
 
   createDeveloper(createUserData: any): Observable<any> {
     return this._HttpClient.post(
@@ -19,10 +23,7 @@ export class DeveloperAdminService {
   }
 
   activateDeveloper(developerId: string): Observable<any> {
-    return this._HttpClient.patch(
-      `${this.apiUrl}/${developerId}/activate`,
-      {}
-    );
+    return this._HttpClient.patch(`${this.apiUrl}/${developerId}/activate`, {});
   }
 
   deactivateDeveloper(developerId: string): Observable<any> {
@@ -31,10 +32,8 @@ export class DeveloperAdminService {
       {}
     );
   }
-  
+
   deleteDeveloper(developerId: string): Observable<any> {
-    return this._HttpClient.delete(
-      `${this.apiUrl}/${developerId}`
-    );
+    return this._HttpClient.delete(`${this.apiUrl}/${developerId}`);
   }
 }
