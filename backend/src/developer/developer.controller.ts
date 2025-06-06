@@ -15,6 +15,11 @@ export class DeveloperController {
     return this.developerService.getDevelopers();
   }
 
+  @Get("/assigned-tasks/:id")
+  async getAssignedTasks(@Param("id") id: string) {
+    return this.developerService.getAssignedTasks(id);
+  }
+
   @Post("/create-developer")
   @ApiResponse({ status: 201 })
   @UsePipes(new ValidationPipe({ whitelist: true }))

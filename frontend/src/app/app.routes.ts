@@ -20,8 +20,12 @@ import { MyModelsComponent } from "./components/my-models/my-models.component";
 import { AddServiceComponent } from "./components/add-service/add-service.component";
 import { ServiceRequestsComponent } from "./components/admin/service-requests/service-requests.component";
 import { DeveloperMagementNavComponent } from "./components/userManagement/developer-management-nav/developer-magement-nav.component";
+import { RoleGuard } from "./core/guards/role.guard";
+import { AssignedTasksComponent } from "./components/developer/assigned-tasks/assigned-tasks.component";
+import { DeveloperComponent } from "./layouts/developer/developer.component";
 
 export const routes: Routes = [
+  // Public Routes
   {
     path: "",
     component: UserComponent,
@@ -32,9 +36,6 @@ export const routes: Routes = [
       { path: "industries", component: IndustriesComponent },
       { path: "about", component: AboutComponent },
       { path: "contact", component: ContactComponent },
-      { path: "request-custom-service", component: RequestServiceComponent },
-      { path: "purchase-model", component: PurchaseModelComponent },
-      { path: "my-models", component: MyModelsComponent },
     ],
   },
 
@@ -46,18 +47,23 @@ export const routes: Routes = [
   {
     path: "user",
     component: UserComponent,
+    // canActivate: [RoleGuard],
+    data: { role: "USER" },
     children: [
       { path: "", redirectTo: "home", pathMatch: "full" },
       { path: "profile", component: HomeComponent },
+      { path: "request-custom-service", component: RequestServiceComponent },
+      { path: "purchase-model", component: PurchaseModelComponent },
+      { path: "my-models", component: MyModelsComponent },
     ],
   },
 
-  // Admin Routes & should be protected by JWT
-  // TODO: Add JWT guard to admin routes & check if the user is admin & if not redirect to login page
+  // Admin Routes
   {
     path: "admin",
     component: AdminComponent,
-    // canActivate: [AuthGuard],
+    // canActivate: [RoleGuard],
+    data: { role: "ADMIN" },
     children: [
       { path: "", redirectTo: "analytics", pathMatch: "full" },
       { path: "analytics", component: AnalyticsComponent },
@@ -75,6 +81,20 @@ export const routes: Routes = [
       { path: "reports", component: ReportsComponent },
       { path: "add-service", component: AddServiceComponent },
       { path: "service-requests", component: ServiceRequestsComponent },
+    ],
+  },
+
+  // Developer Routes
+  {
+    path: "developer",
+    component: AdminComponent,
+    // canActivate: [RoleGuard],
+    data: { role: "DEVELOPER" },
+    children: [
+      {
+        path: "assigned-tasks",
+        component: AssignedTasksComponent,
+      },
     ],
   },
 ];

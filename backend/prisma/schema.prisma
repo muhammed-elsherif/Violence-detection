@@ -10,7 +10,7 @@ datasource db {
 enum UserRole {
   USER
   ADMIN
-  MODERATOR
+  DEVELOPER
 }
 
 enum FileType {
@@ -40,6 +40,15 @@ enum DetectionStatus {
   NO_FIRE
 }
 
+model Admin {
+  id        String   @id @default(uuid())
+  username  String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model User {
   id              String           @id @default(uuid())
   username        String
@@ -49,15 +58,15 @@ model User {
   isActive        Boolean          @default(true)
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
-  uploadsHistory  UploadsHistory[]
-  serviceRequests ServiceRequest[]
-  uploadStats     UserStats?
+  uploadsHistory  UploadsHistory[] @relation("UserUploads")
+  serviceRequests ServiceRequest[] @relation("UserRequests")
+  uploadStats     UserStats?       @relation("UserStats")
 }
 
 model UploadsHistory {
   id                String            @id @default(uuid())
   userId            String
-  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User              @relation("UserUploads", fields: [userId], references: [id], onDelete: Cascade)
   fileType          FileType
   processingStatus  ProcessingStatus  @default(PENDING)
   detectionStatus   DetectionStatus?
@@ -89,7 +98,7 @@ model DetectionResult {
 model UserStats {
   id                  String           @id @default(uuid())
   userId              String           @unique
-  user                User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user                User             @relation("UserStats", fields: [userId], references: [id], onDelete: Cascade)
   totalUploads        Int              @default(0)
   averageDuration     Float? // Average duration of all videos
   lastDetectionStatus DetectionStatus?
@@ -132,12 +141,12 @@ model ServiceRequest {
   serviceDescription   String
   serviceCategory      String
   userId               String
-  user                 User      @relation(fields: [userId], references: [id])
+  user                 User      @relation("UserRequests", fields: [userId], references: [id], onDelete: Cascade)
   status               String    @default("PENDING") // PENDING, IN_PROGRESS, WAITING_FOR_INFO, COMPLETED
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @updatedAt
   developerId          String
-  developer            Developer @relation(fields: [developerId], references: [id])
+  developer            Developer @relation(fields: [developerId], references: [id], onDelete: Cascade)
   useCase              String
   expectedTimeline     String
   specificRequirements String?

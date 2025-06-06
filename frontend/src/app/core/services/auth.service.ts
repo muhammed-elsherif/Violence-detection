@@ -47,6 +47,10 @@ export class AuthService {
     this.isAuthenticatedSubject.next(true);
   }
 
+  getUserRole(): string | null {
+    return localStorage.getItem("role") || null;
+  }
+
   getAccessToken(): string | null {
     return localStorage.getItem(this.TOKEN_KEY);
   }

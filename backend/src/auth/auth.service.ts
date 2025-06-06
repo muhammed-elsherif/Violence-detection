@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "../user/user.service";
-import { User } from "@prisma/client";
+import { User, UserRole } from "@prisma/client";
 import { CustomerService } from "src/customer/customer.service";
 
 @Injectable()
@@ -9,22 +9,27 @@ export class AuthService {
   constructor(
     public customerService: CustomerService,
     private userService: UserService,
-    private jwtService: JwtService,
+    private jwtService: JwtService
   ) {}
 
   async validateUser(email: string, password: string) {
     return this.userService.validateUser(email, password);
   }
 
-  generateTokens(user: Partial<User>) {
-    const payload = { email: user.email, sub: user.id };
+  generateTokens(user: Partial<User> & { role?: UserRole }) {
+    const payload = {
+      email: user.email,
+      sub: user.id,
+      role: user.role || UserRole.USER,
+    };
     return {
       access_token: this.jwtService.sign(payload, { expiresIn: "7d" }),
       refresh_token: this.jwtService.sign(payload, { expiresIn: "15d" }),
+      role: user.role || UserRole.USER,
     };
   }
 
-  login(user: Partial<User>) {
+  login(user: Partial<User> & { role?: UserRole }) {
     return this.generateTokens(user);
   }
 

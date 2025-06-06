@@ -18,6 +18,17 @@ export class DeveloperService {
     });
   }
 
+  async getAssignedTasks(id: string) {
+    const assignedTasks = await this.prisma.developer.findUnique({
+      where: { id },
+      select: {
+        serviceRequests: true,
+      },
+    });
+    if (!assignedTasks) throw new NotFoundException(`Developer ${id} not found`);
+    return assignedTasks;
+  }
+
   async createDeveloper(username: string, email: string, password: string) {
     const existingUser = await this.prisma.developer.findUnique({
       where: { email },

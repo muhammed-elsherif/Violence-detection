@@ -52,11 +52,9 @@ export class UserService {
     return this.prisma.user.findUnique({ where: { email } });
   }
 
-  //TODO Refactor
   async validateUser(email: string, password: string) {
     const user = await this.findOneByEmail(email);
     if (user && (await bcrypt.compare(password, user.password))) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...result } = user;
       return result;
     }
