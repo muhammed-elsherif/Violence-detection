@@ -42,8 +42,9 @@ import { FireDetectionService } from "./fire-detection/fire-detection.service";
 import { CrashDetectionService } from "./crash-detection/crash-detection.service";
 import { ObjectDetectionService } from "./object-detection/object-detection.service";
 // import { RedisModule } from './redis/redis.module';
-import { DeveloperController } from './developer/developer.controller';
-import { DeveloperService } from './developer/developer.service';
+import { DeveloperController } from "./developer/developer.controller";
+import { DeveloperService } from "./developer/developer.service";
+import { DownloadService } from "./download/download.service";
 
 @Module({
   imports: [
@@ -74,7 +75,7 @@ import { DeveloperService } from './developer/developer.service';
     ContactController,
     PredictController,
     RecomendedModelsController,
-    DeveloperController
+    DeveloperController,
   ],
   providers: [
     AppService,
@@ -93,7 +94,8 @@ import { DeveloperService } from './developer/developer.service';
     CrashDetectionService,
     ObjectDetectionService,
     RecomendedModelsService,
-    DeveloperService
+    DeveloperService,
+    DownloadService,
   ],
 })
 export class AppModule {}

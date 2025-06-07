@@ -52,7 +52,26 @@ export class ServiceService {
   constructor(private http: HttpClient) {}
 
   createService(serviceData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/services/create`, serviceData);
+    const formData = new FormData();
+
+    // Append all non-file fields
+    Object.keys(serviceData).forEach((key) => {
+      if (
+        key === "modelFile" ||
+        key === "demoVideo" ||
+        key === "documentation"
+      ) {
+        if (serviceData[key]) {
+          formData.append(key, serviceData[key]);
+        }
+      } else if (key === "supportedPlatforms") {
+        formData.append(key, JSON.stringify(serviceData[key]));
+      } else {
+        formData.append(key, serviceData[key]);
+      }
+    });
+
+    return this.http.post(`${this.apiUrl}/services/create`, formData);
   }
 
   getAllServices(): Observable<any> {
@@ -115,7 +134,7 @@ export class ServiceService {
   }
 
   downloadModel(modelId: string): Observable<Blob> {
-    return this.http.get(`${environment.apiUrl}/download/model/${modelId}`, {
+    return this.http.get(`${this.apiUrl}/download/model/${modelId}`, {
       responseType: "blob",
     });
   }

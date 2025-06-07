@@ -70,36 +70,15 @@ class CarAccidentDetectionProcessor:  # Define the class for accident detection 
             frame_small = cv2.resize(frame, (320, 240))  # Resize frame to 320x240 for faster processing
             _, img_buffer = cv2.imencode(".jpg", frame_small, [int(cv2.IMWRITE_JPEG_QUALITY), 70])  # Encode frame to JPG with 70% quality
             base64_image = base64.b64encode(img_buffer).decode("utf-8")  # Convert encoded image to base64 string
+            with open("prompts/crash_detection.txt", "r") as f:
+                prompt = f.read()
 
-            prompt = """
-                Analyze the image, a frame from a road surveillance video, to detect and assess any car accident. Focus on clear visual indicators such as:
-
-                - **Vehicle Damage**: Dents, broken parts, open hoods, or misalignment.
-                - **Unusual Vehicle Positions**: Off-road, collisions, or abnormal angles.
-                - **Debris & Skid Marks**: Road obstacles, scattered parts, or visible tire marks.
-                - **Traffic Disruption**: Stalled vehicles, congestion, or people gathering.
-                - **Weather Impact**: Wet roads or low visibility affecting conditions.
-
-                ### Output Format:
-                Provide a structured table summarizing the findings strictly based on visible evidence:
-
-                | Accident Severity (Details) | Vehicles Involved | Location Type | Likely Cause               |
-                |------------------|-------------------|--------------|----------------------------|
-                | Medium / High | Number of affected vehicles | (e.g., intersection, village road) | (e.g., collision, skidding, unclear) |
-
-                ### Severity Levels:
-                - **Medium**: Minor damage, clustering of people/cars, open car hood , Unusual Vehicle Positions, Unusual people Positions , collisions.
-                - **High**: Severe damage, emergency response, road blockage.
-
-                Stick to observed evidence and avoid speculation.
-                """
- # Define the detailed prompt for OpenAI to detect accidents accurately
             api_key = "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"  # API key (replace with your actual key)
             async with session.post(  # Make an async POST request to OpenRouter API
                 "https://openrouter.ai/api/v1/chat/completions",  # API endpoint
                 headers={"Authorization": f"Bearer {api_key}"},  # Authorization header with API key
                 json={  # JSON payload for the request
-                    "model": "google/gemini-2.0-pro-exp-02-05:free",  # Specify the model to use
+                    "model": "google/gemini-2.0-flash-exp:free",  # Specify the model to use
                     "messages": [  # List of messages for the chat completion
                         {
                             "role": "user",  # User role for the message

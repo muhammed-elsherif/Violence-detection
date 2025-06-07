@@ -1,4 +1,11 @@
-import { IsString, IsNumber, IsBoolean, IsOptional, IsObject } from 'class-validator';
+import {
+  IsString,
+  IsNumber,
+  IsBoolean,
+  IsOptional,
+  IsObject,
+} from "class-validator";
+import { Transform } from "class-transformer";
 
 export class CreateServiceDto {
   @IsString()
@@ -11,6 +18,7 @@ export class CreateServiceDto {
   category: string;
 
   @IsNumber()
+  @Transform(({ value }) => Number(value))
   price: number;
 
   @IsString()
@@ -19,9 +27,8 @@ export class CreateServiceDto {
   @IsString()
   requirements: string;
 
-  @IsString()
   @IsOptional()
-  modelFile: string;
+  modelFile: Buffer;
 
   @IsString()
   @IsOptional()
@@ -32,18 +39,26 @@ export class CreateServiceDto {
   documentation?: string;
 
   @IsBoolean()
+  @Transform(({ value }) => value === "true")
   isPublic: boolean;
 
   @IsString()
   endpoint: string;
 
   @IsObject()
+  @Transform(({ value }) => {
+    try {
+      return typeof value === "string" ? JSON.parse(value) : value;
+    } catch {
+      return value;
+    }
+  })
   supportedPlatforms: {
     windows: boolean;
     macos: boolean;
     linux: boolean;
   };
-} 
+}
 
 export class CreateServiceRequestDto {
   @IsString()

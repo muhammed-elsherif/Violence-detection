@@ -125,7 +125,7 @@ model Service {
   price              Float
   features           String
   requirements       String
-  modelFile          String
+  modelFile          Bytes
   endpoint           String
   demoVideo          String?
   documentation      String?

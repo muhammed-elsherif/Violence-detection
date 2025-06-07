@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Param, UseGuards, Request, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards, Request, Patch, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { ServiceService } from './service.service';
 import { CreateServiceDto, CreateServiceRequestDto } from './dto/create-service.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller("services")
 @UseGuards(JwtAuthGuard)
@@ -9,7 +10,14 @@ export class ServiceController {
   constructor(private readonly serviceService: ServiceService) {}
 
   @Post("create")
-  async createService(@Body() createServiceDto: CreateServiceDto) {
+  @UseInterceptors(FileInterceptor("modelFile"))
+  async createService(
+    @Body() createServiceDto: CreateServiceDto,
+    @UploadedFile() modelFile: Express.Multer.File
+  ) {
+    if (modelFile) {
+      createServiceDto.modelFile = modelFile.buffer;
+    }
     return this.serviceService.createService(createServiceDto);
   }
 

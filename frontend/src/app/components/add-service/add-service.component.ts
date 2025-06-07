@@ -28,7 +28,7 @@ export class AddServiceComponent implements OnInit {
       features: ['', Validators.required],
       requirements: ['', Validators.required],
       endpoint: ['', Validators.required],
-      modelFile: [''],
+      modelFile: [null, Validators.required],
       demoVideo: [''],
       documentation: [''],
       isPublic: [false],
