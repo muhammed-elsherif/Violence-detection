@@ -19,7 +19,7 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { PredictService } from "./predict.service";
+import { PredictService } from "../violence-detection/predict.service";
 import {
   GunVideoPredictionResponse,
   MulterFile,
@@ -34,18 +34,6 @@ import { FireDetectionService } from "src/fire-detection/fire-detection.service"
 import { CrashDetectionService } from "src/crash-detection/crash-detection.service";
 import { ObjectDetectionService } from "src/object-detection/object-detection.service";
 // import { RedisService } from '../redis/redis.service';
-
-export interface VideoDetectionResult {
-  overallStatus: "VIOLENCE_DETECTED" | "NON_VIOLENCE";
-  overallConfidence: number;
-  totalFrames: number;
-  violentFrames?: number;
-}
-interface ImagePredictionResponse {
-  contentType: string;
-  contentDisposition: string;
-  data: Buffer;
-}
 
 @ApiTags("Prediction")
 @Controller("predict")
@@ -162,10 +150,6 @@ export class PredictController {
 
     try {
       const result = await this.predictService.predictVideo(file, userId);
-
-      // Store video in Redis with 1 hour expiration
-      const videoId = result.videoUrl.split("/").pop();
-      // await this.redisService.set(`video:${videoId}`, result.videoUrl, 3600); // 1 hour TTL
 
       return {
         videoUrl: result.videoUrl,

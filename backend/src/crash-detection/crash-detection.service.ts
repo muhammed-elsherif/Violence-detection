@@ -5,7 +5,7 @@ import {
   MulterFile,
   CrashVideoPredictionResponse,
 } from "../interface/video.interface";
-import { BasePredictionService } from "../violence-detection/base-prediction.service";
+import { BasePredictionService } from "../prediction-base/base-prediction.service";
 
 @Injectable()
 export class CrashDetectionService extends BasePredictionService {

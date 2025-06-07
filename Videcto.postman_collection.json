@@ -47,7 +47,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"role\": \"User\",\n    \"email\": \"mo@gmail.com\",\n    \"password\": \"1111111\"\n}",
+					"raw": "{\n    \"email\": \"mo@gmail.com\",\n    \"password\": \"1111111\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -441,10 +441,12 @@
 					]
 				},
 				"url": {
-					"raw": "{{base_url}}/predict/violence-video",
+					"raw": "http://localhost:4000/predict/violence-video",
+					"protocol": "http",
 					"host": [
-						"{{base_url}}"
+						"localhost"
 					],
+					"port": "4000",
 					"path": [
 						"predict",
 						"violence-video"
@@ -906,7 +908,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vQGdtYWlsLmNvbSIsInN1YiI6IjVjNjYxMTFiLWEwMzYtNDc3My05OWI5LTg5YzA2ZTQ5MDdkNyIsImlhdCI6MTc0NzM1MTg2MywiZXhwIjoxNzQ3OTU2NjYzfQ.O1llXys8yCZ1dg6hDGj22jfVAmEXkrjWlwqjXrLDASk",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vZHlAZ21haWwuY29tIiwic3ViIjoiYzlmNWE3YjUtY2NmOS00MGJiLTkyMDEtNTNlNTNjNGMwOTUyIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NDkyMzk2MDgsImV4cCI6MTc0OTg0NDQwOH0.BXf9LjDs-jovJE8zni0iZAaxyvMd2yh57BNreSF24Pg",
 							"type": "string"
 						}
 					]
@@ -914,13 +916,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{base_url}}/download/ai-desktop",
+					"raw": "{{base_url}}/download/model/098b3638-3002-4271-89aa-b5d1f0bf434b",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
 						"download",
-						"ai-desktop"
+						"model",
+						"098b3638-3002-4271-89aa-b5d1f0bf434b"
 					]
 				}
 			},
