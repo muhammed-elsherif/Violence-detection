@@ -18,4 +18,5 @@ Guidelines:
 3. Match technical capabilities with business needs
 4. Consider scalability and deployment requirements
 5. Prioritize models that best fit the use case
-6. Provide only the model name no explanations 
+6. List the top 3 most suitable models
+7. Provide the **best** model name with brief explanation

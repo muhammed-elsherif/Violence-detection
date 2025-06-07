@@ -9,6 +9,7 @@ import { PrismaClient, DetectionStatus } from "@prisma/client";
 export type FileType = "VIDEO" | "IMAGE";
 
 export interface VideoDetectionResult {
+  videoUrl: string;
   totalFrames: number;
   violentFrames: number;
   overallStatus: DetectionStatus;
@@ -57,13 +58,16 @@ export abstract class BasePredictionService {
         detectionData
       );
 
+      const contentDisposition = response.headers["content-disposition"] || "";
+      const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
+      const filename = filenameMatch ? filenameMatch[1] : "output.mp4";
+
       return {
-        videoUrl: `/predict/video/${updatedUpload.id}`,
+        videoUrl: filename,
         overallStatus: detectionData.overallStatus,
         overallConfidence: detectionData.overallConfidence ?? 0,
         violentFrames: detectionData.violentFrames ?? 0,
         totalFrames: detectionData.totalFrames ?? 0,
-        // videoUrl: response.headers["x-video-url"] as string,
       };
     } catch (error) {
       await this.prisma.uploadsHistory.update({

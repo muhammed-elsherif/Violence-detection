@@ -2,7 +2,7 @@
 import { Module } from "@nestjs/common";
 import { HttpModule } from "@nestjs/axios";
 import { PredictController } from "./predict.controller";
-import { PredictService } from "./predict.service";
+import { PredictService } from "../violence-detection/predict.service";
 import { GunDetectionService } from "../gun-detection/gun-detection.service";
 import { FireDetectionService } from "../fire-detection/fire-detection.service";
 import { CrashDetectionService } from "../crash-detection/crash-detection.service";

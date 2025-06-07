@@ -5,7 +5,7 @@ import {
   MulterFile,
   GunVideoPredictionResponse,
 } from "src/interface/video.interface";
-import { BasePredictionService } from "../violence-detection/base-prediction.service";
+import { BasePredictionService } from "../prediction-base/base-prediction.service";
 
 interface GunDetectionResult {
   overallStatus: DetectionStatus;

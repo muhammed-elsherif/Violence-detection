@@ -6,7 +6,7 @@ import { UserModule } from "./user/user.module";
 import { AuthService } from "./auth/auth.service";
 import { UserService } from "./user/user.service";
 import { PrismaClient } from "@prisma/client";
-import { PredictModule } from "./violence-detection/predict.module";
+import { PredictModule } from "./prediction-base/predict.module";
 import { UserStatsModule } from "./user-stats/user-stats.module";
 
 import { PrismaModule } from "../prisma/prisma.module";
@@ -35,16 +35,16 @@ import { RecomendedModelsController } from "./recomended-models/recomended-model
 import { RecomendedModelsService } from "./recomended-models/recomended-models.service";
 import { ConfigModule } from "@nestjs/config";
 import { HttpModule } from "@nestjs/axios";
-import { PredictController } from "./violence-detection/predict.controller";
+import { PredictController } from "./prediction-base/predict.controller";
 import { PredictService } from "./violence-detection/predict.service";
 import { GunDetectionService } from "./gun-detection/gun-detection.service";
 import { FireDetectionService } from "./fire-detection/fire-detection.service";
 import { CrashDetectionService } from "./crash-detection/crash-detection.service";
 import { ObjectDetectionService } from "./object-detection/object-detection.service";
-// import { RedisModule } from './redis/redis.module';
 import { DeveloperController } from "./developer/developer.controller";
 import { DeveloperService } from "./developer/developer.service";
 import { DownloadService } from "./download/download.service";
+// import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
