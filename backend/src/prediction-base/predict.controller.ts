@@ -33,6 +33,9 @@ import { GunDetectionService } from "src/gun-detection/gun-detection.service";
 import { FireDetectionService } from "src/fire-detection/fire-detection.service";
 import { CrashDetectionService } from "src/crash-detection/crash-detection.service";
 import { ObjectDetectionService } from "src/object-detection/object-detection.service";
+import { RolesGuard } from "src/auth/roles.guard";
+import { UserRole } from "@prisma/client";
+import { Roles } from "src/auth/roles.decorator";
 // import { RedisService } from '../redis/redis.service';
 
 @ApiTags("Prediction")
@@ -142,6 +145,7 @@ export class PredictController {
       },
     },
   })
+  @Roles(UserRole.ADMIN, UserRole.USER)
   async predictVideo(
     @UploadedFile() file: MulterFile,
     @Request() req: { user: { sub: string } }
@@ -174,6 +178,7 @@ export class PredictController {
     description:
       "Upload a video file to detect guns. The video will be processed and analyzed for gun presence.",
   })
+  @Roles(UserRole.ADMIN, UserRole.USER)
   async predictGunVideo(
     @UploadedFile() file: MulterFile,
     @Request() req: { user: { sub: string } }
@@ -198,6 +203,7 @@ export class PredictController {
     description:
       "Upload a video file to detect fire. The video will be processed and analyzed for fire presence.",
   })
+  @Roles(UserRole.ADMIN, UserRole.USER)
   async predictFireVideo(
     @UploadedFile() file: MulterFile,
     @Request() req: { user: { sub: string } }
@@ -221,6 +227,7 @@ export class PredictController {
     description:
       "Upload a video file to detect car crashes. The video will be processed and analyzed for crash events.",
   })
+  @Roles(UserRole.ADMIN, UserRole.USER)
   async predictCrashVideo(
     @UploadedFile() file: MulterFile,
     @Request() req: { user: { sub: string } }
@@ -244,6 +251,7 @@ export class PredictController {
     description:
       "Upload a video file to detect objects. The video will be processed and analyzed for various objects.",
   })
+  @Roles(UserRole.ADMIN, UserRole.USER)
   async predictObjects(
     @UploadedFile() file: MulterFile,
     @Request() req: { user: { sub: string } }
@@ -267,6 +275,7 @@ export class PredictController {
     description:
       "Upload an image file for analysis. The image will be processed based on the selected model.",
   })
+  @Roles(UserRole.ADMIN, UserRole.USER)
   async predictImage(
     @UploadedFile() file: MulterFile,
     @Request() req: { user: { sub: string } }
@@ -283,6 +292,8 @@ export class PredictController {
   }
 
   @Get("video/:id")
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.USER)
   @ApiOperation({
     summary: "Get processed video by ID",
     description: "Retrieve a processed video by its ID.",

@@ -2,6 +2,9 @@ import { Controller, Get, Post, Body, Param, UseGuards, Request, Patch } from '@
 import { ServiceService } from './service.service';
 import { CreateServiceDto, CreateServiceRequestDto } from './dto/create-service.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { UserRole } from '@prisma/client';
+import { Roles } from 'src/auth/roles.decorator';
 
 @Controller("services")
 @UseGuards(JwtAuthGuard)
@@ -9,6 +12,8 @@ export class ServiceController {
   constructor(private readonly serviceService: ServiceService) {}
 
   @Post("create")
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
   async createService(@Body() createServiceDto: CreateServiceDto) {
     return this.serviceService.createService(createServiceDto);
   }
@@ -24,6 +29,8 @@ export class ServiceController {
   }
 
   @Post("request")
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.USER)
   async createServiceRequest(
     @Request() req,
     @Body() createServiceRequestDto: CreateServiceRequestDto
@@ -36,28 +43,38 @@ export class ServiceController {
 
   // not verified
   @Post("purchase-model")
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.USER)
   async purchaseModel(@Request() req, @Body("modelId") modelId: string) {
     return this.serviceService.purchaseModel(req.user.sub, modelId);
   }
 
   // not verified
   @Get("customer/:customerId/requests")
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
   async getCustomerServiceRequests(@Param("customerId") customerId: string) {
     return this.serviceService.getServiceRequests(customerId);
   }
 
   // not verified
   @Get("most-used")
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
   async getMostUsedModels() {
     return this.serviceService.getMostUsedModels();
   }
 
   @Get("requests")
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
   async getAllServiceRequests() {
     return this.serviceService.getAllServiceRequests();
   }
 
   @Patch("requests/:requestId/status")
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
   async updateServiceRequestStatus(
     @Param("requestId") requestId: string,
     @Body("status")
@@ -72,6 +89,8 @@ export class ServiceController {
   }
 
   @Post("requests/:requestId/reply")
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
   async replyToServiceRequest(
     @Param("requestId") requestId: string,
     @Body("message") message: string

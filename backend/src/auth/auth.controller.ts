@@ -16,6 +16,9 @@ import * as bcrypt from "bcrypt";
 import { ChangePasswordDto } from "./dto/change-password.dto";
 import { ForceChangePasswordDto } from "src/customer/dto/force-change-password.dto";
 import { JwtAuthGuard } from "./jwt-auth.guard";
+import { RolesGuard } from "./roles.guard";
+import { Roles } from "./roles.decorator";
+import { UserRole } from "@prisma/client";
 
 @ApiTags("auth")
 @Controller("auth")
@@ -75,7 +78,8 @@ export class AuthController {
   }
 
   @Post("change-password")
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.USER, UserRole.ADMIN)
   async changePassword(@Request() req, @Body() dto: ChangePasswordDto) {
     const newHashed = await bcrypt.hash(dto.newPassword, 10);
     await this.prisma.customer.update({
@@ -90,7 +94,8 @@ export class AuthController {
   }
 
   @Post("forgot-password")
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.USER, UserRole.ADMIN)
   async forgotPassword(@Request() req, @Body() dto: ChangePasswordDto) {
     const newHashed = await bcrypt.hash(dto.newPassword, 10);
     await this.prisma.user.update({
