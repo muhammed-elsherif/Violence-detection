@@ -7,11 +7,12 @@ from datetime import datetime
 from model_parameters import selected_model
 from object_detection.yolo import yolo_detect
 from config import YOLO_ENABLED, OBJECT_DETECTION_ENABLED, GUN_DETECTION_ENABLED, FIRE_DETECTION_ENABLED, FRAME_SIZE, NUM_FRAMES, CONFIDENCE_THRESHOLD
+import torch
 
-violence_model = selected_model()
-yolo_model = selected_model(violence_detection=True)
-gun_model = selected_model(gun_detection=True)
-fire_model = selected_model(fire_detection=True)
+# Enable GPU if available
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print(f"Using device: {device}")
+
 violent_frames = []
 
 # --- Streamlit Setup ---
@@ -23,8 +24,8 @@ prediction_placeholder = st.container()
 cap = cv2.VideoCapture(0)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 112)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 112)
-# cap.set(cv2.CAP_PROP_FPS, 30)
-# cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)  # Reduce input lag
+cap.set(cv2.CAP_PROP_FPS, 30)  # Set to 30 FPS
+cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)  # Reduce input lag
 
 if not cap.isOpened():
     print("Error: Could not open webcam")
@@ -39,53 +40,53 @@ if OBJECT_DETECTION_ENABLED:
             break
 
         processed_frame, _, _ = yolo_detect(frame, CONFIDENCE_THRESHOLD)
-        # Show the frame with predictions
         stframe.image(processed_frame, channels="BGR")
 
 elif GUN_DETECTION_ENABLED:
+    gun_model = selected_model(gun_detection=True)
+    gun_model.to(device)  # Move model to GPU if available
     while cap.isOpened():
         success, frame = cap.read()
         if not success:
             st.error("Error: Failed to capture frame")
             break
-        # Run YOLO model on the frame
-        results = gun_model.predict(frame, conf=0.6)
-        # Annotate frame with detections
-        annotated_frame = results[0].plot()
-
-        # Show the frame with predictions
-        stframe.image(annotated_frame, channels="BGR")
+        results = gun_model.predict(frame, conf=0.6, device=device)
+        stframe.image(results[0].plot(), channels="BGR")
 
 elif FIRE_DETECTION_ENABLED:
+    fire_model = selected_model(fire_detection=True)
+    fire_model.to(device)  # Move model to GPU if available
     while cap.isOpened():
         success, frame = cap.read()
         if not success:
             st.error("Error: Failed to capture frame")
             break
-        # Run YOLO model on the frame
-        results = fire_model.predict(frame, conf=0.6)
-        # Annotate frame with detections
-        annotated_frame = results[0].plot()
-
-        # Show the frame with predictions
-        stframe.image(annotated_frame, channels="BGR")
+        results = fire_model.predict(frame, conf=0.6, device=device)
+        print(fire_model.names)
+        
+        # Check if any detection has class 0 (fire)
+        has_fire = any(det[5] == 0 for det in results[0].boxes.data)
+        
+        # Only apply .plot() if fire is detected, otherwise use original frame
+        display_frame = results[0].plot() if has_fire else frame
+        stframe.image(display_frame, channels="BGR")
 
 elif YOLO_ENABLED:
+    yolo_model = selected_model(violence_detection=True)
+    yolo_model.to(device)  # Move model to GPU if available
     while cap.isOpened():
         success, frame = cap.read()
         if not success:
             st.error("Error: Failed to capture frame")
             break
-        # Run YOLO model on the frame
-        results = yolo_model.predict(frame, conf=0.6)
-        # Annotate frame with detections
-        annotated_frame = results[0].plot()
-
-        # Show the frame with predictions
-        stframe.image(annotated_frame, channels="BGR")
+        results = yolo_model.predict(frame, conf=0.6, device=device)
+        stframe.image(results[0].plot(), channels="BGR")
 
 else:
     ctr = 0
+    violence_model = selected_model()
+    if hasattr(violence_model, 'to'):  # If model supports GPU
+        violence_model.to(device)
 
     output_path = "violence_detection_output.mp4"
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Codec
@@ -111,8 +112,6 @@ else:
             input_frames = np.expand_dims(np.array(frame_queue), axis=0)
             prediction = violence_model.predict(input_frames)
             predicted_label = np.argmax(prediction)
-            # label = "Violence" if np.argmax(prediction) == 1 else "Non-Violence"
-            # confidence = prediction[0][predicted_label]
 
             prediction_smoother.append(prediction[0])
 
@@ -134,6 +133,7 @@ else:
             else:
                 cv2.putText(frame, f"Non-Violence ({confidence:.2f})", (60, 70),
                             cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+
         # Convert BGR to RGB for Streamlit
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 

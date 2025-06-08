@@ -52,25 +52,9 @@ def predict_and_annotate_violence_video(video_path: str, model) -> str:
 
     if predicted_label == 1:  # Assuming label 1 = Violence
         cv2.rectangle(frame, (50, 50), (width - 50, height - 50), (0, 0, 255), 4)
-        cv2.putText(
-            frame,
-            f"Violence Detected ({confidence:.2f})",
-            (60, 70),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            1,
-            (0, 0, 255),
-            2,
-        )
+        cv2.putText(frame, f"Violence Detected ({confidence:.2f})", (60, 70), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
     else:
-        cv2.putText(
-            frame,
-            f"Non-Violence ({confidence:.2f})",
-            (60, 70),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            1,
-            (0, 255, 0),
-            2,
-        )
+        cv2.putText(frame, f"Non-Violence ({confidence:.2f})", (60, 70), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
     out.write(frame)
 
@@ -87,7 +71,6 @@ def predict_and_annotate_violence_video(video_path: str, model) -> str:
         "totalFrames": total_frames,
     }
     return output_filename, detection_results
-
 
 def predict_and_annotate_video_object(video_path: str) -> str:
     cap = cv2.VideoCapture(video_path)
@@ -268,25 +251,9 @@ def predict_and_annotate_image(image_path: str, model) -> str:
 
     if predicted_label == 1:
         cv2.rectangle(img, (10, 10), (img.shape[1]-10, img.shape[0]-10), (0, 0, 255), 2)
-        cv2.putText(
-            img,
-            f"Violence Detected ({confidence:.2f})",
-            (20, 40),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            1,
-            (0, 0, 255),
-            2,
-        )
+        cv2.putText(img, f"Violence Detected ({confidence:.2f})", (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
     else:
-        cv2.putText(
-            img,
-            f"Non-Violence ({confidence:.2f})",
-            (20, 40),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            1,
-            (0, 255, 0),
-            2,
-        )
+        cv2.putText(img, f"Non-Violence ({confidence:.2f})", (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
     os.makedirs(VIDEO_OUTPUT_DIR, exist_ok=True)
     output_filename = os.path.join(VIDEO_OUTPUT_DIR, f"{model}_{uuid.uuid4().hex}.jpg")
@@ -496,15 +463,6 @@ async def recommend_model(req: RecommendationRequest):
 
     with open("prompts/model_recommendation.txt", "r") as f:
             prompt_template = f.read()
-            
-# Output Format:
-# <models>
-# [List the top 3 most suitable models with brief explanations]
-# </models>
-
-# <chosen>
-# [The single best model for this use case]
-# </chosen>
 
     system_prompt = (prompt_template)
 
