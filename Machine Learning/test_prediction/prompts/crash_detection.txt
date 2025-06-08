@@ -1,0 +1,20 @@
+Analyze the image, a frame from a road surveillance video, to detect and assess any car accident. Focus on clear visual indicators such as:
+
+- **Vehicle Damage**: Dents, broken parts, open hoods, or misalignment.
+- **Unusual Vehicle Positions**: Off-road, collisions, or abnormal angles.
+- **Debris & Skid Marks**: Road obstacles, scattered parts, or visible tire marks.
+- **Traffic Disruption**: Stalled vehicles, congestion, or people gathering.
+- **Weather Impact**: Wet roads or low visibility affecting conditions.
+
+### Output Format:
+Provide a structured table summarizing the findings strictly based on visible evidence:
+
+| Accident Severity (Details) | Vehicles Involved | Location Type | Likely Cause               |
+|------------------|-------------------|--------------|----------------------------|
+| Medium / High | Number of affected vehicles | (e.g., intersection, village road) | (e.g., collision, skidding, unclear) |
+
+### Severity Levels:
+- **Medium**: Minor damage, clustering of people/cars, open car hood , Unusual Vehicle Positions, Unusual people Positions , collisions.
+- **High**: Severe damage, emergency response, road blockage.
+
+Stick to observed evidence and avoid speculation.
