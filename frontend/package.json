@@ -27,6 +27,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "bootstrap": "^5.3.3",
     "first-app": "file:",
+    "jwt-decode": "^4.0.0",
     "ngx-socket-io": "^4.8.5",
     "rxjs": "~7.8.0",
     "socket.io-client": "^4.8.1",

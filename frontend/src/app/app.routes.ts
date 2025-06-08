@@ -20,9 +20,8 @@ import { MyModelsComponent } from "./components/my-models/my-models.component";
 import { AddServiceComponent } from "./components/add-service/add-service.component";
 import { ServiceRequestsComponent } from "./components/admin/service-requests/service-requests.component";
 import { DeveloperMagementNavComponent } from "./components/userManagement/developer-management-nav/developer-magement-nav.component";
-import { RoleGuard } from "./core/guards/role.guard";
 import { AssignedTasksComponent } from "./components/developer/assigned-tasks/assigned-tasks.component";
-import { DeveloperComponent } from "./layouts/developer/developer.component";
+import { authGuard } from "./core/guards/auth.guard";
 
 export const routes: Routes = [
   // Public Routes
@@ -36,21 +35,6 @@ export const routes: Routes = [
       { path: "industries", component: IndustriesComponent },
       { path: "about", component: AboutComponent },
       { path: "contact", component: ContactComponent },
-    ],
-  },
-
-  // Auth Routes
-  { path: "login", component: LoginComponent },
-  { path: "signup", component: SignupComponent },
-
-  // Protected User Routes
-  {
-    path: "user",
-    component: UserComponent,
-    // canActivate: [RoleGuard],
-    data: { role: "USER" },
-    children: [
-      { path: "", redirectTo: "home", pathMatch: "full" },
       { path: "profile", component: HomeComponent },
       { path: "request-custom-service", component: RequestServiceComponent },
       { path: "purchase-model", component: PurchaseModelComponent },
@@ -58,12 +42,15 @@ export const routes: Routes = [
     ],
   },
 
+  // Auth Routes
+  { path: "login", component: LoginComponent },
+  { path: "signup", component: SignupComponent },
+
   // Admin Routes
   {
     path: "admin",
     component: AdminComponent,
-    // canActivate: [RoleGuard],
-    data: { role: "ADMIN" },
+    canActivate: [authGuard],
     children: [
       { path: "", redirectTo: "analytics", pathMatch: "full" },
       { path: "analytics", component: AnalyticsComponent },
@@ -88,7 +75,6 @@ export const routes: Routes = [
   {
     path: "developer",
     component: AdminComponent,
-    // canActivate: [RoleGuard],
     data: { role: "DEVELOPER" },
     children: [
       {
