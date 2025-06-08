@@ -46,6 +46,8 @@ export class LoginComponent {
         next: () => {
           this.isSubmitting = false;
           this.Router.navigate(["/"]);
+          console.log(this._AuthService.saveUserData());
+          
           // this.redirectBasedOnRole();
         },
         error: (err) => {
