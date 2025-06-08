@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+
 import {
   Controller,
   Get,
@@ -124,4 +126,13 @@ export class DownloadController {
 
     return;
   }
+  @Get("attendance-app")
+  async downloadAttendanceApp(@Res() res: Response) {
+    const filePath = join(process.cwd(), "src", "application", "attendance_app.zip");
+    const fileStream = createReadStream(filePath);
+    fileStream.pipe(res);
+  }
 }
+
+
+
