@@ -44,6 +44,7 @@ import { ObjectDetectionService } from "./object-detection/object-detection.serv
 import { DeveloperController } from "./developer/developer.controller";
 import { DeveloperService } from "./developer/developer.service";
 import { DownloadService } from "./download/download.service";
+import { B2DownloadService } from "./download/b2-download.service";
 // import { RedisModule } from './redis/redis.module';
 
 @Module({
@@ -96,6 +97,7 @@ import { DownloadService } from "./download/download.service";
     RecomendedModelsService,
     DeveloperService,
     DownloadService,
+    B2DownloadService,
   ],
 })
 export class AppModule {}

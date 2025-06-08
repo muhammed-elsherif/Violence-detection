@@ -126,12 +126,12 @@ model Service {
   features           String
   requirements       String
   endpoint           String
+  modelFile          String?
   demoVideo          String?
   documentation      String?
   isPublic           Boolean   @default(false)
   supportedPlatforms Json
   createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
 }
 
 model ServiceRequest {
@@ -177,4 +177,11 @@ model Developer {
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   serviceRequests ServiceRequest[]
+}
+
+model AppFile {
+  id        String   @id @default(uuid())
+  name      String
+  url       String
+  createdAt DateTime @default(now())
 }

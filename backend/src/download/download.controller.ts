@@ -15,15 +15,13 @@ import { join } from "path";
 import { Response } from "express";
 import { DownloadService } from "./download.service";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { B2DownloadService } from "./b2-download.service";
 
 @Controller("download")
 // @UseGuards(JwtAuthGuard)
 export class DownloadController {
-  constructor(private readonly downloadService: DownloadService) {}
-  /**
-   * GET /download/ai-desktop?platform=mac
-   * GET /download/ai-desktop?platform=windows
-   */
+  constructor(private readonly downloadService: DownloadService, private readonly b2Service: B2DownloadService) { }
+
   @Get("model/:modelId")
   async downloadModel(@Res() res: Response, @Param("modelId") modelId: string) {
     const weightsData =
@@ -137,9 +135,14 @@ export class DownloadController {
 
   @Get("attendance-app")
   async downloadAttendanceApp(@Res() res: Response) {
-    await this.downloadService.downloadFileFromDrive("attendance_app.zip", res);
+    try {
+      return this.b2Service.downloadFile(res);
+    } catch (error) {
+      try {
+        await this.downloadService.downloadFileFromDrive("attendance_app.zip", res);
+      } catch (error) {
+        throw new BadRequestException("Error downloading file");
+      }
+    }
   }
 }
-
-
-
