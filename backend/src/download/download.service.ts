@@ -13,7 +13,7 @@ export class DownloadService {
       select: {
         id: true,
         name: true,
-        modelFile: true,
+        // modelFile: true,
       },
     });
   }

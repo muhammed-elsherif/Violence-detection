@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { Router, RouterLink } from "@angular/router";
+import { Router } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { ServiceService, Model } from "../../core/services/service.service";
@@ -8,7 +8,7 @@ import { TechnologyComponent } from "../technology/technology.component";
 @Component({
   selector: "app-services",
   standalone: true,
-  imports: [CommonModule, FormsModule, TechnologyComponent, RouterLink],
+  imports: [CommonModule, FormsModule, TechnologyComponent],
   templateUrl: "./services.component.html",
   styleUrl: "./services.component.scss",
 })

@@ -19,7 +19,6 @@ export class ServiceService {
     return this.prisma.service.create({
       data: {
         ...createServiceDto,
-        modelFile: createServiceDto.modelFile,
         category: createServiceDto.category as ModelType,
       },
     });
@@ -27,6 +26,10 @@ export class ServiceService {
 
   async getAllServices() {
     return this.prisma.service.findMany();
+  }
+
+  async getModelTypes() {
+    return Object.values(ModelType);
   }
 
   async createServiceRequest(

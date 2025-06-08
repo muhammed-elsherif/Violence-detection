@@ -27,9 +27,6 @@ export class CreateServiceDto {
   @IsString()
   requirements: string;
 
-  @IsOptional()
-  modelFile: Buffer;
-
   @IsString()
   @IsOptional()
   demoVideo?: string;

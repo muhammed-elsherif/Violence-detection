@@ -52,30 +52,15 @@ export class ServiceService {
   constructor(private http: HttpClient) {}
 
   createService(serviceData: any): Observable<any> {
-    const formData = new FormData();
-
-    // Append all non-file fields
-    Object.keys(serviceData).forEach((key) => {
-      if (
-        key === "modelFile" ||
-        key === "demoVideo" ||
-        key === "documentation"
-      ) {
-        if (serviceData[key]) {
-          formData.append(key, serviceData[key]);
-        }
-      } else if (key === "supportedPlatforms") {
-        formData.append(key, JSON.stringify(serviceData[key]));
-      } else {
-        formData.append(key, serviceData[key]);
-      }
-    });
-
-    return this.http.post(`${this.apiUrl}/services/create`, formData);
+    return this.http.post(`${this.apiUrl}/services/create`, serviceData);
   }
 
   getAllServices(): Observable<any> {
     return this.http.get(`${this.apiUrl}/services`);
+  }
+
+  getModelTypes(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/services/model-types`);
   }
 
   createServiceRequest(requestData: any): Observable<any> {

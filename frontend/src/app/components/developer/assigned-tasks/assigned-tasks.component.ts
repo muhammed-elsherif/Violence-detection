@@ -1,13 +1,12 @@
 import { Component, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { ReactiveFormsModule } from "@angular/forms";
-import { RouterLink } from "@angular/router";
 import { AuthService } from "../../../core/services/auth.service";
 
 @Component({
   selector: "app-assigned-tasks",
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: "./assigned-tasks.component.html",
   // styleUrl: "./assigned-tasks.component.scss",
 })

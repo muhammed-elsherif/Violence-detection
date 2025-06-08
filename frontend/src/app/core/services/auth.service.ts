@@ -74,7 +74,6 @@ export class AuthService {
     const accessToken = this.getAccessToken();
     if (accessToken) {
       this.userData = jwtDecode(accessToken!);
-      console.log("User Data:", this.userData);
     }
   }
 

@@ -14,6 +14,7 @@ export class AddServiceComponent implements OnInit {
   serviceForm: FormGroup;
   isSubmitting = false;
   errorMessage = '';
+  modelTypes: string[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -28,7 +29,6 @@ export class AddServiceComponent implements OnInit {
       features: ['', Validators.required],
       requirements: ['', Validators.required],
       endpoint: ['', Validators.required],
-      modelFile: [null, Validators.required],
       demoVideo: [''],
       documentation: [''],
       isPublic: [false],
@@ -40,7 +40,11 @@ export class AddServiceComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.serviceService.getModelTypes().subscribe((types) => {
+      this.modelTypes = types;
+    });
+  }
 
   onFileSelected(event: any, field: string): void {
     const file = event.target.files[0];

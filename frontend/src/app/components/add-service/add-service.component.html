@@ -13,8 +13,10 @@
               <input type="text" formControlName="name" class="form-control" />
             </div>
             <div class="col-md-6">
-              <label class="form-label">Category</label>
-              <input type="text" formControlName="category" class="form-control" />
+              <label class="form-label">Model Type</label>
+              <select formControlName="category" class="form-select">
+                <option *ngFor="let type of modelTypes" [value]="type">{{ type }}</option>
+              </select>
             </div>
             <div class="col-12">
               <label class="form-label">Description</label>
@@ -49,10 +51,6 @@
       <div class="card mb-4">
         <div class="card-body">
           <h2 class="h5 fw-semibold mb-3">Files and Documentation</h2>
-          <div class="mb-3">
-            <label class="form-label">Model File</label>
-            <input type="file" (change)="onFileSelected($event, 'modelFile')" class="form-control" />
-          </div>
           <div class="mb-3">
             <label class="form-label">Demo Video (Optional)</label>
             <input type="file" (change)="onFileSelected($event, 'demoVideo')" class="form-control" />
