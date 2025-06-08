@@ -26,7 +26,8 @@ export class DownloadController {
    */
   @Get("model/:modelId")
   async downloadModel(@Res() res: Response, @Param("modelId") modelId: string) {
-    const weightsData = await this.downloadService.getModelWeightsStream(modelId);
+    const weightsData =
+      await this.downloadService.getModelWeightsStream(modelId);
 
     if (!weightsData) {
       throw new BadRequestException("Model weights not found");
@@ -126,11 +127,17 @@ export class DownloadController {
 
     return;
   }
+
+  @Get("drive-app")
+  async downloadDriveApp(@Res() res: Response) {
+    const fileId = "1YYVW-pY3BxfVY2_9xfRfb6NuYxtu7pmW";
+    const directDownloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}&confirm=t`;
+    await this.downloadService.downloadDriveApp(directDownloadUrl, res);
+  }
+
   @Get("attendance-app")
   async downloadAttendanceApp(@Res() res: Response) {
-    const filePath = join(process.cwd(), "src", "application", "attendance_app.zip");
-    const fileStream = createReadStream(filePath);
-    fileStream.pipe(res);
+    await this.downloadService.downloadFileFromDrive("attendance_app.zip", res);
   }
 }
 
