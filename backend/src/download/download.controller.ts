@@ -136,7 +136,7 @@ export class DownloadController {
   @Get("attendance-app")
   async downloadAttendanceApp(@Res() res: Response) {
     try {
-      return this.b2Service.downloadFile(res);
+      return this.b2Service.downloadFile(res, "attendance_app.zip");
     } catch (error) {
       try {
         await this.downloadService.downloadFileFromDrive("attendance_app.zip", res);
@@ -144,5 +144,20 @@ export class DownloadController {
         throw new BadRequestException("Error downloading file");
       }
     }
+  }
+
+  @Get("fire-smoke-weights")
+  async downloadFireSmokeWeights(@Res() res: Response) {
+    return this.b2Service.downloadFile(res, "fire_smoke.pt.zip");
+  }
+
+  @Get("fire-weights")
+  async downloadFireWeights(@Res() res: Response) {
+    return this.b2Service.downloadFile(res, "fire.pt.zip");
+  }
+
+  @Get("object-weights")
+  async downloadSmokeWeights(@Res() res: Response) {
+    return this.b2Service.downloadFile(res, "object.pt.zip");
   }
 }

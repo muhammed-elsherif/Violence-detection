@@ -14,10 +14,10 @@ export class B2DownloadService {
     },
   });
 
-  async downloadFile(res: Response) {
+  async downloadFile(res: Response, key: string) {
     const command = new GetObjectCommand({
       Bucket: process.env.B2_BUCKET!,
-      Key: "attendance_app.zip",
+      Key: key,
     });
 
     try {
@@ -38,7 +38,7 @@ export class B2DownloadService {
       const data = await this.s3.send(command);
       res.setHeader(
         "Content-Disposition",
-        'attachment; filename="attendance-app.zip"'
+        `attachment; filename="${key}"`
       );
       res.setHeader("Content-Type", "application/zip");
       (data.Body as any).pipe(res);
