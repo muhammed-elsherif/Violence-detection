@@ -6,7 +6,7 @@ from collections import deque
 from datetime import datetime
 from model_parameters import selected_model
 from object_detection.yolo import yolo_detect
-from config import YOLO_ENABLED, OBJECT_DETECTION_ENABLED, GUN_DETECTION_ENABLED, FIRE_DETECTION_ENABLED, FRAME_SIZE, NUM_FRAMES, CONFIDENCE_THRESHOLD
+from config import YOLO_ENABLED, OBJECT_DETECTION_ENABLED, GUN_DETECTION_ENABLED, FIRE_DETECTION_ENABLED, SMOKE_DETECTION_ENABLED, FRAME_SIZE, NUM_FRAMES, CONFIDENCE_THRESHOLD
 
 violent_frames = []
 
@@ -58,6 +58,23 @@ elif FIRE_DETECTION_ENABLED:
             break
         results = fire_model.predict(frame, conf=0.6)
         stframe.image(results[0].plot(), channels="BGR")
+
+elif SMOKE_DETECTION_ENABLED:
+    smoke_model = selected_model(smoke_detection=True)
+    while cap.isOpened():
+        success, frame = cap.read()
+        if not success:
+            st.error("Error: Failed to capture frame")
+            break
+
+        results = smoke_model.predict(frame, conf=0.6)
+        smoke_class = results[0].names[0]
+
+        # if smoke is detected, draw a red rectangle around the frame
+        if smoke_class in results[0].names:
+            stframe.image(results[0].plot(), channels="BGR")
+        else:
+            stframe.image(frame, channels="BGR")
 
 elif YOLO_ENABLED:
     yolo_model = selected_model(violence_detection=True)
