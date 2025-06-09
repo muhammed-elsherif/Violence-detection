@@ -2,16 +2,43 @@
 <div class="container">
   <h1>Profile</h1>
   <div class="row">
-    <div class="col-md-6"> 
+    <div class="col-md-6">
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">Profile</h5>
           <p class="card-text">
-            <strong>Name:</strong> John Doe
-            <br>
-            <strong>Email:</strong> jo
+            <strong>Name:</strong> {{ user.username }}
+            <br />
+            <strong>Email:</strong> {{ user.email }}
           </p>
         </div>
+      </div>
+      <div class="card-footer">
+        <h5>History</h5>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>File Type</th>
+              <th>Processing Status</th>
+              <th>Detection Status</th>
+              <th>Overall Confidence</th>
+              <th>Duration</th>
+              <th>File Size</th>
+              <th>Uploaded At</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of history">
+              <td>{{ item.fileType }}</td>
+              <td>{{ item.processingStatus }}</td>
+              <td>{{ item.detectionStatus }}</td>
+              <td>{{ item.overallConfidence }}</td>
+              <td>{{ item.duration }}</td>
+              <td>{{ item.fileSize }}</td>
+              <td>{{ item.uploadedAt }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>

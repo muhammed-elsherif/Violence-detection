@@ -147,4 +147,12 @@ export class ServiceService {
   getRecommendedModel(askAiFormData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/model-recommendation`, askAiFormData);
   }
+
+  getUser(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/user`);
+  }
+
+  getHistory(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/user/history`);
+  }
 }
