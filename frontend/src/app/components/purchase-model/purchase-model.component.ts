@@ -26,6 +26,10 @@ export class PurchaseModelComponent implements OnInit {
   error: string | null = null;
   loading = true;
   recommendedModelResponse: any;
+  explanation: string | null = null;
+  models: string[] = [];
+  isShowOtherModels = false;
+  isGenerating = false;
 
   constructor(
     private fb: FormBuilder,
@@ -50,8 +54,8 @@ export class PurchaseModelComponent implements OnInit {
   }
 
   askAiForm: FormGroup = new FormGroup({
-    company_name: new FormControl( null),
-    use_case : new FormControl(null)
+    company_name: new FormControl(null),
+    use_case: new FormControl(null),
   });
 
   ngOnInit() {
@@ -118,34 +122,54 @@ export class PurchaseModelComponent implements OnInit {
   }
 
   showAskAi() {
-    console.log("Ask AI clicked");
     const overlay = document.getElementById("ai-overlay");
-    overlay?.classList.remove("d-none");
-    overlay?.classList.add("d-block");
+    if (overlay) {
+      overlay.classList.remove("d-none");
+      document.body.style.overflow = "hidden"; // Prevent background scrolling
+      document
+        .querySelector(".form-container")
+        ?.classList.add("recommendation-open");
+    }
   }
 
   closeAskAi() {
-    console.log("Close Ask AI clicked");
     const overlay = document.getElementById("ai-overlay");
-    overlay?.classList.remove("d-block");
-    overlay?.classList.add("d-none");
+    if (overlay) {
+      overlay.classList.add("d-none");
+      document.body.style.overflow = ""; // Restore background scrolling
+      document
+        .querySelector(".form-container")
+        ?.classList.remove("recommendation-open");
+    }
+    this.askAiForm.reset();
+    this.isShowOtherModels = false;
+    this.recommendedModelResponse = null;
+    this.explanation = null;
+    this.models = [];
   }
 
   askAiSubmit() {
+    this.isGenerating = true;
     if (this.askAiForm.valid) {
       const formData = this.askAiForm.value;
       this.serviceService.getRecommendedModel(formData).subscribe({
         next: (response) => {
-          console.log("Recommended Model Response:", response);
           this.recommendedModelResponse = response.recommended_model;
+          this.explanation = response.explanation;
+          this.models = response.models;
+          this.isGenerating = false;
         },
         error: (error) => {
           this.error =
             error.error.message ||
             "Failed to get recommended model. Please try again later.";
+          this.isGenerating = false;
         },
       });
     }
   }
 
+  showOtherModels() {
+    this.isShowOtherModels = true;
+  }
 }

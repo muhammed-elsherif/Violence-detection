@@ -6,11 +6,13 @@ from ultralytics import YOLO
 from tensorflow.keras.models import load_model
 from tensorflow.keras.applications.mobilenet import preprocess_input
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from config import NUM_FRAMES, FRAME_SIZE, GUN_DETECTION_ENABLED, FACE_DETECTION_ENABLED, YOLO_ENABLED, FIRE_DETECTION_ENABLED
+from config import NUM_FRAMES, FRAME_SIZE, GUN_DETECTION_ENABLED, YOLO_ENABLED, FIRE_DETECTION_ENABLED
 import torch
 import tensorflow as tf
 
 # Enable GPU memory growth to prevent OOM errors
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print(f"Using device: {device}")
 gpus = tf.config.list_physical_devices('GPU')
 if gpus:
     try:
@@ -26,16 +28,13 @@ def selected_model(gun_detection=False, fire_detection=False, violence_detection
         model_path = "../loaded_models/violoence_best.pt"
         model_path = "../loaded_models/vil_best.pt"
         model_path = "../loaded_models/violence_weights.pt" # best
-        model = YOLO(model_path)
-        model.to('cuda' if torch.cuda.is_available() else 'cpu')
+        model = YOLO(model_path)        
     elif GUN_DETECTION_ENABLED or gun_detection:
         model_path = "../loaded_models/gun_best.pt" # working
         model = YOLO(model_path)
-        model.to('cuda' if torch.cuda.is_available() else 'cpu')
     elif FIRE_DETECTION_ENABLED or fire_detection:
         model_path = "../loaded_models/fire.pt" # working
         model = YOLO(model_path)
-        model.to('cuda' if torch.cuda.is_available() else 'cpu')
     else:
         # model_name = '../loaded_models/inceptionV3_violence_detection_model.h5'
         # model_name = '../loaded_models/inceptionV3_violence_detection_model_with95.h5'
@@ -84,6 +83,7 @@ def selected_model(gun_detection=False, fire_detection=False, violence_detection
         # model_name = '../loaded_models/lung_colon_cancer_detection_model.h5' # body
         model = load_model(model_name, compile=False)
 
+    model.to(device)
     return model
 
 # Data augmentation

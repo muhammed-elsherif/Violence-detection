@@ -13,7 +13,7 @@ from crash_detection import CarAccidentDetectionProcessor
 from config import CONFIDENCE_THRESHOLD, VIDEO_OUTPUT_DIR, FRAME_SIZE, NUM_FRAMES, client
 from pydantic import BaseModel
 from together.error import RateLimitError
-# from model_recommender import ModelRecommender
+import re
 
 app = FastAPI()
 
@@ -21,9 +21,6 @@ app = FastAPI()
 model = selected_model()
 gun_model = selected_model(True)
 fire_model = selected_model(fire_detection=True)
-
-# Initialize the model recommender
-# model_recommender = ModelRecommender(TOGETHER_API_KEY)
 
 def predict_and_annotate_violence_video(video_path: str, model) -> str:
     cap = cv2.VideoCapture(video_path)
@@ -490,7 +487,17 @@ async def recommend_model(req: RecommendationRequest):
                 result.append(delta)
 
     model_choice = "".join(result).strip()
+
     if not model_choice:
         raise HTTPException(status_code=500, detail="Failed to retrieve a model recommendation.")
 
-    return {"recommended_model": model_choice}
+    # extract tags from model_choice
+    models = re.findall(r'<models>(.*?)</models>', model_choice, re.DOTALL)
+    chosen = re.findall(r'<chosen>(.*?)</chosen>', model_choice, re.DOTALL)
+    explanation = re.findall(r'<explanation>(.*?)</explanation>', model_choice, re.DOTALL)
+
+    return {
+        "models": models,
+        "recommended_model": chosen,
+        "explanation": explanation
+    }

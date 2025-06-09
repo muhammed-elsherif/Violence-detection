@@ -7,11 +7,6 @@ from datetime import datetime
 from model_parameters import selected_model
 from object_detection.yolo import yolo_detect
 from config import YOLO_ENABLED, OBJECT_DETECTION_ENABLED, GUN_DETECTION_ENABLED, FIRE_DETECTION_ENABLED, FRAME_SIZE, NUM_FRAMES, CONFIDENCE_THRESHOLD
-import torch
-
-# Enable GPU if available
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-print(f"Using device: {device}")
 
 violent_frames = []
 
@@ -44,7 +39,6 @@ if OBJECT_DETECTION_ENABLED:
 
 elif GUN_DETECTION_ENABLED:
     gun_model = selected_model(gun_detection=True)
-    gun_model.to(device)  # Move model to GPU if available
     while cap.isOpened():
         success, frame = cap.read()
         if not success:
@@ -55,7 +49,6 @@ elif GUN_DETECTION_ENABLED:
 
 elif FIRE_DETECTION_ENABLED:
     fire_model = selected_model(fire_detection=True)
-    fire_model.to(device)  # Move model to GPU if available
     while cap.isOpened():
         success, frame = cap.read()
         if not success:
@@ -73,7 +66,6 @@ elif FIRE_DETECTION_ENABLED:
 
 elif YOLO_ENABLED:
     yolo_model = selected_model(violence_detection=True)
-    yolo_model.to(device)  # Move model to GPU if available
     while cap.isOpened():
         success, frame = cap.read()
         if not success:
@@ -85,8 +77,6 @@ elif YOLO_ENABLED:
 else:
     ctr = 0
     violence_model = selected_model()
-    if hasattr(violence_model, 'to'):  # If model supports GPU
-        violence_model.to(device)
 
     output_path = "violence_detection_output.mp4"
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Codec

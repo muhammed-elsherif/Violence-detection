@@ -18,5 +18,18 @@ Guidelines:
 3. Match technical capabilities with business needs
 4. Consider scalability and deployment requirements
 5. Prioritize models that best fit the use case
-6. List the top 3 most suitable models
-7. Provide the **best** model name with brief explanation
+
+Response Format:
+<models>
+1. [Model Name]: [Brief reason for suitability]
+2. [Model Name]: [Brief reason for suitability]
+3. [Model Name]: [Brief reason for suitability]
+</models>
+
+<chosen>
+Best Model Name
+</chosen>
+
+<explanation>
+Detailed explanation of why the chosen model is the best choice, considering the company's needs and use case, DO NOT pass two lines in the explanation, ALWAYS Provide an explanation
+</explanation>
