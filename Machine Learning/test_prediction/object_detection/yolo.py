@@ -45,8 +45,8 @@ def yolo_detect(image, confidence_threshold):
         confidence = confidences[i]
         color = COLORS[class_ids[i]]
 
-        # Draw outer rectangle using OpenCV
-        cv2.rectangle(image, (x, y), (x+w, y+h), color, 2)
+        # Draw outer rectangle using OpenCV and make box bigger
+        cv2.rectangle(image, (x, y), (x+w, y+h), color, 5)
 
         # Draw label and confidence using OpenCV
         text = f"{label}: {confidence:.2f}"

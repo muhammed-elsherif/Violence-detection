@@ -28,6 +28,7 @@ if not cap.isOpened():
     exit()
 
 if OBJECT_DETECTION_ENABLED:
+    object_model = selected_model(object_detection=True)
     while cap.isOpened():
         success, frame = cap.read()
         if not success:
@@ -35,6 +36,7 @@ if OBJECT_DETECTION_ENABLED:
             break
 
         processed_frame, _, _ = yolo_detect(frame, CONFIDENCE_THRESHOLD)
+        # results = object_model.predict(frame, conf=0.6)
         stframe.image(processed_frame, channels="BGR")
 
 elif GUN_DETECTION_ENABLED:
@@ -44,7 +46,7 @@ elif GUN_DETECTION_ENABLED:
         if not success:
             st.error("Error: Failed to capture frame")
             break
-        results = gun_model.predict(frame, conf=0.6, device=device)
+        results = gun_model.predict(frame, conf=0.6)
         stframe.image(results[0].plot(), channels="BGR")
 
 elif FIRE_DETECTION_ENABLED:
@@ -54,15 +56,8 @@ elif FIRE_DETECTION_ENABLED:
         if not success:
             st.error("Error: Failed to capture frame")
             break
-        results = fire_model.predict(frame, conf=0.6, device=device)
-        print(fire_model.names)
-        
-        # Check if any detection has class 0 (fire)
-        has_fire = any(det[5] == 0 for det in results[0].boxes.data)
-        
-        # Only apply .plot() if fire is detected, otherwise use original frame
-        display_frame = results[0].plot() if has_fire else frame
-        stframe.image(display_frame, channels="BGR")
+        results = fire_model.predict(frame, conf=0.6)
+        stframe.image(results[0].plot(), channels="BGR")
 
 elif YOLO_ENABLED:
     yolo_model = selected_model(violence_detection=True)
@@ -71,7 +66,7 @@ elif YOLO_ENABLED:
         if not success:
             st.error("Error: Failed to capture frame")
             break
-        results = yolo_model.predict(frame, conf=0.6, device=device)
+        results = yolo_model.predict(frame, conf=0.6)
         stframe.image(results[0].plot(), channels="BGR")
 
 else:
@@ -114,15 +109,13 @@ else:
             if predicted_label == 1 and confidence > CONFIDENCE_THRESHOLD:  # Assuming 1 = Violence
                 timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 cv2.rectangle(frame, (50, 50), (frame.shape[1] - 50, frame.shape[0] - 50), (0, 0, 255), 4)
-                cv2.putText(frame, f"Violence Detected ({confidence:.2f})", (60, 70),
-                            cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                cv2.putText(frame, f"Violence Detected ({confidence:.2f})", (60, 70), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
                 frame_rgb_copy = cv2.cvtColor(frame.copy(), cv2.COLOR_BGR2RGB)
                 violent_frames.append((frame_rgb_copy, timestamp))
                 ctr = ctr + 1
                 out.write(frame)
             else:
-                cv2.putText(frame, f"Non-Violence ({confidence:.2f})", (60, 70),
-                            cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                cv2.putText(frame, f"Non-Violence ({confidence:.2f})", (60, 70), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
         # Convert BGR to RGB for Streamlit
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)

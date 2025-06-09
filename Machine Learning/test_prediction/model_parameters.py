@@ -6,7 +6,7 @@ from ultralytics import YOLO
 from tensorflow.keras.models import load_model
 from tensorflow.keras.applications.mobilenet import preprocess_input
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from config import NUM_FRAMES, FRAME_SIZE, GUN_DETECTION_ENABLED, YOLO_ENABLED, FIRE_DETECTION_ENABLED
+from config import NUM_FRAMES, FRAME_SIZE, GUN_DETECTION_ENABLED, YOLO_ENABLED, FIRE_DETECTION_ENABLED, OBJECT_DETECTION_ENABLED
 import torch
 import tensorflow as tf
 
@@ -21,7 +21,7 @@ if gpus:
     except RuntimeError as e:
         print(f"GPU memory growth error: {e}")
 
-def selected_model(gun_detection=False, fire_detection=False, violence_detection=False):
+def selected_model(gun_detection=False, fire_detection=False, violence_detection=False, object_detection=False):
     # Load all trained models
     if YOLO_ENABLED or violence_detection:
         model_path = "../loaded_models/yolo_best.pt"
@@ -34,6 +34,9 @@ def selected_model(gun_detection=False, fire_detection=False, violence_detection
         model = YOLO(model_path)
     elif FIRE_DETECTION_ENABLED or fire_detection:
         model_path = "../loaded_models/fire.pt" # working
+        model = YOLO(model_path)
+    elif OBJECT_DETECTION_ENABLED or object_detection:
+        model_path = "../loaded_models/object_best_yolo11.pt"
         model = YOLO(model_path)
     else:
         # model_name = '../loaded_models/inceptionV3_violence_detection_model.h5'
