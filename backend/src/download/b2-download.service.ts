@@ -32,7 +32,7 @@ export class B2DownloadService {
         {
           relation: "before",
           toMiddleware: "awsAuthMiddleware",
-          name: "stripChecksumModeHeaderMiddleware",
+          name: "stripChecksumModeHeaderMiddleware"+ Math.random().toString(36).substring(2, 15),
         }
       );
       const data = await this.s3.send(command);
