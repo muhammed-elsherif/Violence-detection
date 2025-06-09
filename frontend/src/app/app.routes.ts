@@ -22,6 +22,7 @@ import { ServiceRequestsComponent } from "./components/admin/service-requests/se
 import { DeveloperMagementNavComponent } from "./components/userManagement/developer-management-nav/developer-magement-nav.component";
 import { AssignedTasksComponent } from "./components/developer/assigned-tasks/assigned-tasks.component";
 import { authGuard } from "./core/guards/auth.guard";
+import { ProfileComponent } from "./components/profile/profile.component";
 
 export const routes: Routes = [
   // Public Routes
@@ -35,9 +36,9 @@ export const routes: Routes = [
       { path: "industries", component: IndustriesComponent },
       { path: "about", component: AboutComponent },
       { path: "contact", component: ContactComponent },
-      { path: "profile", component: HomeComponent },
       { path: "request-custom-service", component: RequestServiceComponent },
       { path: "purchase-model", component: PurchaseModelComponent },
+      { path: "profile", component: ProfileComponent },
       { path: "my-models", component: MyModelsComponent },
     ],
   },
