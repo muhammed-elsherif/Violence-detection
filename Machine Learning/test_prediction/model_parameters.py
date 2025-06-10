@@ -29,9 +29,12 @@ def selected_model(gun_detection=False, fire_detection=False, smoke_detection=Fa
         model = YOLO(model_path)        
     elif GUN_DETECTION_ENABLED or gun_detection:
         model_path = "../loaded_models/gun_best.pt" # working
+        #model_path = "../loaded_models/gun_knife.pt" # working bad 
+        model_path = "../loaded_models/gun2knif.pt" # working semi  --> knives and guns
+        # model_path = "../loaded_models/knif_0.pt"  #working but not so good low your threashoald
         model = YOLO(model_path)
     elif FIRE_DETECTION_ENABLED or fire_detection:
-        model_path = "../loaded_models/fire.pt" # working
+        model_path = "../loaded_models/fire_smoke.pt" # working
         model = YOLO(model_path)
     elif SMOKE_DETECTION_ENABLED or smoke_detection:
         model_path = "../loaded_models/fire_smoke.pt" # working

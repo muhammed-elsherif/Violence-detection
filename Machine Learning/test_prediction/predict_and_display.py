@@ -104,6 +104,11 @@ video_path = 'test_samples/normal/people.mp4'
 video_path = 'test_samples/violent/gun_test.jpg'
 # video_path = 'test_samples/violent/office_fight.mp4'
 
+
+# video_path = 'test_samples/fire_smoke/vid.mp4'
+video_path = 'test_samples/knifes/knifs.mp4'
+# video_path = 'test_samples/gun/gun.mp4'
+
 os.makedirs(VIDEO_OUTPUT_DIR, exist_ok=True)  # Ensure the output directory exists
 
 if CRASH_DETECTION_ENABLED:
