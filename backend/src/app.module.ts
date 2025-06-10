@@ -45,6 +45,7 @@ import { DeveloperController } from "./developer/developer.controller";
 import { DeveloperService } from "./developer/developer.service";
 import { DownloadService } from "./download/download.service";
 import { B2DownloadService } from "./download/b2-download.service";
+import { NotificationModule } from "./notification.module";
 // import { RedisModule } from './redis/redis.module';
 
 @Module({
@@ -63,6 +64,7 @@ import { B2DownloadService } from "./download/b2-download.service";
     RecomendedModelsModule,
     ConfigModule.forRoot(),
     HttpModule,
+    NotificationModule,
     // RedisModule,
   ],
   controllers: [

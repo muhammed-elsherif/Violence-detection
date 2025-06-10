@@ -96,12 +96,12 @@ CREATE TABLE `Service` (
     `features` VARCHAR(191) NOT NULL,
     `requirements` VARCHAR(191) NOT NULL,
     `endpoint` VARCHAR(191) NOT NULL,
+    `modelFile` VARCHAR(191) NULL,
     `demoVideo` VARCHAR(191) NULL,
     `documentation` VARCHAR(191) NULL,
     `isPublic` BOOLEAN NOT NULL DEFAULT false,
     `supportedPlatforms` JSON NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updatedAt` DATETIME(3) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -129,19 +129,28 @@ CREATE TABLE `ServiceRequest` (
 CREATE TABLE `Customer` (
     `id` VARCHAR(191) NOT NULL,
     `email` VARCHAR(191) NOT NULL,
-    `fullName` VARCHAR(191) NOT NULL,
+    `userId` VARCHAR(191) NOT NULL,
+    `contactName` VARCHAR(191) NOT NULL,
     `companyName` VARCHAR(191) NOT NULL,
-    `companyType` VARCHAR(191) NOT NULL,
+    `industry` VARCHAR(191) NOT NULL,
+    `contactNumber` VARCHAR(191) NOT NULL,
+    `address` VARCHAR(191) NOT NULL,
     `purchasedModels` JSON NOT NULL,
-    `contactNumber` VARCHAR(191) NULL,
-    `address` VARCHAR(191) NULL,
-    `industry` VARCHAR(191) NULL,
     `password` VARCHAR(191) NOT NULL,
     `hasChangedPassword` BOOLEAN NOT NULL DEFAULT false,
+    `city` VARCHAR(191) NOT NULL,
+    `state` VARCHAR(191) NOT NULL,
+    `country` VARCHAR(191) NOT NULL,
+    `postalCode` VARCHAR(191) NOT NULL,
+    `street` VARCHAR(191) NULL,
+    `building` VARCHAR(191) NULL,
+    `floor` VARCHAR(191) NULL,
+    `apartment` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
     UNIQUE INDEX `Customer_email_key`(`email`),
+    UNIQUE INDEX `Customer_userId_key`(`userId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -159,6 +168,29 @@ CREATE TABLE `Developer` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
+CREATE TABLE `AppFile` (
+    `id` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `url` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Settings` (
+    `id` VARCHAR(191) NOT NULL,
+    `key` VARCHAR(191) NOT NULL,
+    `value` VARCHAR(191) NOT NULL,
+    `description` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `Settings_key_key`(`key`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- AddForeignKey
 ALTER TABLE `UploadsHistory` ADD CONSTRAINT `UploadsHistory_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -173,3 +205,6 @@ ALTER TABLE `ServiceRequest` ADD CONSTRAINT `ServiceRequest_userId_fkey` FOREIGN
 
 -- AddForeignKey
 ALTER TABLE `ServiceRequest` ADD CONSTRAINT `ServiceRequest_developerId_fkey` FOREIGN KEY (`developerId`) REFERENCES `Developer`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Customer` ADD CONSTRAINT `Customer_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

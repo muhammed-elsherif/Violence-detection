@@ -1,7 +1,11 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaClient, UserRole } from '@prisma/client';
-import * as bcrypt from 'bcrypt';
-import { UserDto } from './user.dto';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
+import { PrismaClient, UserRole } from "@prisma/client";
+import * as bcrypt from "bcrypt";
+import { UserDto } from "./user.dto";
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaClient) {}
@@ -30,7 +34,7 @@ export class UserService {
     username: string,
     email: string,
     password: string,
-    role: UserRole = UserRole.USER
+    role: UserRole = UserRole.USER,
   ) {
     const existingUser = await this.findOneByEmail(email);
     if (existingUser) {
@@ -104,18 +108,21 @@ export class UserService {
   }
 
   async getUser(id: string) {
-    return this.prisma.user.findUnique({ where: { id }, select: {
-      username: true,
-      email: true,
-    } });
+    return this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        username: true,
+        email: true,
+      },
+    });
   }
 
   async getHistory(id: string) {
     return this.prisma.uploadsHistory.findMany({
       where: {
         user: {
-          id: id
-        }
+          id: id,
+        },
       },
       select: {
         id: true,
@@ -128,5 +135,9 @@ export class UserService {
         uploadedAt: true,
       },
     });
+  }
+
+  async findOneById(id: string) {
+    return this.prisma.user.findUnique({ where: { id } });
   }
 }
