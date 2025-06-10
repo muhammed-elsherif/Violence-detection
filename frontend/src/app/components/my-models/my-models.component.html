@@ -1,53 +1,69 @@
-<div class="container mx-auto px-4 py-8">
-  <h1 class="text-3xl font-bold mb-8">My Models</h1>
+<div class="container py-5">
+  <h1 class="mb-4 fw-bold display-6">My Models</h1>
 
+  <!-- Loading Spinner -->
   @if (loading) {
-    <div class="flex justify-center items-center h-64">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    <div class="d-flex justify-content-center align-items-center" style="height: 300px;">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
     </div>
-  } @else if (error) {
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+  } 
+
+  <!-- Error Alert -->
+  @else if (error) {
+    <div class="alert alert-danger" role="alert">
       {{ error }}
     </div>
-  } @else if (models.length === 0) {
-    <div class="text-center py-12">
-      <h2 class="text-xl font-semibold text-gray-600 mb-4">No models found</h2>
-      <p class="text-gray-500 mb-6">You haven't purchased any models yet.</p>
-      <a routerLink="/purchase-model" 
-         class="inline-block bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors">
+  } 
+
+  <!-- No Models Message -->
+  @else if (models.length === 0) {
+    <div class="text-center py-5">
+      <h2 class="h5 text-muted mb-3">No models found</h2>
+      <p class="text-secondary mb-4">You haven't purchased any models yet.</p>
+      <a routerLink="/purchase-model" class="btn btn-primary">
         Browse Available Models
       </a>
     </div>
-  } @else {
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  } 
+
+  <!-- Models Grid -->
+  @else {
+    <div class="row g-4">
       @for (model of models; track model.id) {
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-          <div class="p-6">
-            <div class="flex justify-between items-start mb-4">
-              <h3 class="text-xl font-semibold text-gray-900">{{ model.name }}</h3>
-              <span [class]="'px-3 py-1 rounded-full text-sm font-medium ' + getStatusClass(model.status)">
-                {{ model.status }}
-              </span>
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body d-flex flex-column">
+              <div class="d-flex justify-content-between align-items-start mb-3">
+                <h5 class="card-title">{{ model.name }}</h5>
+                <span class="badge rounded-pill text-bg-{{ getStatusClass(model.status) }}">
+                  {{ model.status }}
+                </span>
+              </div>
+              <p class="card-text text-muted mb-3">{{ model.description }}</p>
+              <p class="text-muted small mb-4">
+                <strong>Purchased on:</strong> {{ model.createdAt | date:'mediumDate' }}
+              </p>
+
+              @if (model.status === 'active') {
+                <button 
+                  (click)="downloadModel(model)" 
+                  [disabled]="downloading" 
+                  class="btn btn-primary w-100 mt-auto d-flex justify-content-center align-items-center"
+                >
+                  @if (downloading) {
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Downloading...
+                  } @else {
+                    Download Desktop App
+                  }
+                </button>
+              }
             </div>
-            <p class="text-gray-600 mb-4">{{ model.description }}</p>
-            <div class="text-sm text-gray-500 mb-4">
-              Purchased on: {{ model.purchaseDate | date:'mediumDate' }}
-            </div>
-            @if (model.status === 'active') {
-              <button (click)="downloadModel(model)"
-                      [disabled]="downloading"
-                      class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors disabled:bg-blue-400 disabled:cursor-not-allowed flex items-center justify-center">
-                @if (downloading) {
-                  <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Downloading...
-                } @else {
-                  Download Desktop App
-                }
-              </button>
-            }
           </div>
         </div>
       }
     </div>
   }
-</div> 
+</div>

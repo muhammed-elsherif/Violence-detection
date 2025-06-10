@@ -5,27 +5,49 @@ export class CreateCustomerDto {
   email: string;
 
   @IsString()
-  fullName: string;
+  contactName: string;
 
   @IsString()
   companyName: string;
-
-  @IsString()
-  companyType: string;
 
   @IsArray()
   @IsString({ each: true })
   purchasedModels: string[];
 
-  @IsOptional()
   @IsString()
-  contactNumber?: string;
+  industry: string;
+
+  @IsString()
+  contactNumber: string;
+
+  @IsString()
+  address: string;
+
+  @IsString()
+  city: string;
+
+  @IsString()
+  state: string;
+
+  @IsString()
+  country: string;
+
+  @IsString()
+  postalCode: string;
 
   @IsOptional()
   @IsString()
-  address?: string;
+  street?: string;
 
   @IsOptional()
   @IsString()
-  industry?: string;
+  building?: string;
+
+  @IsOptional()
+  @IsString()
+  floor?: string;
+
+  @IsOptional()
+  @IsString()
+  apartment?: string;
 }

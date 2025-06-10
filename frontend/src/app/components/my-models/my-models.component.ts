@@ -2,13 +2,13 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ServiceService } from '../../core/services/service.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 interface Model {
   id: number;
   name: string;
   description: string;
-  purchaseDate: Date;
+  createdAt: Date;
   status: 'active' | 'expired' | 'pending';
   downloadUrl?: string;
   category: string;
@@ -19,7 +19,7 @@ interface Model {
   templateUrl: './my-models.component.html',
   styleUrls: ['./my-models.component.scss'],
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule]
+  imports: [ReactiveFormsModule, CommonModule, RouterLink]
 })
 export class MyModelsComponent implements OnInit {
   models: Model[] = [];

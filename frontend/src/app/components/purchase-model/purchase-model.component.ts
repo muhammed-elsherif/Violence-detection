@@ -41,11 +41,8 @@ export class PurchaseModelComponent implements OnInit {
       industry: ["", Validators.required],
       contactName: ["", Validators.required],
       email: ["", [Validators.required, Validators.email]],
-      phone: ["", Validators.required],
-      street: ["", Validators.required],
-      building: [""],
-      floor: [""],
-      apartment: [""],
+      contactNumber: ["", Validators.required],
+      address: ["", Validators.required],
       city: ["", Validators.required],
       state: ["", Validators.required],
       country: ["", Validators.required],
@@ -102,7 +99,7 @@ export class PurchaseModelComponent implements OnInit {
 
       const purchaseData = {
         ...this.purchaseForm.value,
-        modelIds: this.selectedModels,
+        purchasedModels: this.selectedModels,
       };
 
       this.serviceService.purchaseModel(purchaseData).subscribe({

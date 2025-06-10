@@ -40,4 +40,8 @@ export class ProfileComponent implements OnInit {
       this.history = history;
     });
   }
+
+  goToMyModels() {
+    this.router.navigate(["/my-models"]);
+  }
 }

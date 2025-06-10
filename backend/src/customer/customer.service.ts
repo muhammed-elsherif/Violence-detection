@@ -13,7 +13,7 @@ export class CustomerService {
     private mailService: MailService
   ) {}
 
-  async createCustomer(dto: CreateCustomerDto) {
+  async createCustomer(dto: CreateCustomerDto, userId: string) {
     const tempPassword = randomBytes(6).toString("hex"); // 12-char temp password
     const hashedPassword = await bcrypt.hash(tempPassword, 10);
 
@@ -22,6 +22,7 @@ export class CustomerService {
         ...dto,
         hasChangedPassword: false,
         password: hashedPassword,
+        userId: userId,
       },
     });
 
@@ -51,7 +52,7 @@ export class CustomerService {
         mustChangePassword: true,
         customerId: customer.id,
         email: customer.email,
-        fullName: customer.fullName,
+        contactName: customer.contactName,
       };
     }
 
@@ -74,5 +75,58 @@ export class CustomerService {
 
   async getCustomers() {
     return this.prisma.customer.findMany();
+  }
+
+  async purchaseModel(purchaseModelDto: any, userId: string) {
+    const customer = await this.prisma.customer.findUnique({
+      where: { userId: userId },
+    });
+
+    if (!customer) {
+      await this.createCustomer(purchaseModelDto, userId);
+    }
+    
+    return this.prisma.customer.update({
+      where: { userId: userId },
+      data: {
+        userId: userId,
+        email: purchaseModelDto.email,
+        contactName: purchaseModelDto.contactName,
+        companyName: purchaseModelDto.companyName,
+        industry: purchaseModelDto.industry,
+        contactNumber: purchaseModelDto.contactNumber,
+        address: purchaseModelDto.address,
+        city: purchaseModelDto.city,
+        state: purchaseModelDto.state,
+        country: purchaseModelDto.country,
+        postalCode: purchaseModelDto.postalCode,
+        // TODO append the new models to the existing purchasedModels
+        purchasedModels: purchaseModelDto.purchasedModels,
+      },
+    });
+  }
+
+  async getCustomerModels(userId: string) {
+    const models = await this.prisma.customer.findUnique({
+      where: { userId: userId },
+      select: {
+        purchasedModels: true,
+        createdAt: true,
+      },
+    });
+
+    if (!models) {
+      return [];
+    }
+
+    const services = await this.prisma.service.findMany({
+      where: {
+        id: {
+          in: models.purchasedModels as string[],
+        },
+      },
+    });
+
+    return services;
   }
 }

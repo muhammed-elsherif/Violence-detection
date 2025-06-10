@@ -8,7 +8,7 @@ export interface Model {
   name: string;
   description: string;
   category: string;
-  purchaseDate: Date;
+  createdAt: Date;
   status: "active" | "expired" | "pending";
   downloadUrl?: string;
   price: number;
@@ -106,8 +106,9 @@ export class ServiceService {
     return this.http.get(`${this.apiUrl}/customers`);
   }
 
-  purchaseModel(modelId: number): Observable<any> {
-    return this.http.post(`${this.apiUrl}/models/${modelId}/purchase`, {});
+  purchaseModel(purchaseModelDto: any): Observable<any> {
+    console.log(purchaseModelDto);
+    return this.http.post(`${this.apiUrl}/customer/purchase-model`, purchaseModelDto);
   }
 
   requestModel(modelId: string): Observable<any> {
@@ -115,7 +116,7 @@ export class ServiceService {
   }
 
   getUserModels(): Observable<Model[]> {
-    return this.http.get<Model[]>(`${this.apiUrl}/models/user`);
+    return this.http.get<Model[]>(`${this.apiUrl}/customer/get-models`);
   }
 
   downloadModel(modelId: string): Observable<Blob> {
