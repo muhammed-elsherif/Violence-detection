@@ -8,15 +8,15 @@ import {
 import { HttpClient } from "@angular/common/http";
 
 @Component({
-  selector: "app-places",
+  selector: "app-test-streaming",
   imports: [],
-  templateUrl: "./places.component.html",
-  styleUrl: "./places.component.scss",
+  templateUrl: "./test-streaming.component.html",
+  styleUrl: "./test-streaming.component.scss",
 })
-export class PlacesComponent implements OnInit {
+export class TestStreamingComponent implements OnInit {
   userLocation: any = null;
   location = { lat: 0, lng: 0 };
-  videoUrl = 'http://localhost:6000/video_feed';
+  videoUrl = 'http://localhost:8001/video_feed';
 
   constructor(private http: HttpClient) {}
 

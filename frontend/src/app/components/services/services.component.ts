@@ -21,6 +21,7 @@ export class ServicesComponent implements OnInit {
   selectedModel: Model | null = null;
   categories: string[] = [];
   isLoggedIn: boolean = localStorage.getItem("access_token") ? true : false;
+  isDownloading: boolean = false;
   constructor(private serviceService: ServiceService, private router: Router) {}
 
   ngOnInit() {
@@ -83,5 +84,21 @@ export class ServicesComponent implements OnInit {
 
   customizeService() {
     this.router.navigate(["/request-custom-service"]);
+  }
+
+  testStreaming() {
+    this.router.navigate(["/test-streaming"]);
+  }
+
+  testSystem() {
+    this.isDownloading = true;
+    this.serviceService.testSystem().subscribe({
+      next: () => {
+        this.isDownloading = false;
+      },
+      error: (error) => {
+        this.isDownloading = false;
+      },
+    });
   }
 }

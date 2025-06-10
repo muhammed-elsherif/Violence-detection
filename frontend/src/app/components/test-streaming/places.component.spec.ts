@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PlacesComponent } from './places.component';
+import { TestStreamingComponent } from './test-streaming.component';
 
-describe('PlacesComponent', () => {
-  let component: PlacesComponent;
-  let fixture: ComponentFixture<PlacesComponent>;
+describe('TestStreamingComponent', () => {
+  let component: TestStreamingComponent;
+  let fixture: ComponentFixture<TestStreamingComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PlacesComponent]
+      imports: [TestStreamingComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(PlacesComponent);
+    fixture = TestBed.createComponent(TestStreamingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

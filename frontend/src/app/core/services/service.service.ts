@@ -156,4 +156,8 @@ export class ServiceService {
   getHistory(): Observable<any> {
     return this.http.get(`${this.apiUrl}/user/history`);
   }
+
+  testSystem(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/download/attendance-app`);
+  }
 }

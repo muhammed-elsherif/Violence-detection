@@ -57,7 +57,7 @@ uvicorn app:app --host 0.0.0.0 --port 8000
 ```
 And for streaming run:
 ```bash
-uvicorn app:stream_app --host 0.0.0.0 --port 8001 --workers 1
+uvicorn stream_app:app --host 0.0.0.0 --port 8001 --workers 1
 ```
 add `--reload` in dev mode.
 

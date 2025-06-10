@@ -33,7 +33,7 @@ CAMERA_LOCATION = { 'lat': 30.0444, 'lng': 31.2357 }
 fire_detected = False
 frame_lock = threading.Lock()
 latest_frame = None
-model = selected_model(True)
+model = selected_model(object_detection=True)
 
 def fire_detection_loop():
     global fire_detected, latest_frame, model
@@ -43,10 +43,10 @@ def fire_detection_loop():
         if not ret:
             continue
 
-        with frame_lock:
-            latest_frame = frame.copy()
-
         results = model.predict(frame, conf=0.6)
+        with frame_lock:
+            latest_frame = results[0].plot()
+
         for result in results:
             if 0 in result.boxes.cls.tolist():  # 0 is fire class index
                 if not fire_detected:
@@ -91,7 +91,6 @@ def generate_stream():
 @app.get("/video_feed")
 async def video_feed():
     return StreamingResponse(generate_stream(), media_type='multipart/x-mixed-replace; boundary=frame')
-
 
 frame_queue = queue.Queue(maxsize=5)  # Prevent memory bloat
 

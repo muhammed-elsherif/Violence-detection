@@ -23,6 +23,7 @@ import { DeveloperMagementNavComponent } from "./components/userManagement/devel
 import { AssignedTasksComponent } from "./components/developer/assigned-tasks/assigned-tasks.component";
 import { authGuard } from "./core/guards/auth.guard";
 import { ProfileComponent } from "./components/profile/profile.component";
+import { TestStreamingComponent } from "./components/test-streaming/test-streaming.component";
 
 export const routes: Routes = [
   // Public Routes
@@ -40,6 +41,7 @@ export const routes: Routes = [
       { path: "purchase-model", component: PurchaseModelComponent },
       { path: "profile", component: ProfileComponent },
       { path: "my-models", component: MyModelsComponent },
+      { path: "test-streaming", component: TestStreamingComponent },
     ],
   },
 

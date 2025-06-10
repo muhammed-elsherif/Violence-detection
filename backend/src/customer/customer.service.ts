@@ -5,12 +5,14 @@ import { randomBytes } from "crypto";
 import { CreateCustomerDto } from "./dto/customer.dto";
 import { PrismaClient } from "@prisma/client";
 import { ForceChangePasswordDto } from "./dto/force-change-password.dto";
+import { AlertsGateway } from "src/alerts/alerts.gateway";
 
 @Injectable()
 export class CustomerService {
   constructor(
     private prisma: PrismaClient,
-    private mailService: MailService
+    private mailService: MailService,
+    private alertsGateway: AlertsGateway
   ) {}
 
   async createCustomer(dto: CreateCustomerDto, userId: string) {
@@ -85,7 +87,14 @@ export class CustomerService {
     if (!customer) {
       await this.createCustomer(purchaseModelDto, userId);
     }
-    
+
+    if (customer) {
+      this.alertsGateway.sendModelPurchase({
+        username: customer.contactName,
+        modelName: purchaseModelDto.modelName,
+      });
+    }
+
     return this.prisma.customer.update({
       where: { userId: userId },
       data: {

@@ -1,13 +1,26 @@
 <div class="container my-5">
   <div class="text-center mb-3">
-    <div class="d-flex justify-content-around align-items-center">
+    <div class="d-flex justify-content-between align-items-center">
       <h1 class="fw-bold mb-3">Services</h1>
 
+      <div>
+        <div class="d-flex gap-2 justify-content-end">
       @if (isLoggedIn) {
       <a class="btn btn-info text-white" (click)="customizeService()" >
         Custom Your service <i class="fas fa-plus-circle me-2"></i> 
       </a>
-      }
+        }
+        <!-- test button for streaming -->
+        <button class="btn btn-primary" (click)="testStreaming()">Test Streaming</button>
+        <button class="btn btn-primary" (click)="testSystem()" [disabled]="isDownloading">
+          @if (isDownloading) {
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          } @else {
+          Test System
+          }
+        </button>
+        </div>
+      </div>
     </div>
     <h5 class="text-secondary">
       Implement a wide range of computer vision and NLP models in your projects
