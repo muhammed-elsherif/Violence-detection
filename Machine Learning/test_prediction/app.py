@@ -22,7 +22,7 @@ model = selected_model()
 gun_model = selected_model(True)
 fire_model = selected_model(fire_detection=True)
 
-def predict_and_annotate_violence_video(video_path: str, model) -> str:
+def predict_and_annotate_violence_video(video_path: str, model=model) -> str:
     cap = cv2.VideoCapture(video_path)
     fps = int(cap.get(cv2.CAP_PROP_FPS)) or 30
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))

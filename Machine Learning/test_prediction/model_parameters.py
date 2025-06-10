@@ -140,6 +140,7 @@ def process_video(video_path, frame_count=NUM_FRAMES, frame_size=FRAME_SIZE):
 
     # If fewer frames than expected, repeat the last frame
     while len(frames) < frame_count:
+        print(f"Repeating frame {len(frames)} of {frame_count}")
         frames.append(frames[-1])
 
     return np.array(frames, dtype=np.float32)  # Use float32 for better performance
