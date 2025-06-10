@@ -27,21 +27,26 @@ def selected_model(gun_detection=False, fire_detection=False, smoke_detection=Fa
         model_path = "../loaded_models/vil_best.pt"
         model_path = "../loaded_models/violence_weights.pt" # best
         model = YOLO(model_path)        
+        model.to(device)
     elif GUN_DETECTION_ENABLED or gun_detection:
         model_path = "../loaded_models/gun_best.pt" # working
         #model_path = "../loaded_models/gun_knife.pt" # working bad 
         model_path = "../loaded_models/gun2knif.pt" # working semi  --> knives and guns
         # model_path = "../loaded_models/knif_0.pt"  #working but not so good low your threashoald
         model = YOLO(model_path)
+        model.to(device)
     elif FIRE_DETECTION_ENABLED or fire_detection:
         model_path = "../loaded_models/fire_smoke.pt" # working
         model = YOLO(model_path)
+        model.to(device)
     elif SMOKE_DETECTION_ENABLED or smoke_detection:
         model_path = "../loaded_models/fire_smoke.pt" # working
         model = YOLO(model_path)
+        model.to(device)
     elif OBJECT_DETECTION_ENABLED or object_detection:
         model_path = "../loaded_models/object_best_yolo11.pt"
         model = YOLO(model_path)
+        model.to(device)
     else:
         # model_name = '../loaded_models/inceptionV3_violence_detection_model.h5'
         # model_name = '../loaded_models/inceptionV3_violence_detection_model_with95.h5'
@@ -90,7 +95,6 @@ def selected_model(gun_detection=False, fire_detection=False, smoke_detection=Fa
         # model_name = '../loaded_models/lung_colon_cancer_detection_model.h5' # body
         model = load_model(model_name, compile=False)
 
-    model.to(device)
     return model
 
 # Data augmentation

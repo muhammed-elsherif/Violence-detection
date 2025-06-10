@@ -3,9 +3,9 @@ dist
 .angular
 venv
 sent_images
+migrations
 violence detection.yolov8
 .DS_Store
 accident_data*
 output
-migrations
 build

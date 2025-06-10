@@ -61,6 +61,7 @@ model User {
   uploadsHistory  UploadsHistory[] @relation("UserUploads")
   serviceRequests ServiceRequest[] @relation("UserRequests")
   uploadStats     UserStats?       @relation("UserStats")
+  customer        Customer?        @relation("UserCustomer")
 }
 
 model UploadsHistory {
@@ -153,19 +154,29 @@ model ServiceRequest {
 }
 
 model Customer {
-  id                 String   @id @default(uuid())
-  email              String   @unique
-  fullName           String
+  id                 String  @id @default(uuid())
+  email              String  @unique
+  userId             String  @unique
+  user               User    @relation("UserCustomer", fields: [userId], references: [id], onDelete: Cascade)
+  contactName        String
   companyName        String
-  companyType        String
+  industry           String
+  contactNumber      String
+  address            String
   purchasedModels    Json
-  contactNumber      String?
-  address            String?
-  industry           String?
   password           String
-  hasChangedPassword Boolean  @default(false)
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  hasChangedPassword Boolean @default(false)
+  city               String
+  state              String
+  country            String
+  postalCode         String
+  street             String?
+  building           String?
+  floor              String?
+  apartment          String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Developer {
@@ -184,4 +195,13 @@ model AppFile {
   name      String
   url       String
   createdAt DateTime @default(now())
+}
+
+model Settings {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  value       String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

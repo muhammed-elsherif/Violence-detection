@@ -120,6 +120,19 @@ export class NotificationsComponent implements OnInit, OnDestroy {
         });
       })
     );
+
+    // Subscribe to contact form
+    this.subscriptions.push(
+      this.socketService.onContactForm().subscribe(data => {
+        this.addNotification({
+          id: Date.now().toString(),
+          type: 'contact_form',
+          title: 'New Contact Form',
+          message: `${data.name} sent a message`,
+          timestamp: new Date()
+        });
+      })
+    );
   }
 
   private addNotification(notification: any) {

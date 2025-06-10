@@ -102,4 +102,31 @@ export class UserService {
     if (!user) throw new NotFoundException(`User ${id} not found`);
     return new UserDto(user);
   }
+
+  async getUser(id: string) {
+    return this.prisma.user.findUnique({ where: { id }, select: {
+      username: true,
+      email: true,
+    } });
+  }
+
+  async getHistory(id: string) {
+    return this.prisma.uploadsHistory.findMany({
+      where: {
+        user: {
+          id: id
+        }
+      },
+      select: {
+        id: true,
+        fileType: true,
+        processingStatus: true,
+        detectionStatus: true,
+        overallConfidence: true,
+        duration: true,
+        fileSize: true,
+        uploadedAt: true,
+      },
+    });
+  }
 }

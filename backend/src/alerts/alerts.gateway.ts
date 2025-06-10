@@ -1,10 +1,10 @@
-import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
-import { ServiceRequest } from '@prisma/client';
-import { Server } from 'socket.io';
+import { WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { ServiceRequest } from "@prisma/client";
+import { Server } from "socket.io";
 
 @WebSocketGateway({
   cors: {
-    origin: '*',
+    origin: "*",
   },
 })
 export class AlertsGateway {
@@ -20,22 +20,28 @@ export class AlertsGateway {
     status: string;
     createdAt: Date;
   }) {
-    this.server.emit('service_request', data);
+    this.server.emit("service_request", data);
   }
 
   sendFireAlert(data: { location: string; confidence: number }) {
-    this.server.emit('fire_detected', data);
+    this.server.emit("fire_detected", data);
   }
 
   sendModelPurchase(data: { username: string; modelName: string }) {
-    this.server.emit('model_purchase', data);
+    this.server.emit("model_purchase", data);
   }
 
   sendServiceRequestReply(data: ServiceRequest) {
-    this.server.emit('service_request_reply', data);
+    this.server.emit("service_request_reply", data);
   }
 
-  sendContactForm(data: { name: string; email: string; phone: string; message: string; subject: string }) {
-    this.server.emit('contact_form', data);
+  sendContactForm(data: {
+    name: string;
+    email: string;
+    phone: string;
+    message: string;
+    subject: string;
+  }) {
+    this.server.emit("contact_form", data);
   }
 }
