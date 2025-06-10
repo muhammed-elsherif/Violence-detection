@@ -40,6 +40,15 @@ export class SocketService {
     });
   }
 
+  // Listen for contact form
+  onContactForm(): Observable<any> {
+    return new Observable(observer => {
+      this.socket.on('contact_form', (data) => {
+        observer.next(data);
+      });
+    });
+  }
+
   // Disconnect socket when service is destroyed
   disconnect() {
     if (this.socket) {
