@@ -1,40 +1,51 @@
-1. user
+1. Admin
 {
-    "id": "9d6f74f2-091b-47b1-a0f9-5d3c63a44c73",
-    "username": "johndoe",
-    "email": "johndoe@example.com",
-    "password": "hashed_password_123",
-    "role": "USER",
-    "isActive": true,
-    "createdAt": "2025-05-08T12:00:00Z",
-    "updatedAt": "2025-05-08T12:00:00Z"
-  }
-2. UploadsHistory Model
-  {
+  "id": "a1b2c3d4-e5f6-4a5b-8c7d-9e0f1a2b3c4d",
+  "username": "adminuser",
+  "email": "admin@example.com",
+  "password": "hashed_admin_password",
+  "createdAt": "2025-05-08T12:00:00Z",
+  "updatedAt": "2025-05-08T12:00:00Z"
+}
+
+2. User
+{
+  "id": "9d6f74f2-091b-47b1-a0f9-5d3c63a44c73",
+  "username": "johndoe",
+  "email": "johndoe@example.com",
+  "password": "hashed_password_123",
+  "role": "USER",
+  "isActive": true,
+  "createdAt": "2025-05-08T12:00:00Z",
+  "updatedAt": "2025-05-08T12:00:00Z"
+}
+
+3. Developer
+{
+  "id": "f7e6d5c4-b3a2-4c1d-9e8f-7a6b5c4d3e2f",
+  "username": "devuser",
+  "email": "dev@example.com",
+  "password": "hashed_dev_password",
+  "isActive": true,
+  "createdAt": "2025-05-08T12:00:00Z",
+  "updatedAt": "2025-05-08T12:00:00Z"
+}
+
+4. UploadsHistory
+{
   "id": "b8b5fd16-8e2c-4bb5-bc16-2f6e99b0c433",
   "userId": "9d6f74f2-091b-47b1-a0f9-5d3c63a44c73",
   "fileType": "IMAGE",
-  "processingStatus": "PENDING",
+  "processingStatus": "COMPLETED",
   "detectionStatus": "VIOLENCE_DETECTED",
   "overallConfidence": 0.92,
   "duration": null,
   "fileSize": 1024,
   "uploadedAt": "2025-05-08T12:10:00Z",
-  "annotatedFilePath": "path/to/processed/file.jpg",
-  "detectionResults": [
-    {
-      "id": "34b4df39-830b-4b25-a3b5-74ed9b9edaba",
-      "uploadId": "b8b5fd16-8e2c-4bb5-bc16-2f6e99b0c433",
-      "timestamp": null,
-      "confidence": 0.95,
-      "label": "blood",
-      "severity": 0.9,
-      "createdAt": "2025-05-08T12:12:00Z"
-    }
-  ]
+  "annotatedFilePath": "path/to/processed/file.jpg"
 }
 
-3. DetectionResult Model
+5. DetectionResult
 {
   "id": "34b4df39-830b-4b25-a3b5-74ed9b9edaba",
   "uploadId": "b8b5fd16-8e2c-4bb5-bc16-2f6e99b0c433",
@@ -45,8 +56,7 @@
   "createdAt": "2025-05-08T12:12:00Z"
 }
 
-4. UserStats Model
-
+6. UserStats
 {
   "id": "dcebcf68-2571-4b87-bd9d-926b8d5a11c8",
   "userId": "9d6f74f2-091b-47b1-a0f9-5d3c63a44c73",
@@ -57,7 +67,8 @@
   "createdAt": "2025-05-08T12:00:00Z",
   "updatedAt": "2025-05-08T12:00:00Z"
 }
-5. Alert Model
+
+7. Alert
 {
   "id": 1,
   "image": "path/to/alert/image.jpg",
@@ -65,28 +76,81 @@
   "lng": 31.2357,
   "timestamp": "2025-05-08T12:15:00Z"
 }
-6. AIModel Model
+
+8. Service
 {
-  "id": 1,
-  "name": "Violence Detection Model",
-  "type": "CV",
-  "description": "Model for detecting violence in video footage.",
+  "id": "s1b2c3d4-e5f6-4a5b-8c7d-9e0f1a2b3c4d",
+  "name": "Violence Detection Service",
+  "description": "Advanced AI service for detecting violence in media content",
+  "category": "CV",
+  "price": 99.99,
+  "features": "Real-time detection, Multiple violence types, High accuracy",
+  "requirements": "Minimum 4GB RAM, GPU recommended",
   "endpoint": "https://api.example.com/violence-detection",
+  "modelFile": "models/violence_detection_v1.0.pt",
+  "demoVideo": "demos/violence_detection_demo.mp4",
+  "documentation": "docs/violence_detection_api.md",
+  "isPublic": true,
+  "supportedPlatforms": ["Windows", "Linux", "MacOS"],
   "createdAt": "2025-05-08T12:00:00Z"
 }
-7. Customer Model
+
+9. ServiceRequest
 {
-  "id": 1,
+  "id": "sr1b2c3d4-e5f6-4a5b-8c7d-9e0f1a2b3c4d",
+  "serviceName": "Custom Violence Detection",
+  "serviceDescription": "Need custom violence detection for security cameras",
+  "serviceCategory": "CV",
+  "userId": "9d6f74f2-091b-47b1-a0f9-5d3c63a44c73",
+  "status": "PENDING",
+  "createdAt": "2025-05-08T12:00:00Z",
+  "updatedAt": "2025-05-08T12:00:00Z",
+  "developerId": "f7e6d5c4-b3a2-4c1d-9e8f-7a6b5c4d3e2f",
+  "useCase": "Security camera monitoring",
+  "expectedTimeline": "2 weeks",
+  "specificRequirements": "Real-time processing, low latency",
+  "budget": 5000.00
+}
+
+10. Customer
+{
+  "id": "c1b2c3d4-e5f6-4a5b-8c7d-9e0f1a2b3c4d",
   "email": "customer@example.com",
-  "fullName": "Alice Smith",
+  "userId": "9d6f74f2-091b-47b1-a0f9-5d3c63a44c73",
+  "contactName": "Alice Smith",
   "companyName": "Tech Innovations",
-  "companyType": "Technology",
-  "purchasedModels": ["Violence Detection Model", "NLP Model"],
-  "contactNumber": "123-456-7890",
-  "address": "123 Tech Street, Silicon Valley, CA",
   "industry": "Technology",
+  "contactNumber": "123-456-7890",
+  "address": "123 Tech Street",
+  "purchasedModels": ["Violence Detection Model", "NLP Model"],
   "password": "hashed_password_abc",
   "hasChangedPassword": false,
+  "city": "San Francisco",
+  "state": "CA",
+  "country": "USA",
+  "postalCode": "94105",
+  "street": "Tech Street",
+  "building": "Tech Plaza",
+  "floor": "15",
+  "apartment": "1501",
+  "createdAt": "2025-05-08T12:00:00Z",
+  "updatedAt": "2025-05-08T12:00:00Z"
+}
+
+11. AppFile
+{
+  "id": "af1b2c3d4-e5f6-4a5b-8c7d-9e0f1a2b3c4d",
+  "name": "violence_detection_model.pt",
+  "url": "https://storage.example.com/models/violence_detection_model.pt",
+  "createdAt": "2025-05-08T12:00:00Z"
+}
+
+12. Settings
+{
+  "id": "st1b2c3d4-e5f6-4a5b-8c7d-9e0f1a2b3c4d",
+  "key": "MAX_FILE_SIZE",
+  "value": "10485760",
+  "description": "Maximum allowed file size in bytes (10MB)",
   "createdAt": "2025-05-08T12:00:00Z",
   "updatedAt": "2025-05-08T12:00:00Z"
 }

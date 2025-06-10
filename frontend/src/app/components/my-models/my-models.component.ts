@@ -54,15 +54,16 @@ export class MyModelsComponent implements OnInit {
   }
 
   downloadModel(model: Model): void {
-    if (model.status === 'active') {
+    // if (model.status === 'active') {
       this.downloading = true;
       this.error = null;
 
-      // Map model name to model ID for download
-      const modelId = model.name.toLowerCase().replace(/\s+/g, '-');
+      // Map model name to model ID for download and don't get last word of the model name
+      const modelName = model.name.toLowerCase().replace(/\s+/g, '-').split('-').slice(0, -1).join('-');
 
-      this.serviceService.downloadModel(modelId).subscribe({
+      this.serviceService.downloadModel(modelName).subscribe({
         next: (response) => {
+          
           const blob = new Blob([response], { type: 'application/octet-stream' });
           const url = window.URL.createObjectURL(blob);
           const link = document.createElement('a');
@@ -70,22 +71,22 @@ export class MyModelsComponent implements OnInit {
           
           // Set appropriate file extension based on platform
           const platform = this.getPlatform();
-          let fileExtension;
-          switch (platform) {
-            case 'windows':
-              fileExtension = '.exe';
-              break;
-            case 'mac':
-              fileExtension = '.dmg';
-              break;
-            case 'linux':
-              fileExtension = '.AppImage';
-              break;
-            default:
-              fileExtension = '.zip';
-          }
+          let fileExtension = '.zip';
+          // switch (platform) {
+          //   case 'windows':
+          //     fileExtension = '.exe';
+          //     break;
+          //   case 'mac':
+          //     fileExtension = '.dmg';
+          //     break;
+          //   case 'linux':
+          //     fileExtension = '.AppImage';
+          //     break;
+          //   default:
+          //     fileExtension = '.zip';
+          // }
           
-          link.download = `${model.name}-desktop${fileExtension}`;
+          link.download = `${model.name}-weights${fileExtension}`;
           link.click();
           window.URL.revokeObjectURL(url);
           this.downloading = false;
@@ -96,7 +97,7 @@ export class MyModelsComponent implements OnInit {
           this.downloading = false;
         }
       });
-    }
+    // }
   }
 
   private getPlatform(): string {

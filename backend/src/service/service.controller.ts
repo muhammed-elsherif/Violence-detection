@@ -12,7 +12,6 @@ export class ServiceController {
   
   @Post("create")
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN)
   async createService(@Body() createServiceDto: CreateServiceDto) {
     return this.serviceService.createService(createServiceDto);

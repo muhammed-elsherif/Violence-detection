@@ -119,8 +119,8 @@ export class ServiceService {
     return this.http.get<Model[]>(`${this.apiUrl}/customer/get-models`);
   }
 
-  downloadModel(modelId: string): Observable<Blob> {
-    return this.http.get(`${this.apiUrl}/download/model/${modelId}`, {
+  downloadModel(modelName: string): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/download/${modelName}-weights`, {
       responseType: "blob",
     });
   }
