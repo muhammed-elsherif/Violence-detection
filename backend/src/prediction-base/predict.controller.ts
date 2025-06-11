@@ -36,6 +36,7 @@ import { ObjectDetectionService } from "src/object-detection/object-detection.se
 import { RolesGuard } from "src/auth/roles.guard";
 import { UserRole } from "@prisma/client";
 import { Roles } from "src/auth/roles.decorator";
+import { UploadResponse } from "src/interface/processing.interface";
 // import { RedisService } from '../redis/redis.service';
 
 @ApiTags("Prediction")
@@ -47,7 +48,7 @@ export class PredictController {
     private readonly gunDetectionService: GunDetectionService,
     private readonly fireDetectionService: FireDetectionService,
     private readonly crashDetectionService: CrashDetectionService,
-    private readonly objectDetectionService: ObjectDetectionService
+    private readonly objectDetectionService: ObjectDetectionService,
     // private readonly redisService: RedisService,
   ) {}
 
@@ -148,7 +149,7 @@ export class PredictController {
   @Roles(UserRole.ADMIN, UserRole.USER)
   async predictVideo(
     @UploadedFile() file: MulterFile,
-    @Request() req: { user: { sub: string } }
+    @Request() req: { user: { sub: string } },
   ): Promise<ViolenceVideoPredictionResponse> {
     const userId = req.user.sub;
 
@@ -165,7 +166,7 @@ export class PredictController {
     } catch (error) {
       throw new HttpException(
         error.message || "Error during prediction",
-        error.status || 500
+        error.status || 500,
       );
     }
   }
@@ -181,7 +182,7 @@ export class PredictController {
   @Roles(UserRole.ADMIN, UserRole.USER)
   async predictGunVideo(
     @UploadedFile() file: MulterFile,
-    @Request() req: { user: { sub: string } }
+    @Request() req: { user: { sub: string } },
   ): Promise<GunVideoPredictionResponse> {
     const userId = req.user.sub;
 
@@ -190,7 +191,7 @@ export class PredictController {
     } catch (error) {
       throw new HttpException(
         error.message || "Error during prediction",
-        error.status || 500
+        error.status || 500,
       );
     }
   }
@@ -204,19 +205,12 @@ export class PredictController {
       "Upload a video file to detect fire. The video will be processed and analyzed for fire presence.",
   })
   @Roles(UserRole.ADMIN, UserRole.USER)
-  async predictFireVideo(
+  predictFireVideo(
     @UploadedFile() file: MulterFile,
-    @Request() req: { user: { sub: string } }
-  ): Promise<FireVideoPredictionResponse> {
+    @Request() req: { user: { sub: string } },
+  ): UploadResponse {
     const userId = req.user.sub;
-    try {
-      return await this.fireDetectionService.predictVideo(file, userId);
-    } catch (error) {
-      throw new HttpException(
-        error.message || "Error during fire detection",
-        error.status || 500
-      );
-    }
+    return this.fireDetectionService.predictVideo(file, userId);
   }
 
   @Post("crash-video")
@@ -230,7 +224,7 @@ export class PredictController {
   @Roles(UserRole.ADMIN, UserRole.USER)
   async predictCrashVideo(
     @UploadedFile() file: MulterFile,
-    @Request() req: { user: { sub: string } }
+    @Request() req: { user: { sub: string } },
   ): Promise<CrashVideoPredictionResponse> {
     const userId = req.user.sub;
     try {
@@ -238,7 +232,7 @@ export class PredictController {
     } catch (error) {
       throw new HttpException(
         error.message || "Error during crash detection",
-        error.status || 500
+        error.status || 500,
       );
     }
   }
@@ -254,7 +248,7 @@ export class PredictController {
   @Roles(UserRole.ADMIN, UserRole.USER)
   async predictObjects(
     @UploadedFile() file: MulterFile,
-    @Request() req: { user: { sub: string } }
+    @Request() req: { user: { sub: string } },
   ): Promise<ObjectVideoPredictionResponse> {
     const userId = req.user.sub;
     try {
@@ -262,7 +256,7 @@ export class PredictController {
     } catch (error) {
       throw new HttpException(
         error.message || "Error during object detection",
-        error.status || 500
+        error.status || 500,
       );
     }
   }
@@ -278,7 +272,7 @@ export class PredictController {
   @Roles(UserRole.ADMIN, UserRole.USER)
   async predictImage(
     @UploadedFile() file: MulterFile,
-    @Request() req: { user: { sub: string } }
+    @Request() req: { user: { sub: string } },
   ) {
     const userId = req.user.sub;
     try {
@@ -286,7 +280,7 @@ export class PredictController {
     } catch (error) {
       throw new HttpException(
         error.message || "Error during image prediction",
-        error.status || 500
+        error.status || 500,
       );
     }
   }
@@ -313,7 +307,7 @@ export class PredictController {
     } catch (error) {
       throw new HttpException(
         error.message || "Error retrieving video",
-        error.status || 500
+        error.status || 500,
       );
     }
   }

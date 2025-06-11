@@ -8,11 +8,12 @@ import { FireDetectionService } from "../fire-detection/fire-detection.service";
 import { CrashDetectionService } from "../crash-detection/crash-detection.service";
 import { ObjectDetectionService } from "../object-detection/object-detection.service";
 import { PrismaClient } from "@prisma/client";
+import { NotificationModule } from "../notification.module";
 // import { RedisModule } from 'src/redis/redis.module';
 // import { RedisService } from 'src/redis/redis.service';
 
 @Module({
-  imports: [HttpModule],
+  imports: [HttpModule, NotificationModule],
   controllers: [PredictController],
   providers: [
     PredictService,
