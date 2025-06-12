@@ -7,9 +7,11 @@ from collections import deque
 from model_parameters import selected_model, process_video
 from object_detection.yolo import yolo_detect
 from crash_detection import CarAccidentDetectionProcessor
+from violence_detection import ViolenceDetectionProcessor
 from tensorflow.keras.applications.mobilenet import preprocess_input
 from config import YOLO_ENABLED, OBJECT_DETECTION_ENABLED, GUN_DETECTION_ENABLED, CRASH_DETECTION_ENABLED, \
-                    FACE_DETECTION_ENABLED, FIRE_DETECTION_ENABLED, CONFIDENCE_THRESHOLD, VIDEO_OUTPUT_DIR, FRAME_SIZE, NUM_FRAMES
+                    FACE_DETECTION_ENABLED, FIRE_DETECTION_ENABLED, CONFIDENCE_THRESHOLD, VIDEO_OUTPUT_DIR, FRAME_SIZE, NUM_FRAMES, VIOLENCE_DETECTION_ENABLED
+from app import predict_and_annotate_violence_video
 
 model = selected_model()
 logging.basicConfig(level=logging.INFO)
@@ -54,7 +56,6 @@ def predict_and_display(video_path, model, output_path):
         else:
             frame_resized = cv2.resize(frame, FRAME_SIZE) / 255.0
             frame_queue.append(frame_resized)
-            # frames = process_video(video_path) # shape: (FRAMES, H, W, 3)
             if len(frame_queue) == NUM_FRAMES:
                 input_frames = np.array(frame_queue)
                 input_frames = np.expand_dims(input_frames, axis=0)
@@ -90,30 +91,47 @@ def play_video(filepath):
 
 # ---------------------- Test samples ----------------------
 # ----- Normal Situations -----
+# video_path = 'test_samples/normal/0.mp4'
 # video_path = 'test_samples/normal/1.mp4'
 video_path = 'test_samples/normal/2.mp4'
 video_path = 'test_samples/normal/3.mp4'
 # video_path = 'test_samples/normal/4.mp4'
+# video_path = 'test_samples/normal/5.mp4'
 video_path = 'test_samples/normal/people.mp4'
 # video_path = 'test_samples/normal/people2.mp4'
 
-# ----- Violent Situations -----
+# ----- Violence Situations -----
+# video_path = 'test_samples/violent/gun_test.jpg'
 # video_path = 'test_samples/violent/V_19.mp4'
 # video_path = 'test_samples/violent/0.mp4'
+# video_path = 'test_samples/violent/1.mp4'
+# video_path = 'test_samples/violent/2.mp4'
+video_path = 'test_samples/violent/3.mp4'
+# video_path = 'test_samples/violent/4.mp4'
 # video_path = 'test_samples/violent/test_home.MOV'
-video_path = 'test_samples/violent/gun_test.jpg'
 # video_path = 'test_samples/violent/office_fight.mp4'
+
+# ----- Fire and Smoke -----
+# video_path = 'test_samples/fire_smoke/vid.mp4'
+# video_path = 'test_samples/knifes/knifs.mp4'
+# video_path = 'test_samples/gun/gun.mp4'
 
 os.makedirs(VIDEO_OUTPUT_DIR, exist_ok=True)  # Ensure the output directory exists
 
 if CRASH_DETECTION_ENABLED:
-    video_file = "test_samples/crash/2.mp4"
+    video_file = "test_samples/crash/1.mp4"
     result_path = os.path.join(VIDEO_OUTPUT_DIR, f"annotated_crash_{uuid.uuid4().hex}.mp4")
     processor = CarAccidentDetectionProcessor(video_file, output_video_file=result_path)
     processor.start_processing()
 
+elif VIOLENCE_DETECTION_ENABLED:
+    result_path = os.path.join(VIDEO_OUTPUT_DIR, f"annotated_violence_{uuid.uuid4().hex}.mp4")
+    processor = ViolenceDetectionProcessor(video_path, output_video_file=result_path)
+    processor.start_processing()
+
 else:
     output_path = os.path.join(VIDEO_OUTPUT_DIR, f"annotated_vil_{uuid.uuid4().hex}.mp4")
-    result_path = predict_and_display(video_path, model, output_path)
+    # result_path = predict_and_display(video_path, model, output_path) # frame by frame
+    result_path = predict_and_annotate_violence_video(video_path) # video
 
 play_video(result_path)

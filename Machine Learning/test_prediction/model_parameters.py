@@ -1,12 +1,13 @@
 import cv2
 import torch
+import joblib
 import numpy as np
 import tensorflow as tf
 from ultralytics import YOLO
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.applications.mobilenet import preprocess_input
-from config import NUM_FRAMES, FRAME_SIZE, GUN_DETECTION_ENABLED, YOLO_ENABLED, FIRE_DETECTION_ENABLED, SMOKE_DETECTION_ENABLED, OBJECT_DETECTION_ENABLED
+from config import NUM_FRAMES, FRAME_SIZE, GUN_DETECTION_ENABLED, YOLO_ENABLED, FIRE_DETECTION_ENABLED, SMOKE_DETECTION_ENABLED, OBJECT_DETECTION_ENABLED, NLP_ENABLED
 
 # Enable GPU memory growth to prevent OOM errors
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -19,7 +20,7 @@ if gpus:
     except RuntimeError as e:
         print(f"GPU memory growth error: {e}")
 
-def selected_model(gun_detection=False, fire_detection=False, smoke_detection=False, violence_detection=False, object_detection=False):
+def selected_model(gun_detection=False, fire_detection=False, smoke_detection=False, violence_detection=False, object_detection=False, nlp_detection=False):
     # Load all trained models
     if YOLO_ENABLED or violence_detection:
         model_path = "../loaded_models/yolo_best.pt"
@@ -30,10 +31,13 @@ def selected_model(gun_detection=False, fire_detection=False, smoke_detection=Fa
         model.to(device)
     elif GUN_DETECTION_ENABLED or gun_detection:
         model_path = "../loaded_models/gun_best.pt" # working
+        #model_path = "../loaded_models/gun_knife.pt" # working bad 
+        model_path = "../loaded_models/gun2knif.pt" # working semi  --> knives and guns
+        # model_path = "../loaded_models/knif_0.pt"  #working but not so good low your threashoald
         model = YOLO(model_path)
         model.to(device)
     elif FIRE_DETECTION_ENABLED or fire_detection:
-        model_path = "../loaded_models/fire.pt" # working
+        model_path = "../loaded_models/fire_smoke.pt" # working
         model = YOLO(model_path)
         model.to(device)
     elif SMOKE_DETECTION_ENABLED or smoke_detection:
@@ -41,9 +45,13 @@ def selected_model(gun_detection=False, fire_detection=False, smoke_detection=Fa
         model = YOLO(model_path)
         model.to(device)
     elif OBJECT_DETECTION_ENABLED or object_detection:
-        model_path = "../loaded_models/object_best_yolo11.pt"
+        # model_path = "../loaded_models/object_best_yolo11.pt"
+        model_path = "../yolo_weights/yolo12s.pt"
         model = YOLO(model_path)
         model.to(device)
+    elif NLP_ENABLED or nlp_detection:
+        model_path = "../loaded_models/trained_model.sav"
+        model = joblib.load(model_path)
     else:
         # model_name = '../loaded_models/inceptionV3_violence_detection_model.h5'
         # model_name = '../loaded_models/inceptionV3_violence_detection_model_with95.h5'
@@ -137,6 +145,7 @@ def process_video(video_path, frame_count=NUM_FRAMES, frame_size=FRAME_SIZE):
 
     # If fewer frames than expected, repeat the last frame
     while len(frames) < frame_count:
+        print(f"Repeating frame {len(frames)} of {frame_count}")
         frames.append(frames[-1])
 
     return np.array(frames, dtype=np.float32)  # Use float32 for better performance
