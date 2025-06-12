@@ -21,6 +21,7 @@ app = FastAPI()
 model = selected_model()
 gun_model = selected_model(True)
 fire_model = selected_model(fire_detection=True)
+os.makedirs(VIDEO_OUTPUT_DIR, exist_ok=True)
 
 def predict_and_annotate_violence_video(video_path: str, model=model) -> str:
     cap = cv2.VideoCapture(video_path)
@@ -30,8 +31,6 @@ def predict_and_annotate_violence_video(video_path: str, model=model) -> str:
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 
-    # Ensure the output folder exists
-    os.makedirs(VIDEO_OUTPUT_DIR, exist_ok=True)
     output_filename = os.path.join(VIDEO_OUTPUT_DIR, f"{uuid.uuid4().hex}.mp4")
 
     out = cv2.VideoWriter(output_filename, fourcc, fps, (width, height))
@@ -77,8 +76,6 @@ def predict_and_annotate_video_object(video_path: str) -> str:
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 
-    # Ensure the output folder exists
-    os.makedirs(VIDEO_OUTPUT_DIR, exist_ok=True)
     output_filename = os.path.join(VIDEO_OUTPUT_DIR, f"{uuid.uuid4().hex}.mp4")
 
     out = cv2.VideoWriter(output_filename, fourcc, fps, (width, height))
@@ -111,8 +108,6 @@ def predict_and_annotate_video_gun(video_path: str) -> str:
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 
-    # Ensure the output folder exists
-    os.makedirs(VIDEO_OUTPUT_DIR, exist_ok=True)
     output_filename = os.path.join(VIDEO_OUTPUT_DIR, f"{uuid.uuid4().hex}.mp4")
 
     out = cv2.VideoWriter(output_filename, fourcc, fps, (width, height))
@@ -161,8 +156,6 @@ def predict_and_annotate_video_fire(video_path: str) -> str:
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 
-    # Ensure the output folder exists
-    os.makedirs(VIDEO_OUTPUT_DIR, exist_ok=True)
     output_filename = os.path.join(VIDEO_OUTPUT_DIR, f"{uuid.uuid4().hex}.mp4")
 
     out = cv2.VideoWriter(output_filename, fourcc, fps, (width, height))
@@ -209,8 +202,6 @@ def predict_and_annotate_video_crash(video_path: str) -> str:
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 
-    # Ensure the output folder exists
-    os.makedirs(VIDEO_OUTPUT_DIR, exist_ok=True)
     output_filename = os.path.join(VIDEO_OUTPUT_DIR, f"{uuid.uuid4().hex}.mp4")
 
     processor = CarAccidentDetectionProcessor(video_path, output_video_file=output_filename)  # Create processor instance
@@ -252,7 +243,6 @@ def predict_and_annotate_image(image_path: str, model) -> str:
     else:
         cv2.putText(img, f"Non-Violence ({confidence:.2f})", (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
-    os.makedirs(VIDEO_OUTPUT_DIR, exist_ok=True)
     output_filename = os.path.join(VIDEO_OUTPUT_DIR, f"{model}_{uuid.uuid4().hex}.jpg")
     cv2.imwrite(output_filename, img)
     return output_filename, detection_results
@@ -391,7 +381,7 @@ async def predict_object(file: UploadFile = File(...)):
         shutil.copyfileobj(file.file, buffer)
 
     try:
-        output_video, detection_results = predict_and_annotate_video_fire(temp_video_path)
+        output_video, detection_results = predict_and_annotate_video_crash(temp_video_path)
         response = FileResponse(
             output_video,
             media_type="video/mp4",

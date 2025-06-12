@@ -1,5 +1,7 @@
 # Real-Time Camera Inference
+import os
 import cv2
+import uuid
 import numpy as np
 import streamlit as st
 from collections import deque
@@ -7,7 +9,8 @@ from datetime import datetime
 from model_parameters import selected_model
 from object_detection.yolo import yolo_detect
 from config import YOLO_ENABLED, OBJECT_DETECTION_ENABLED, GUN_DETECTION_ENABLED, FIRE_DETECTION_ENABLED, SMOKE_DETECTION_ENABLED, \
-    KNIFE_DETECTION_ENABLED, FRAME_SIZE, NUM_FRAMES, CONFIDENCE_THRESHOLD
+    KNIFE_DETECTION_ENABLED, FRAME_SIZE, NUM_FRAMES, CONFIDENCE_THRESHOLD, NLP_ENABLED, VIOLENCE_DETECTION_ENABLED
+from violence_detection import ViolenceDetectionProcessor
 
 violent_frames = []
 
@@ -36,9 +39,9 @@ if OBJECT_DETECTION_ENABLED:
             st.error("Error: Failed to capture frame")
             break
 
-        processed_frame, _, _ = yolo_detect(frame, CONFIDENCE_THRESHOLD)
-        # results = object_model.predict(frame, conf=0.6)
-        stframe.image(processed_frame, channels="BGR")
+        # processed_frame, _, _ = yolo_detect(frame, CONFIDENCE_THRESHOLD)
+        results = object_model.predict(frame, conf=0.6)
+        stframe.image(results[0].plot(), channels="BGR")
 
 elif GUN_DETECTION_ENABLED:
     gun_model = selected_model(gun_detection=True)
@@ -96,6 +99,18 @@ elif YOLO_ENABLED:
             break
         results = yolo_model.predict(frame, conf=0.6)
         stframe.image(results[0].plot(), channels="BGR")
+
+elif VIOLENCE_DETECTION_ENABLED:
+    result_path = os.path.join('output', f"annotated_violence_{uuid.uuid4().hex}.mp4")
+    processor = ViolenceDetectionProcessor("test_samples/violent/office_fight.mp4", output_video_file=result_path)
+    processor.start_processing()
+
+elif NLP_ENABLED:
+    nlp_model = selected_model(nlp_detection=True)
+    input_text = st.text_input("Enter text to analyze...")
+    if input_text:
+        results = nlp_model.predict(input_text)
+        st.write(results)
 
 else:
     ctr = 0
