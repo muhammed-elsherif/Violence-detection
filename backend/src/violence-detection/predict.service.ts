@@ -20,6 +20,7 @@ export class PredictService extends BasePredictionService {
     file: MulterFile,
     userId: string
   ): Promise<ViolenceVideoPredictionResponse> {
+    // const apiUrl = process.env.PREDICT_VIOLENCE_CLIP_API as string;
     const apiUrl = process.env.PREDICT_VIOLENCE_API as string;
     const result = await this.uploadToMLApi(file, userId, apiUrl, "VIOLENCE");
 
