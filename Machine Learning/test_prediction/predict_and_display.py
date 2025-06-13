@@ -134,8 +134,8 @@ elif VIOLENCE_DETECTION_ENABLED:
     processor.start_processing()
 
 else:
-    output_path = os.path.join(VIDEO_OUTPUT_DIR, f"annotated_vil_{uuid.uuid4().hex}.mp4")
+    output_path = os.path.join(VIDEO_OUTPUT_DIR, f"annotated_violence_{uuid.uuid4().hex}.mp4")
     # result_path = predict_and_display(video_path, model, output_path) # frame by frame
-    result_path = predict_and_annotate_violence_video(video_path) # video
+    result_path, detection_results = predict_and_annotate_violence_video(video_path) # video
 
 play_video(result_path)

@@ -12,7 +12,8 @@ import cvzone
 from openai import OpenAI
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
-    api_key="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",
+    api_key="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", # old
+    # api_key="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" # new
 )
 
 class CarAccidentDetectionProcessor:

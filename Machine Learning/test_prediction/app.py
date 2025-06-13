@@ -47,10 +47,11 @@ def predict_and_annotate_violence_video(video_path: str, model=model) -> str:
     if not ret:
         raise HTTPException(status_code=400, detail="Invalid video file")
 
-    if predicted_label == 1:  # Assuming label 1 = Violence
+    if predicted_label == 1 and confidence > 0.65:  # Assuming label 1 = Violence
         cv2.rectangle(frame, (50, 50), (width - 50, height - 50), (0, 0, 255), 4)
         cv2.putText(frame, f"Violence Detected ({confidence:.2f})", (60, 70), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
     else:
+        cv2.rectangle(frame, (50, 50), (width - 50, height - 50), (0, 255, 0), 4)
         cv2.putText(frame, f"Non-Violence ({confidence:.2f})", (60, 70), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
     out.write(frame)

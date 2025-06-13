@@ -22,7 +22,7 @@ NLP_ENABLED = False
 CONFIDENCE_THRESHOLD = 0.6
 VIDEO_OUTPUT_DIR = 'output'
 
-client = Together(api_key="86346bfda084ee6c73bc164752b6c9962cacd0c0a31e7e1ea31cd3609a901b2c")
+client = Together(api_key="86346bfda084ee6c73bc164752b6c9962cacd0c0a31e7e1ea31cd3609a901b2c") # tgp_v1_IZOgwHGiasfDGBAKMQsczTl0AIhDQEmIl0IfKoEkc4E
 
 # Together API Configuration
 TOGETHER_API_KEY = os.getenv("TOGETHER_API_KEY", "f565c78db8fb04705e787ceed5990cad79e48b47ad34b785c79e66a91fef4ae7")
