@@ -14,6 +14,7 @@ from config import YOLO_ENABLED, OBJECT_DETECTION_ENABLED, GUN_DETECTION_ENABLED
 from app import predict_and_annotate_violence_video
 
 model = selected_model()
+# object_model = selected_model(object_detection=True)
 logging.basicConfig(level=logging.INFO)
 frame_queue = deque(maxlen=NUM_FRAMES)  # Store the last FRAMES frames
 
@@ -36,6 +37,7 @@ def predict_and_display(video_path, model, output_path):
 
         if OBJECT_DETECTION_ENABLED:
             processed_frame, _, _ = yolo_detect(frame, CONFIDENCE_THRESHOLD)
+            # results = object_model.predict(frame, conf=0.6)
             out.write(processed_frame)
 
         elif FACE_DETECTION_ENABLED:
@@ -97,7 +99,8 @@ video_path = 'test_samples/normal/2.mp4'
 video_path = 'test_samples/normal/3.mp4'
 # video_path = 'test_samples/normal/4.mp4'
 # video_path = 'test_samples/normal/5.mp4'
-video_path = 'test_samples/normal/people.mp4'
+video_path = 'test_samples/normal/hug.MOV'
+# video_path = 'test_samples/normal/people.mp4'
 # video_path = 'test_samples/normal/people2.mp4'
 
 # ----- Violence Situations -----
@@ -106,7 +109,8 @@ video_path = 'test_samples/normal/people.mp4'
 # video_path = 'test_samples/violent/0.mp4'
 # video_path = 'test_samples/violent/1.mp4'
 # video_path = 'test_samples/violent/2.mp4'
-video_path = 'test_samples/violent/3.mp4'
+# video_path = 'test_samples/violent/3.mp4'
+# video_path = 'test_samples/violent/test.MOV'
 # video_path = 'test_samples/violent/4.mp4'
 # video_path = 'test_samples/violent/test_home.MOV'
 # video_path = 'test_samples/violent/office_fight.mp4'

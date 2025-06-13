@@ -97,6 +97,7 @@ frame_queue = queue.Queue(maxsize=5)  # Prevent memory bloat
 def camera_worker():
     cap = cv2.VideoCapture(0)
 
+    object_model = selected_model(object_detection=True)
     if not cap.isOpened():
         raise RuntimeError("Could not open video source")
 
@@ -105,8 +106,9 @@ def camera_worker():
         if not success:
             break
 
-        processed_frame, _, _ = yolo_detect(frame, CONFIDENCE_THRESHOLD)
-        _, buffer = cv2.imencode(".jpg", processed_frame)
+        # processed_frame, _, _ = yolo_detect(frame, CONFIDENCE_THRESHOLD)
+        results = object_model.predict(frame, conf=0.6)
+        _, buffer = cv2.imencode(".jpg", results[0].plot())
         b64_frame = base64.b64encode(buffer).decode("utf-8")
 
         for client in clients:

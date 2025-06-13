@@ -19,6 +19,14 @@
     URL: https://universe.roboflow.com/psm-ou5fu/violence-weapon-detection/dataset/1
     DESC: Violence & Weapon
 
+- Gun Dataset:
+    URL: https://universe.roboflow.com/instituto-superior-de-engenharia-de-coimbra-bgn4r/gun-surveilence/dataset/1
+    DESC: 600 augmented images with bounded boxes.
+
+- Hate Speech Dataset:
+    URL: https://www.kaggle.com/datasets/fangfangz/audio-based-violence-detection-dataset
+    DESC: 340 audio files with labels.
+
 - Inception models:
     URL: https://drive.google.com/file/d/1fjyxk19QEqOTuxNY8To95nlm-QQ9yQE-/view?usp=drive_link
     DESC: Contains all inception models

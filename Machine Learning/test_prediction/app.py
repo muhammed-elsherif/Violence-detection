@@ -14,6 +14,7 @@ from config import CONFIDENCE_THRESHOLD, VIDEO_OUTPUT_DIR, FRAME_SIZE, NUM_FRAME
 from pydantic import BaseModel
 from together.error import RateLimitError
 import re
+from video_processor import VideoProcessor
 
 app = FastAPI()
 
@@ -246,6 +247,22 @@ def predict_and_annotate_image(image_path: str, model) -> str:
     output_filename = os.path.join(VIDEO_OUTPUT_DIR, f"{model}_{uuid.uuid4().hex}.jpg")
     cv2.imwrite(output_filename, img)
     return output_filename, detection_results
+
+@app.post("/violence_detection_clip")
+async def predict_and_annotate_violence_video_clip(file: UploadFile = File(...)):
+    if not file.filename.lower().endswith(('.mp4', '.avi', '.mov')):
+        raise HTTPException(status_code=400, detail="Unsupported video format")
+
+    # Save the uploaded video temporarily
+    temp_video_path = f"temp_{uuid.uuid4().hex}_{file.filename}"
+    with open(temp_video_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    processor = VideoProcessor()
+    output_filename = os.path.join(VIDEO_OUTPUT_DIR, f"{uuid.uuid4().hex}.mp4")
+    processor.process_video(temp_video_path, output_filename)
+    os.remove(temp_video_path)
+    return FileResponse(output_filename, media_type="video/mp4", filename=os.path.basename(output_filename))
 
 @app.post("/violence_detection")
 async def predict_video(file: UploadFile = File(...)):

@@ -45,8 +45,8 @@ def selected_model(gun_detection=False, fire_detection=False, smoke_detection=Fa
         model = YOLO(model_path)
         model.to(device)
     elif OBJECT_DETECTION_ENABLED or object_detection:
-        # model_path = "../loaded_models/object_best_yolo11.pt"
-        model_path = "../yolo_weights/yolo12s.pt"
+        model_path = "../loaded_models/object_best_yolo11.pt"
+        # model_path = "../yolo_weights/yolo12s.pt"
         model = YOLO(model_path)
         model.to(device)
     elif NLP_ENABLED or nlp_detection:
@@ -113,16 +113,26 @@ augmentor = ImageDataGenerator(
 
 def process_video(video_path, frame_count=NUM_FRAMES, frame_size=FRAME_SIZE):
     """
-    Loads a video from disk, extracts a fixed number of frames,
-    resizes them and scales pixel values.
+    Process a video file and extract frames for prediction.
+    
+    Args:
+        video_path: Path to the video file
+        frame_count: Number of frames to extract
+        frame_size: Target size for frames (width, height)
+        
+    Returns:
+        numpy array of processed frames
     """
     cap = cv2.VideoCapture(video_path)
+    if not cap.isOpened():
+        raise ValueError(f"Could not open video file: {video_path}")
+        
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     frame_skip = max(1, total_frames // frame_count)
-
+    
     frames = []
     extracted_frames = 0
-
+    
     while cap.isOpened() and len(frames) < frame_count:
         success, frame = cap.read()
         if not success:
@@ -131,21 +141,28 @@ def process_video(video_path, frame_count=NUM_FRAMES, frame_size=FRAME_SIZE):
         # frame = cv2.resize(frame, frame_size) / 255.0
         # frames.append(frame)
         if extracted_frames % frame_skip == 0:
-            frame = cv2.resize(frame, frame_size) / 255.0
-            frames.append(frame)
-        #     # Optional augmentation
-        #     if random.random() < 0.5:
-        #         frame = np.expand_dims(frame, axis=0)
-        #         frame = next(augmentor.flow(frame, batch_size=1))[0]
-        # frame = cv2.resize(frame, frame_size)
-        # frame = preprocess_input(frame)  # Normalize for MobileNet
+            try:
+                # Ensure frame is not empty and has valid dimensions
+                if frame is not None and frame.size > 0:
+                    frame = cv2.resize(frame, frame_size)
+                    frame = frame.astype(np.float32) / 255.0 # normalize 0-1
+                    frames.append(frame)
+            except Exception as e:
+                print(f"Error processing frame {extracted_frames}: {str(e)}")
+                continue
+                
         extracted_frames += 1
-
+    
     cap.release()
-
+    
     # If fewer frames than expected, repeat the last frame
     while len(frames) < frame_count:
-        print(f"Repeating frame {len(frames)} of {frame_count}")
-        frames.append(frames[-1])
-
-    return np.array(frames, dtype=np.float32)  # Use float32 for better performance
+        if frames:  # Only repeat if we have at least one frame
+            print(f"Repeating frame {len(frames)} of {frame_count}")
+            frames.append(frames[-1])
+        else:
+            # If no frames were processed, create a blank frame
+            blank_frame = np.zeros((*frame_size, 3), dtype=np.float32)
+            frames.append(blank_frame)
+    
+    return np.array(frames)

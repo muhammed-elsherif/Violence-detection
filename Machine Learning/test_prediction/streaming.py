@@ -32,16 +32,16 @@ if not cap.isOpened():
     exit()
 
 if OBJECT_DETECTION_ENABLED:
-    object_model = selected_model(object_detection=True)
+    # object_model = selected_model(object_detection=True)
     while cap.isOpened():
         success, frame = cap.read()
         if not success:
             st.error("Error: Failed to capture frame")
             break
 
-        # processed_frame, _, _ = yolo_detect(frame, CONFIDENCE_THRESHOLD)
-        results = object_model.predict(frame, conf=0.6)
-        stframe.image(results[0].plot(), channels="BGR")
+        processed_frame, _, _ = yolo_detect(frame, CONFIDENCE_THRESHOLD)
+        # results = object_model.predict(frame, conf=0.6)
+        stframe.image(processed_frame, channels="BGR")
 
 elif GUN_DETECTION_ENABLED:
     gun_model = selected_model(gun_detection=True)
